@@ -1,0 +1,17 @@
+[package]
+name = "strk_payment_handler"
+version = "0.1.0"
+edition = "2023_01"
+
+[dependencies]
+starknet = "2.10.0-rc.1"
+
+[dev-dependencies]
+cairo_test = "2.10.0-rc.1"
+
+[[target.starknet-contract]]
+sierra = true
+casm = true
+
+[scripts]
+test = "scarb cairo-test"
