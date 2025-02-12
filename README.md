@@ -102,22 +102,22 @@ This project follows a monorepo structure managed via Turborepo or Nx. Each comp
 Folder Structure:
 
 
-onchainsage/
-├── apps/
-│   ├── frontend/
-│   ├── backend/
-│   ├── blockchain/
-│   └── data-processing/
-├── packages/
-│   ├── ui/
-│   ├── sdk/
-│   ├── common/
-│   └── integrations/
-├── docs/
-├── infrastructure/
-└── .github/
+   ```onchainsage/
+   ├── apps/
+   │   ├── frontend/
+   │   ├── backend/
+   │   ├── blockchain/
+   │   └── data-processing/
+   ├── packages/
+   │   ├── ui/
+   │   ├── sdk/
+   │   ├── common/
+   │   └── integrations/
+   ├── docs/
+   ├── infrastructure/
+   └── .github/
 
-Contributing
+**Contributing**
 We welcome contributions from the community! Please see our CONTRIBUTING.md for details on our code of conduct, branching strategy, and how to submit pull requests.
 
 License
