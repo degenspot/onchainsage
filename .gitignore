@@ -1,3 +1,30 @@
+# Ignore all files in the frontend (ReactJs app)
+apps/frontend/.next/
+apps/frontend/node_modules/
+apps/frontend/.env
+apps/frontend/.env.local
+apps/frontend/.env.development
+apps/frontend/.env.test
+apps/frontend/.env.production
+apps/frontend/.cache
+apps/frontend/.DS_Store
+apps/frontend/build/
+apps/frontend/coverage/
+apps/frontend/public/static/
+
+# Ignore all files in the backend (NestJS app)
+apps/backend/dist/
+apps/backend/node_modules/
+apps/backend/.env
+apps/backend/.env.local
+apps/backend/.env.development
+apps/backend/.env.test
+apps/backend/.env.production
+apps/backend/.cache
+apps/backend/.DS_Store
+
+.DS_Store
+**/.DS_Store
 node_modules
 
 .turbo
