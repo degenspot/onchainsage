@@ -1,4 +1,4 @@
-
+// get endpoint
 GET http://localhost:3000/health
 
 POST http://localhost:3000/health
