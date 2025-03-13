@@ -1,0 +1,4 @@
+
+# GET /preferences/:userId
+
+GET http://localhost:3000/preferences/12
