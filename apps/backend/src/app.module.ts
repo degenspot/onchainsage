@@ -18,7 +18,7 @@ const ENV = process.env.NODE_ENV;
     SignalsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: !ENV ? '.env' : `.env.${ENV.trim()}`,
+      envFilePath: ENV ? '.env' : `.env.${ENV.trim()}`,
       load: [appConfig, databaseConfig],
     }),
     TypeOrmModule.forRootAsync({
