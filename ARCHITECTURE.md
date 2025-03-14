@@ -12,7 +12,7 @@ The architecture of OnChain Sage is data-first, emphasizing the flow and process
 
 Below is a visual representation of the architecture:
 
-![OnChain Sage Architecture](https://github.com/user-attachments/assets/ea932d87-4cb7-42cd-b400-1165d999bdcb)
+![image](https://github.com/user-attachments/assets/ea932d87-4cb7-42cd-b400-1165d999bdcb)
 
 This diagram illustrates the flow from data ingestion to user interaction, highlighting the event-driven communication and modular structure.
 
