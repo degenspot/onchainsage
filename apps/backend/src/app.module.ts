@@ -7,9 +7,11 @@ import { SignalsModule } from './signals/signals.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config';
 import {TypeOrmModule} from '@nestjs/typeorm'
+import { StarknetModule } from './starknet/starknet.module';
 import databaseConfig from './config/database.config';
 
 const ENV = process.env.NODE_ENV;
+console.log(ENV)
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ const ENV = process.env.NODE_ENV;
     SignalsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: !ENV ? '.env' : `.env.${ENV.trim()}`,
+      envFilePath: ENV ? '.env' : `.env.${ENV.trim()}`,
       load: [appConfig, databaseConfig],
     }),
     TypeOrmModule.forRootAsync({
@@ -36,6 +38,7 @@ const ENV = process.env.NODE_ENV;
         autoLoadEntities: configService.get('database.autoload'),
       }),
     }),
+    StarknetModule,
   ],
   controllers: [AppController],
   providers: [AppService],
