@@ -1,0 +1,8 @@
+// get endpoint
+GET http://localhost:3000/health
+
+POST http://localhost:3000/health
+
+DELETE http://localhost:3000/health
+
+PATCH http://localhost:3000/health
