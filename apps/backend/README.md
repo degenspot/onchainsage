@@ -53,17 +53,26 @@ apps/backend/
    npm install
    ```
 
-3. **Environment Setup**
+3. **Database Setup**
+   ```bash
+   # Connect to PostgreSQL
+   psql -U postgres
+
+   # Create the database
+   CREATE DATABASE onchainsage;
+
+   # Verify database creation
+   \l
+   ```
+
+4. **Environment Setup**
    ```bash
    # Copy environment file
    cp .env.development.example .env.development
    
    # Edit .env.development with your database credentials
+   # Make sure DATABASE_PASSWORD matches your PostgreSQL password
    ```
-
-4. **Database Setup**
-   - Create a PostgreSQL database
-   - Update database credentials in `.env.development`
 
 5. **Start the Development Server**
    ```bash
