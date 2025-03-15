@@ -5,6 +5,7 @@
 OnChain Sage is an AI-driven, decentralized trading assistant that combines real-time social sentiment analysis with on-chain market data to identify high-potential crypto tickers. By integrating data from Twitter, Raydium, Dex Screener, and more, OnChain Sage empowers crypto traders with actionable insights to make informed decisions.
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [Core Concept](#core-concept)
 - [Key Features](#key-features)
@@ -36,34 +37,41 @@ OnChain Sage leverages cutting-edge AI and blockchain technologies to provide a 
 ## Architecture & Tech Stack
 
 ### **Frontend**
+
 - **Framework:** Next.js, React
 - **Styling:** Tailwind CSS
 - **Visualizations:** Chart.js, D3.js
 
 ### **Backend**
+
 - **Runtime:** Node.js with NestJs
 - **Language:** TypeScript
 
 ### **Data Processing**
+
 - **Languages:** Python (TensorFlow, PyTorch, OpenAI API)
 
 ### **Blockchain Integration**
+
 - **Network:** Starknet
 - **Smart Contracts:** Written in Cairo
 - **Token Handling:** STRK for gas fees and premium services
 
 ### **Database & Infrastructure**
+
 - **Database:** PostgreSQL/MongoDB, Redis for caching
 - **Containerization & Orchestration:** Docker, Kubernetes
 - **Deployment:** AWS/GCP or similar cloud platforms
 
 ### **API Integrations**
+
 - **Social Data:** Twitter API
 - **On-Chain Analytics:** Raydium and Dex Screener APIs
 
 ## Getting Started
 
 ### Prerequisites
+
 - [Node.js](https://nodejs.org/) (v14+)
 - [npm](https://www.npmjs.com/)
 - [Python 3.8+](https://www.python.org/downloads/) (if working on data processing services)
@@ -76,7 +84,8 @@ OnChain Sage leverages cutting-edge AI and blockchain technologies to provide a 
    ```bash
    git clone https://github.com/degenspot/onchainsage.git
    cd onchainsage
-Install Dependencies
+   Install Dependencies
+   ```
 
 Using npm (for workspaces):
 
@@ -101,21 +110,21 @@ This project follows a monorepo structure managed via Turborepo or Nx. Each comp
 
 Folder Structure:
 
+```onchainsage/
+├── apps/
+│   ├── frontend/
+│   ├── backend/
+│   ├── blockchain/
+│   └── data-processing/
+├── packages/
+│   ├── ui/
+│   ├── sdk/
+│   ├── common/
+│   └── integrations/
+├── docs/
+├── infrastructure/
+└── .github/
 
-   ```onchainsage/
-   ├── apps/
-   │   ├── frontend/
-   │   ├── backend/
-   │   ├── blockchain/
-   │   └── data-processing/
-   ├── packages/
-   │   ├── ui/
-   │   ├── sdk/
-   │   ├── common/
-   │   └── integrations/
-   ├── docs/
-   ├── infrastructure/
-   └── .github/
 
 **Contributing**
 We welcome contributions from the community! Please see our CONTRIBUTING.md for details on our code of conduct, branching strategy, and how to submit pull requests.
@@ -126,3 +135,4 @@ MIT License
 For any questions or feedback, please open an issue or reach out to the maintainers.
 
 
+```
