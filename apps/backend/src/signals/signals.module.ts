@@ -5,5 +5,6 @@ import { SignalsController } from './signals.controller';
 @Module({
   controllers: [SignalsController],
   providers: [SignalsService],
+  exports: [SignalsService]
 })
 export class SignalsModule {}
