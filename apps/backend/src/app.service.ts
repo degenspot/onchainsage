@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+
 
 @Injectable()
 export class AppService {
-  getHello(): string {
+  constructor() {}
+
+  public getHello(): string {
     return 'Hello World!';
   }
 }
