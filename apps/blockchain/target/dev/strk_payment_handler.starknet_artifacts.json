@@ -1,0 +1,1 @@
+{"version":1,"contracts":[{"id":"vg659mhomlafg","package_name":"strk_payment_handler","contract_name":"STRKPaymentHandler","module_path":"strk_payment_handler::payment_handler::STRKPaymentHandler","artifacts":{"sierra":"strk_payment_handler_STRKPaymentHandler.contract_class.json","casm":"strk_payment_handler_STRKPaymentHandler.compiled_contract_class.json"}}]}
