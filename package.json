@@ -16,5 +16,9 @@
   "devDependencies": {
     "turbo": "^2.4.1"
   },
-  "packageManager": "npm@8.5.0"
+  "packageManager": "npm@8.5.0",
+  "dependencies": {
+    "@nestjs-modules/ioredis": "^2.0.2",
+    "ioredis": "^5.6.0"
+  }
 }

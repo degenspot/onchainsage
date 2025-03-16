@@ -1,0 +1,10 @@
+
+
+GET http://localhost:3000/redis/warm-up
+
+
+GET http://localhost:3000/redis/invalidate
+
+
+# test to confirm invalidation works 
+GET http://localhost:3000/redis/check-cache

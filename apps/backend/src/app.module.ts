@@ -9,6 +9,7 @@ import appConfig from './config/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import databaseConfig from './config/database.config';
 import { RedisModule } from './redis/redis.module';
+import { RedisController } from './redis/redis.controller';
 
 
 const ENV = process.env.NODE_ENV;
@@ -42,7 +43,7 @@ const ENV = process.env.NODE_ENV;
 
     RedisModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, RedisController],
   providers: [AppService],
 })
 export class AppModule {}
