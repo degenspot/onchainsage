@@ -18,7 +18,7 @@ export class StarknetService {
     );
 
     const contractAbi = json.parse(
-      fs.readFileSync('../.json', 'utf-8'),
+      fs.readFileSync('../../', 'utf-8'),
     );
     this.contract = new Contract(
       contractAbi,
