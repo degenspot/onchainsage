@@ -29,12 +29,9 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^11.0.0",
-<<<<<<< HEAD
     "bip39": "^3.1.0",
-=======
     "cache-manager": "^6.4.1",
     "cache-manager-redis-store": "^3.0.1",
->>>>>>> 40a65cae986cf4ea7b3658ea002467243259bf64
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "ioredis": "^5.6.0",

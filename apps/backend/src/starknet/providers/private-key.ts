@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ec } from 'starknet';
 import { randomBytes } from 'crypto';
-import bip39 from 'bip39';
 
 @Injectable()
 export class PrivateKeyProvider {
@@ -9,12 +8,13 @@ export class PrivateKeyProvider {
   private publicKey: string;
 
   constructor() {
-    // Generate a seed phrase
-    const seedPhrase = bip39.generateMnemonic();
-    console.log("Generated Seed Phrase:", seedPhrase);
+    // Generate a seed phrase   
+    const bip39 = require('bip39');
+    // const mnemonic = 'surround crazy test license faint reject pole reunion pink region legal carry'
+    // const seedPhrase = bip39.generateMnemonic();
 
     // Generate a random 32-byte private key
-    this.privateKey = `0x${randomBytes(32).toString('hex')}`;
+    this.privateKey = `0x${randomBytes(16).toString('hex')}`;
 
     // Compute the public key from the private key
     this.publicKey = ec.starkCurve.getStarkKey(this.privateKey);

@@ -6,12 +6,8 @@ import { HealthModule } from './health/health.module';
 import { SignalsModule } from './signals/signals.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config';
-<<<<<<< HEAD
 import {TypeOrmModule} from '@nestjs/typeorm'
 import { StarknetModule } from './starknet/starknet.module';
-=======
-import { TypeOrmModule } from '@nestjs/typeorm';
->>>>>>> 40a65cae986cf4ea7b3658ea002467243259bf64
 import databaseConfig from './config/database.config';
 import { RedisModule } from './redis/redis.module';
 import { RedisController } from './redis/redis.controller';
@@ -27,7 +23,7 @@ console.log(ENV)
     SignalsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: !ENV ? '.env' : `.env.development.example`,
+      envFilePath: ENV ? '.env' : `.env.development.example`,
       load: [appConfig, databaseConfig],
     }),
     // TypeORM configuration
@@ -46,12 +42,8 @@ console.log(ENV)
         ssl: false,
       }),
     }),
-<<<<<<< HEAD
     StarknetModule,
-=======
-
     RedisModule,
->>>>>>> 40a65cae986cf4ea7b3658ea002467243259bf64
   ],
   controllers: [AppController, RedisController],
   providers: [AppService],

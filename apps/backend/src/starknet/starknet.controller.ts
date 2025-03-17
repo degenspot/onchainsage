@@ -15,7 +15,7 @@ export class StarknetController {
   }
 
   @Post('transfer')
-  public async transferFunds(@Body() body: { amount: number }) {
+  public async transferFunds(@Body() body: { amount: string }) {
     return await this.starknetService.sendTransaction(body.amount);
   }
 
