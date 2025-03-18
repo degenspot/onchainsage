@@ -1,0 +1,151 @@
+# Data Processing Services CI/CD Pipeline
+name: Data Processing Services CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    name: Lint Data Processing Services
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('data-processing/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 black isort
+        if [ -f data-processing/requirements.txt ]; then pip install -r data-processing/requirements.txt; fi
+    - name: Lint with flake8
+      run: |
+        flake8 data-processing/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 data-processing/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Check formatting with black
+      run: black --check data-processing/
+    - name: Check import ordering with isort
+      run: isort --check --profile black data-processing/
+
+  test:
+    name: Test Data Processing Services
+    runs-on: ubuntu-latest
+    needs: lint
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('data-processing/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-${{ matrix.python-version }}-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+        if [ -f data-processing/requirements.txt ]; then pip install -r data-processing/requirements.txt; fi
+    - name: Test with pytest
+      run: pytest data-processing/ --cov=./ --cov-report=xml
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+
+  build:
+    name: Build Data Processing Services
+    runs-on: ubuntu-latest
+    needs: test
+    timeout-minutes: 15
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('data-processing/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build wheel
+        if [ -f data-processing/requirements.txt ]; then pip install -r data-processing/requirements.txt; fi
+    - name: Build package
+      run: |
+        cd data-processing
+        python -m build
+    - name: Archive data processing artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: data-processing-dist
+        path: data-processing/dist/
+
+  deploy-staging:
+    name: Deploy Data Processing to Staging
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 15
+    environment: staging
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Download data processing artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: data-processing-dist
+        path: data-processing/dist/
+    - name: Deploy to staging
+      run: |
+        echo "Deploying data processing services to staging environment"
+        # Add your staging deployment commands here
+
+  deploy-production:
+    name: Deploy Data Processing to Production
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 15
+    environment: production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Download data processing artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: data-processing-dist
+        path: data-processing/dist/
+    - name: Deploy to production
+      run: |
+        echo "Deploying data processing services to production environment"
+        # Add your production deployment commands here
