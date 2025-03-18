@@ -16,14 +16,6 @@ export class StarknetService {
     const privateKey = process.env.PRIVATE_KEY!;
     const contractAddress = process.env.CONTRACT_ADDRESS!;
 
-    if (!privateKey || !privateKey.startsWith('0x')) {
-      throw new Error("Private key must be a valid hex string starting with '0x'.");
-    }
-
-    if (!contractAddress || !contractAddress.startsWith('0x')) {
-      throw new Error("Contract address must be a valid Starknet address.");
-    }
-
     // Key Conversion
     const starkKey = ec.starkCurve.getStarkKey(privateKey); 
     this.account = new Account(this.provider, contractAddress, privateKey);
