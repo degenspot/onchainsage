@@ -6,15 +6,14 @@ import { HealthModule } from './health/health.module';
 import { SignalsModule } from './signals/signals.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config';
-import {TypeOrmModule} from '@nestjs/typeorm'
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { StarknetModule } from './starknet/starknet.module';
 import databaseConfig from './config/database.config';
 import { RedisModule } from './redis/redis.module';
 import { RedisController } from './redis/redis.controller';
 
-
 const ENV = process.env.NODE_ENV;
-console.log(ENV)
+console.log(ENV);
 
 @Module({
   imports: [
@@ -23,7 +22,7 @@ console.log(ENV)
     SignalsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ENV ? '.env' : `.env.development.example`,
+      envFilePath: ENV ? '.env' : `.env.development`,
       load: [appConfig, databaseConfig],
     }),
     // TypeORM configuration
@@ -32,14 +31,14 @@ console.log(ENV)
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.get<string>('DATABASE_HOST'),
-        port: +configService.get<string>('DATABASE_PORT'),
-        username: configService.get<string>('DATABASE_USERNAME'),
-        password: String(configService.get<string>('DATABASE_PASSWORD') || ''),
-        database: configService.get<string>('DATABASE_NAME'),
-        synchronize: configService.get<boolean>('DATABASE_SYNC'),
-        autoLoadEntities: configService.get<boolean>('DATABASE_LOAD'),
-        ssl: false,
+        host: configService.get('database.host'),
+        port: +configService.get('database.port'),
+        username: configService.get('database.user'),
+        password: configService.get('database.password'),
+        database: configService.get('database.name'),
+        blog: configService.get('database.blog'),
+        synchronize: configService.get('database.synchronize'),
+        autoLoadEntities: configService.get('database.autoload'),
       }),
     }),
     StarknetModule,

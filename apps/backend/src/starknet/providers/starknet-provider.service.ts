@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RpcProvider, Account, Contract, json, ec } from 'starknet';
+import { RpcProvider, Account, Contract, ec } from 'starknet';
 import * as fs from 'fs';
 import * as path from 'node:path';
 
@@ -15,10 +15,12 @@ export class StarknetService {
 
     const privateKey = process.env.PRIVATE_KEY!;
     const contractAddress = process.env.CONTRACT_ADDRESS!;
+    console.log('privatekey', privateKey)
+    // console.log('stark key', starkKey)
 
     // Key Conversion
     const starkKey = ec.starkCurve.getStarkKey(privateKey); 
-    this.account = new Account(this.provider, contractAddress, privateKey);
+    this.account = new Account(this.provider, contractAddress, starkKey);
 
     // Fix ABI File Path
     const abiPath = path.resolve(__dirname, '../../../../blockchain/contract_abi.json');
