@@ -11,6 +11,7 @@ import { StarknetModule } from './starknet/starknet.module';
 import databaseConfig from './config/database.config';
 import { RedisModule } from './redis/redis.module';
 import { RedisController } from './redis/redis.controller';
+import { SignalGateway } from './gateways/signal.gateway';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -44,10 +45,6 @@ console.log(ENV);
     StarknetModule,
     RedisModule,
   ],
-  controllers: [
-    AppController, 
-    RedisController
-  ],
-  providers: [AppService],
+  controllers: [AppController, RedisController],
 })
 export class AppModule {}
