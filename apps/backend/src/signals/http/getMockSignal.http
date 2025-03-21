@@ -1,1 +1,3 @@
 GET  http://localhost:3000/signals/mock 
+
+GET http://localhost:3000/signals/sig_mock_006
