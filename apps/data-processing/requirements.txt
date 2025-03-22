@@ -37,3 +37,10 @@ typing_extensions==4.12.2
 tzdata==2025.1
 urllib3==2.3.0
 wcwidth==0.2.13
+beautifulsoup4==4.13.3
+lxml==5.3.1
+ntscraper==0.3.17
+requests==2.32.3
+six==1.17.0
+soupsieve==2.6
+tqdm==4.67.1

@@ -24,8 +24,7 @@ console.log(ENV);
     SignalsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      // envFilePath: ENV ? '.env' : `.env.development`,
-      envFilePath: ['.env'],
+      envFilePath: ENV ? '.env' : `.env.${ENV.trim()}`,
       load: [appConfig, databaseConfig],
     }),
     // TypeORM configuration
@@ -48,7 +47,10 @@ console.log(ENV);
     RedisModule,
     UserModule,
   ],
-  controllers: [AppController, RedisController],
-  providers: [AppService, SignalGateway],
+  controllers: [
+    AppController, 
+    RedisController
+  ],
+  providers: [AppService],
 })
 export class AppModule {}
