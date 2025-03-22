@@ -1,7 +1,13 @@
-import { Injectable } from "@nestjs/common"
+import { Injectable, NotFoundException } from "@nestjs/common"
 import { TradingSignal } from "src/interfaces/trading-signal.interface"
 @Injectable()
 export class MockSignalService {
+  private signals: TradingSignal[]
+
+  constructor() {
+    this.signals = this.generateMockSignals()
+  }
+  
   generateMockSignals(): TradingSignal[] {
     const tokenPairs = ["BTC/USD", "ETH/USD", "SOL/USD", "AVAX/USD", "DOT/USD"]
     const categories = ["high-confidence", "medium-confidence", "low-confidence"]
@@ -24,6 +30,14 @@ export class MockSignalService {
         recommendation: recommendations[Math.floor(Math.random() * recommendations.length)],
       }
     })
+  }
+
+  getMockSignalById(id: string): TradingSignal {
+    const signal = this.signals.find(signal => signal.signal_id === id)
+    if (!signal) {
+      throw new NotFoundException(`Signal with ID ${id} not found`)
+    }
+    return signal
   }
 }
 
