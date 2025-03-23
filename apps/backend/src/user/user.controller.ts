@@ -12,7 +12,7 @@ export class UserController {
   async getPreferences(@Req() req: Request, @Res() res: Response) {
     const user_id = req['user_id']; 
 
-    const preferences = await this.userService.getPreferences(user_id)
+    const preferences = await this.userService.getCachedPreferences(user_id)
 
    return preferences
   }
