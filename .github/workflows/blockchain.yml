@@ -1,0 +1,93 @@
+name: Blockchain CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    name: Lint Blockchain Contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('apps/blockchain/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Install dependencies
+      run: |
+        cd apps/blockchain
+        npm install
+    - name: Lint with ESLint
+      run: |
+        cd apps/blockchain
+        npm run lint
+
+  test:
+    name: Test Blockchain Contracts
+    runs-on: ubuntu-latest
+    needs: lint
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('apps/blockchain/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Install dependencies
+      run: |
+        cd apps/blockchain
+        npm install
+    - name: Run tests
+      run: |
+        cd apps/blockchain
+        npm test
+
+  build-and-deploy:
+    name: Build and Deploy Blockchain Contracts
+    runs-on: ubuntu-latest
+    needs: test
+    timeout-minutes: 10
+    if: github.event_name == 'push'
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('apps/blockchain/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Install dependencies
+      run: |
+        cd apps/blockchain
+        npm install
+    - name: Build project
+      run: |
+        cd apps/blockchain
+        npm run build
+    - name: Deploy
+      run: |
+        echo "Deploying blockchain contracts to ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}"
+        # Add deployment commands here (e.g., deploy to Starknet testnet/mainnet)

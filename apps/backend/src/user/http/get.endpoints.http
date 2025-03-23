@@ -1,0 +1,4 @@
+
+
+#Get all game-sessions 
+GET http://localhost:3000/game-sessions

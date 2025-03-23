@@ -19,6 +19,11 @@
   "packageManager": "npm@8.5.0",
   "dependencies": {
     "@nestjs-modules/ioredis": "^2.0.2",
-    "ioredis": "^5.6.0"
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/passport": "^11.0.5",
+    "ioredis": "^5.6.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "starknet": "^6.23.1"
   }
 }

@@ -1,0 +1,93 @@
+name: Backend CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    name: Lint Backend Code
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('apps/backend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Install dependencies
+      run: |
+        cd apps/backend
+        npm install
+    - name: Lint with ESLint
+      run: |
+        cd apps/backend
+        npm run lint
+
+  test:
+    name: Test Backend
+    runs-on: ubuntu-latest
+    needs: lint
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('apps/backend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Install dependencies
+      run: |
+        cd apps/backend
+        npm install
+    - name: Run tests
+      run: |
+        cd apps/backend
+        npm test
+
+  build-and-deploy:
+    name: Build and Deploy Backend
+    runs-on: ubuntu-latest
+    needs: test
+    timeout-minutes: 10
+    if: github.event_name == 'push'
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('apps/backend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Install dependencies
+      run: |
+        cd apps/backend
+        npm install
+    - name: Build project
+      run: |
+        cd apps/backend
+        npm run build
+    - name: Deploy
+      run: |
+        echo "Deploying backend to ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}"
+        # Add deployment commands here (e.g., aws s3 cp dist/ s3://your-bucket/)

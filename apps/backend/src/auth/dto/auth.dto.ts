@@ -1,4 +1,11 @@
-import { IsString, IsEmail, MinLength, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  MinLength,
+  MaxLength,
+  IsArray,
+  IsOptional,
+} from 'class-validator';
 import { Exclude } from 'class-transformer';
 
 export class RegisterDto {
@@ -21,6 +28,36 @@ export class LoginDto {
 
   @IsString()
   password: string;
+}
+
+// Add new DTOs for Starknet wallet authentication
+export class StarknetChallengeDto {
+  @IsString()
+  walletAddress: string;
+}
+
+export class StarknetVerifyDto {
+  @IsString()
+  walletAddress: string;
+
+  @IsArray()
+  signature: string[];
+
+  @IsString()
+  message: string;
+}
+
+export class StarknetAuthResponseDto {
+  accessToken: string;
+  user: {
+    id: string;
+    walletAddress: string;
+    username?: string;
+  };
+
+  constructor(partial: Partial<StarknetAuthResponseDto>) {
+    Object.assign(this, partial);
+  }
 }
 
 export class AuthResponseDto {
