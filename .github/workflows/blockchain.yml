@@ -1,5 +1,4 @@
-# Blockchain Contracts CI/CD Pipeline
-name: Blockchain Contracts CI/CD Pipeline
+name: Blockchain CI/CD Pipeline
 
 on:
   push:
@@ -11,8 +10,7 @@ jobs:
   lint:
     name: Lint Blockchain Contracts
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    
+    timeout-minutes: 5
     steps:
     - uses: actions/checkout@v3
     - name: Set up Node.js
@@ -23,47 +21,23 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-${{ hashFiles('apps/blockchain/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
     - name: Install dependencies
-      run: npm install
+      run: |
+        cd apps/blockchain
+        npm install
     - name: Lint with ESLint
-      run: npm run lint
+      run: |
+        cd apps/blockchain
+        npm run lint
 
   test:
     name: Test Blockchain Contracts
     runs-on: ubuntu-latest
     needs: lint
-    timeout-minutes: 15
-    strategy:
-      matrix:
-        node-version: [16, 18, 20]
-    
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Cache node modules
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-${{ matrix.node-version }}-
-    - name: Install dependencies
-      run: npm install
-    - name: Test with Mocha
-      run: npm test
-
-  build:
-    name: Build Blockchain Contracts
-    runs-on: ubuntu-latest
-    needs: test
-    timeout-minutes: 15
-    
+    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v3
     - name: Set up Node.js
@@ -74,55 +48,46 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-${{ hashFiles('apps/blockchain/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
     - name: Install dependencies
-      run: npm install
+      run: |
+        cd apps/blockchain
+        npm install
+    - name: Run tests
+      run: |
+        cd apps/blockchain
+        npm test
+
+  build-and-deploy:
+    name: Build and Deploy Blockchain Contracts
+    runs-on: ubuntu-latest
+    needs: test
+    timeout-minutes: 10
+    if: github.event_name == 'push'
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('apps/blockchain/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Install dependencies
+      run: |
+        cd apps/blockchain
+        npm install
     - name: Build project
-      run: npm run build
-    - name: Archive build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: blockchain-build
-        path: build/
-
-  deploy-staging:
-    name: Deploy Blockchain Contracts to Staging
-    runs-on: ubuntu-latest
-    needs: build
-    timeout-minutes: 15
-    environment: staging
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
-    
-    steps:
-    - uses: actions/checkout@v3
-    - name: Download build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: blockchain-build
-        path: build/
-    - name: Deploy to staging
       run: |
-        echo "Deploying blockchain contracts to staging environment"
-        # Add your staging deployment commands here
-
-  deploy-production:
-    name: Deploy Blockchain Contracts to Production
-    runs-on: ubuntu-latest
-    needs: build
-    timeout-minutes: 15
-    environment: production
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
-    steps:
-    - uses: actions/checkout@v3
-    - name: Download build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: blockchain-build
-        path: build/
-    - name: Deploy to production
+        cd apps/blockchain
+        npm run build
+    - name: Deploy
       run: |
-        echo "Deploying blockchain contracts to production environment"
-        # Add your production deployment commands here
+        echo "Deploying blockchain contracts to ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}"
+        # Add deployment commands here (e.g., deploy to Starknet testnet/mainnet)
