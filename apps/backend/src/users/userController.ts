@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Req, Res, HttpStatus, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Req,
+  Res,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Response } from 'express';
@@ -6,8 +14,7 @@ import { User } from './entities/user.entities';
 import { PreferencesDto } from './dtos/preferences.dto';
 import { StarknetAuthGuard } from './guards/startnet.auth.guard';
 import { AuthenticatedRequest } from './interface/user.interface';
-import { RedisService } from 'src/redis/redis.service';
-
+import { RedisService } from '../redis/redis.service';
 
 @Controller('users')
 export class UserController {
@@ -37,7 +44,7 @@ export class UserController {
 
       // Find user or create if doesn't exist
       let user = await this.userRepository.findOne({ where: { id: userId } });
-      
+
       if (!user) {
         return res.status(HttpStatus.NOT_FOUND).json({
           success: false,
@@ -51,7 +58,7 @@ export class UserController {
       // Save to database
       user.preferences = updatedPreferences;
       await this.userRepository.save(user);
-      await this.redisService.invalidateUserPreferences(userId)
+      await this.redisService.invalidateUserPreferences(userId);
 
       return res.status(HttpStatus.OK).json({
         success: true,
