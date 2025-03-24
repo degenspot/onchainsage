@@ -1,7 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../entities/user.entities';
+import { User } from '../entities/user.entity';
 import { verifyStarknetMessage } from '../utils/startnet';
 
 @Injectable()

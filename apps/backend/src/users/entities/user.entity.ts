@@ -20,6 +20,9 @@ export class User {
   @Column({ default: false })
   isVerified: boolean;
 
+  @Column({ type: 'jsonb', nullable: true })
+  preferences: Record<string, any>;
+
   @Column({ nullable: true })
   lastLoginAt: Date;
 
@@ -34,4 +37,10 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ nullable: true })
+  nonce: string;
+
+  @Column({ nullable: true })
+  signature: string;
 }

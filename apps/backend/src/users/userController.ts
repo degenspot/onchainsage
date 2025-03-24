@@ -2,7 +2,7 @@ import { Controller, Post, Body, Req, Res, HttpStatus, UseGuards } from '@nestjs
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Response } from 'express';
-import { User } from './entities/user.entities';
+import { User } from './entities/user.entity';
 import { PreferencesDto } from './dtos/preferences.dto';
 import { StarknetAuthGuard } from './guards/startnet.auth.guard';
 import { AuthenticatedRequest } from './interface/user.interface';

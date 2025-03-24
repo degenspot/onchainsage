@@ -1,34 +1,47 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
+import { ConfigService } from '@nestjs/config';
 import { Preferences } from './types';
 
 @Injectable()
-export class RedisService implements OnModuleInit {
-  constructor(
-    @Inject('REDIS') //redis package injection
-    private readonly redis: Redis,
-  ) {}
+export class RedisService {
+  private readonly redis: Redis;
 
-  async onModuleInit() {  //this triggers warmUpCache when the app starts 
-    await this.warmUpCache();
+  constructor(private configService: ConfigService) {
+    this.redis = new Redis({
+      host: this.configService.get('REDIS_HOST') || 'localhost',
+      port: this.configService.get('REDIS_PORT') || 6379,
+    });
+  }
+
+  async getAsync(key: string): Promise<string | null> {
+    return this.redis.get(key);
+  }
+
+  async setAsync(key: string, value: string, ttl?: number): Promise<void> {
+    if (ttl) {
+      await this.redis.setex(key, ttl, value);
+    } else {
+      await this.redis.set(key, value);
+    }
+  }
+
+  async del(key: string): Promise<void> {
+    await this.redis.del(key);
   }
 
   //fn to SET user preference
   public async setUserPreferences(userId: string, preferences: Preferences) {
     const key = `appName:user:${userId}:preferences`;
-    await this.redis.set(
-      key,
-      JSON.stringify(preferences),
-      'EX',
-      +process.env.REDIS_TTL || 3600,
-    );
+    const ttl = +this.configService.get('REDIS_TTL') || 3600;
+    await this.setAsync(key, JSON.stringify(preferences), ttl);
     console.log(`User ${userId} preferences cached`);
   }
 
   //fn to GET user preference
   public async getUserPreferences(userId: string): Promise<Preferences | null> {
     const key = `appName:user:${userId}:preferences`;
-    const cachedPreferences = await this.redis.get(key);
+    const cachedPreferences = await this.getAsync(key);
     if (cachedPreferences) {
       console.log(`fetching preferences for user ${userId} from cache`);
       return JSON.parse(cachedPreferences);
@@ -39,7 +52,7 @@ export class RedisService implements OnModuleInit {
   // fn to DELETE user preference
   public async deleteUserPreferences(userId: string) {
     const key = `appName:user:${userId}:preferences`;
-    await this.redis.del(key);
+    await this.del(key);
     console.log(`User ${userId} preferences removed from cache`);
   }
 
@@ -51,12 +64,8 @@ export class RedisService implements OnModuleInit {
 
     for (const [userId, userPreferences] of Object.entries(preferences)) {
       const key = `appName:user:${userId}:preferences`;
-      pipeline.set(
-        key,
-        JSON.stringify(userPreferences),
-        'EX',
-        +process.env.REDIS_TTL || 3600,
-      );
+      const ttl = +this.configService.get('REDIS_TTL') || 3600;
+      pipeline.setex(key, ttl, JSON.stringify(userPreferences));
     }
 
     await pipeline.exec(); // Execute all at once
@@ -93,17 +102,13 @@ export class RedisService implements OnModuleInit {
 
     for (const userId of commonUserIds) {
       const key = `appName:user:${userId}:preferences`;
-      const existing = await this.redis.get(key);
+      const existing = await this.getAsync(key);
       if (!existing) {
         console.log(`Preloading preferences for user ${userId}`);
         const preferences = await this.fetchPreferencesFromDatabase(userId);
         if (preferences) {
-          await this.redis.set(
-            key,
-            JSON.stringify(preferences),
-            'EX',
-            +process.env.REDIS_TTL || 3600,
-          );
+          const ttl = +this.configService.get('REDIS_TTL') || 3600;
+          await this.setAsync(key, JSON.stringify(preferences), ttl);
         }
       }
     }
@@ -123,7 +128,7 @@ export class RedisService implements OnModuleInit {
   //CACHE INVALIDATION PATTERN: when preferences changes
   public async invalidateUserPreferences(userId: string) {
     const key = `appName:user:${userId}:preferences`;
-    await this.redis.del(key);
+    await this.del(key);
     console.log(`Cache invalidated for user ${userId}`);
   }
 
