@@ -6,6 +6,7 @@ import { User } from './entities/user.entities';
 import { PreferencesDto } from './dtos/preferences.dto';
 import { StarknetAuthGuard } from './guards/startnet.auth.guard';
 import { AuthenticatedRequest } from './interface/user.interface';
+import { RedisService } from 'src/redis/redis.service';
 
 
 @Controller('users')
@@ -13,6 +14,7 @@ export class UserController {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private redisService: RedisService,
   ) {}
 
   @Post('preferences')
@@ -49,6 +51,7 @@ export class UserController {
       // Save to database
       user.preferences = updatedPreferences;
       await this.userRepository.save(user);
+      await this.redisService.invalidateUserPreferences(userId)
 
       return res.status(HttpStatus.OK).json({
         success: true,

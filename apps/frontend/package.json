@@ -9,10 +9,13 @@
   },
   "dependencies": {
     "@headlessui/react": "latest",
+    "@starknet-react/core": "^3.7.2",
+    "get-starknet": "^3.3.3",
     "lucide-react": "latest",
     "next": "^15.1.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "starknet": "^6.23.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
