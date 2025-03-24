@@ -1,29 +1,12 @@
 {
   "name": "onchainsage",
   "version": "1.0.0",
-  "description": "OnChain Sage is an AI-driven, decentralized trading assistant that fuses real-time social sentiment analysis with on-chain market data. It helps crypto traders identify high-potential tokens by scanning Twitter for trending narratives and monitoring on-chain metrics from platforms like Raydium and Dex Screener. Technical Stack Layer\tTechnology Choices Frontend\tNext.js, React, Tailwind CSS, Chart.js/D3.js for data visualization Backend\tNode.js with Express.js (or Fastify), TypeScript for robust code structure Data Processing\tPython-based microservices for NLP (using TensorFlow, PyTorch, or OpenAI API) or JavaScript-based ML libraries (TensorFlow.js) Blockchain Integration\tStarknet network, smart contracts written in Cairo, STRK token handling for gas fees and premium access Database\tPostgreSQL or MongoDB for persistent data; Redis for caching real-time insights Infrastructure\tDocker for containerization, Kubernetes for orchestration, cloud platforms (AWS, GCP, or similar) for deployment API Integrations\tTwitter API for social data, Raydium and Dex Screener APIs for on-chain analytics",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/*"
   ],
   "scripts": {
-    "dev": "npx turbo run dev"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "turbo": "^2.4.1"
-  },
-  "packageManager": "npm@8.5.0",
-  "dependencies": {
-    "@nestjs-modules/ioredis": "^2.0.2",
-    "@nestjs/jwt": "^11.0.0",
-    "@nestjs/passport": "^11.0.5",
-    "ioredis": "^5.6.0",
-    "passport": "^0.7.0",
-    "passport-jwt": "^4.0.1",
-    "starknet": "^6.23.1"
+    "backend": "npm run start:dev --workspace=apps/backend",
+    "frontend": "npm run dev --workspace=apps/frontend"
   }
 }
