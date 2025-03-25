@@ -113,12 +113,11 @@ Run the Applications
 
 Frontend:
 
-cd apps/frontend
-npm run dev
-Backend:
+"npm run dev --workspace=apps/frontend"
 
-cd apps/backend
-npm run dev
+
+Backend:
+"npm run start:dev --workspace=apps/backend",
 
 Data Processing & Blockchain Services: Follow the README files in each respective directory.
 Development
