@@ -13,6 +13,7 @@ import { RedisModule } from './redis/redis.module';
 import { RedisController } from './redis/redis.controller';
 // import { SignalGateway } from './gateways/signal.gateway';
 import { UserModule } from './users/user.module';
+import { SignalGatewayModule } from './signal-gateway/signal-gateway.module';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -46,6 +47,7 @@ console.log(ENV);
     StarknetModule,
     RedisModule,
     UserModule,
+    SignalGatewayModule,
   ],
   controllers: [
     AppController, 
