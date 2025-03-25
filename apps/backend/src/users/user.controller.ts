@@ -1,24 +1,28 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Param, 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
   Delete,
   Put,
   UseGuards,
   Req,
   Res,
-  HttpStatus
+  HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UserService } from './user.service';
 import { StarknetAuthGuard } from './guards/startnet.auth.guard';
 import { AuthenticatedRequest } from './interface/user.interface';
+import { SignalGateway } from 'src/gateways/signal.gateway';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly signalGateway: SignalGateway,
+  ) {}
 
   @Get()
   findAll() {
@@ -52,10 +56,14 @@ export class UserController {
         });
       }
 
+      // Update preferences in the database
       const updatedUser = await this.userService.updatePreferences(
         req.user.id,
         preferencesDto,
       );
+
+      // Emit event to notify all connected clients
+      this.signalGateway.handlePreferences(null, updatedUser.preferences);
 
       return res.status(HttpStatus.OK).json({
         success: true,

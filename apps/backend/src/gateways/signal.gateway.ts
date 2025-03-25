@@ -24,6 +24,19 @@ export class SignalGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.logger.log(`Client disconnected: ${client}`);
   }
 
+  @SubscribeMessage('preferences')
+  handlePreferences(client: Socket, preferences: any): void {
+    // Log received preferences
+    this.logger.log(`Received updated preferences: ${JSON.stringify(preferences)}`);
+
+    // Broadcast updated preferences to all connected clients
+    this.server.clients.forEach((connectedClient: Socket) => {
+      if (connectedClient.readyState === connectedClient.OPEN) {
+        connectedClient.send(JSON.stringify({ event: 'preferenceUpdate', data: preferences }));
+      }
+    });
+  }
+
   @SubscribeMessage('message')
   handleMessage(client: Socket, payload: string): void {
     this.logger.log(`Received message: ${payload}`);

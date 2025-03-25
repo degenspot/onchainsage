@@ -2,11 +2,8 @@
   "name": "onchainsage",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "apps/*"
-  ],
   "scripts": {
-    "backend": "npm run start:dev --workspace=apps/backend",
-    "frontend": "npm run dev --workspace=apps/frontend"
+    "backend": "cd apps/backend && npm run start:dev",
+    "frontend": "cd apps/frontend && npm run dev"
   }
 }
