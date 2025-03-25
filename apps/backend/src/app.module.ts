@@ -25,7 +25,8 @@ console.log(ENV);
     SignalsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ENV ? '.env' : `.env.${ENV.trim()}`,
+      // envFilePath: ENV ? '.env' : `.env.${ENV.trim()}`,
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
       load: [appConfig, databaseConfig],
     }),
     // TypeORM configuration

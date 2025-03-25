@@ -1,7 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { SignalsService } from './signals.service';
-import { MockSignalService } from './mock-signals.service';
-import { TradingSignal } from 'src/interfaces/trading-signal.interface';
+import { Controller, Get, Param, Post } from '@nestjs/common';
+import { SignalsService } from './signals.service'; 
+import { MockSignalService } from './mock-signals.service'; 
+import { TradingSignal } from '../interfaces/trading-signal.interface';
 
 @Controller('signals')
 export class SignalsController {
@@ -17,13 +17,17 @@ export class SignalsController {
 
   @Get('mock')
   getMockSignals(): TradingSignal[] {
-    return this.mockSignalsService.generateMockSignals();
+    // Get mock signals from the service
+    const mockSignals = this.mockSignalsService.generateMockSignals();
+    
+    // Invalidate the cache since new mock signals were generated
+    this.signalsService.invalidateCache();
+    
+    return mockSignals;
   }
 
-  @Get('/:id') 
+  @Get('/:id')
   getOneSignalById(@Param("id") id: string) {
-    return this.mockSignalsService.getMockSignalById(id)
+    return this.mockSignalsService.getMockSignalById(id);
   }
 }
-
-
