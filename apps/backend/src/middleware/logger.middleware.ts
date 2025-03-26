@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file'; // Import DailyRotateFile explicitly
 
-// Configure Winston logge
+// Configure Winston logger
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
