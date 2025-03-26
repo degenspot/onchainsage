@@ -1,9 +1,9 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import * as winston from 'winston';
-import 'winston-daily-rotate-file';
+import DailyRotateFile from 'winston-daily-rotate-file'; // Import DailyRotateFile explicitly
 
-// Configure Winston logger
+// Configure Winston logge
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
@@ -12,7 +12,7 @@ const logger = winston.createLogger({
   ),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.DailyRotateFile({
+    new DailyRotateFile({ // Use DailyRotateFile directly
       filename: 'logs/api-%DATE%.log',
       datePattern: 'YYYY-MM-DD',
       maxSize: '10m',

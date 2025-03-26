@@ -1,8 +1,8 @@
 import { Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { SignalsService } from './signals.service'; 
-import { MockSignalService } from './mock-signals.service'; 
-import { TradingSignal } from '../interfaces/trading-signal.interface';
-import { PaginatedResponse, PaginationDto } from '../interfaces/pagination.dto';
+import { MockSignalService } from './mock-signals.service';
+import { Signal } from './entities/signal.entity'; 
+import { PaginatedResponse, PaginationDto } from './interfaces/pagination.dto';
 
 @Controller('signals')
 export class SignalsController {
@@ -12,7 +12,7 @@ export class SignalsController {
   ) {}
 
   @Get()
-  async findAll(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<TradingSignal>> {
+  async findAll(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<Signal>> {
     // Get paginated signals from the service
     const { data, total } = await this.signalsService.findAll(
       paginationDto.page,
@@ -30,7 +30,7 @@ export class SignalsController {
   }
 
   @Get('mock')
-  async getMockSignals(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<TradingSignal>> {
+  async getMockSignals(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<Signal>> {
     // Get paginated mock signals from the service
     const { data, total } = await this.mockSignalsService.generateMockSignals(
       paginationDto.page,
@@ -51,7 +51,7 @@ export class SignalsController {
   }
 
   @Get('/:id')
-  async getOneSignalById(@Param("id") id: string): Promise<TradingSignal> {
+  async getOneSignalById(@Param("id") id: number): Promise<Signal> {
     return await this.mockSignalsService.getMockSignalById(id);
   }
 }
