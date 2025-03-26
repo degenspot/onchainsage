@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { RedisService } from '../redis/redis.service';
+import { SignalGateway } from 'src/gateways/signal.gateway';
 
 @Injectable()
 export class UserService {
@@ -10,6 +11,7 @@ export class UserService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private redisService: RedisService,
+    private signalGateway: SignalGateway,
   ) {}
 
   async findByWalletAddress(walletAddress: string): Promise<User> {
@@ -47,29 +49,39 @@ export class UserService {
   async getCachedPreferences(userId: string): Promise<Record<string, any>> {
     const cacheKey = `user:${userId}:preferences`;
     const cachedData = await this.redisService.getAsync(cacheKey);
-    
+
     if (!cachedData) {
       const preferences = await this.getPreferences(userId);
       await this.redisService.setAsync(cacheKey, JSON.stringify(preferences));
       return preferences;
     }
-    
+
     return JSON.parse(cachedData);
   }
 
-  async updatePreferences(userId: string, preferences: Record<string, any>): Promise<User> {
+  async updatePreferences(
+    userId: string,
+    preferences: Record<string, any>,
+  ): Promise<User> {
     const user = await this.findOne(userId);
     if (!user) {
       throw new Error('User not found');
     }
 
+    // Update preferences
     user.preferences = { ...user.preferences, ...preferences };
     const updatedUser = await this.userRepository.save(user);
-    
+
     // Update cache
     const cacheKey = `user:${userId}:preferences`;
-    await this.redisService.setAsync(cacheKey, JSON.stringify(updatedUser.preferences));
-    
+    await this.redisService.setAsync(
+      cacheKey,
+      JSON.stringify(updatedUser.preferences),
+    );
+
+    // Emit the updated preferences to the WebSocket clients
+    this.signalGateway.handlePreferences(null, updatedUser.preferences); // Emit to all connected clients
+
     return updatedUser;
   }
 

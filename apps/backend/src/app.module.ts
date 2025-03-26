@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -11,8 +11,9 @@ import { StarknetModule } from './starknet/starknet.module';
 import databaseConfig from './config/database.config';
 import { RedisModule } from './redis/redis.module';
 import { RedisController } from './redis/redis.controller';
-// import { SignalGateway } from './gateways/signal.gateway';
 import { UserModule } from './users/user.module';
+import { SignalGatewayModule } from './signal-gateway/signal-gateway.module';
+import { LoggerMiddleware } from './middleware/logger.middleware'; 
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -27,7 +28,6 @@ console.log(ENV);
       envFilePath: ENV ? '.env' : `.env.${ENV.trim()}`,
       load: [appConfig, databaseConfig],
     }),
-    // TypeORM configuration
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -46,11 +46,13 @@ console.log(ENV);
     StarknetModule,
     RedisModule,
     UserModule,
+    SignalGatewayModule,
   ],
-  controllers: [
-    AppController, 
-    RedisController
-  ],
+  controllers: [AppController, RedisController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*'); 
+  }
+}

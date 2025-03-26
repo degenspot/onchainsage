@@ -18,4 +18,20 @@ export class Signal {
 
   @Column({ type: 'varchar', length: 50 })
   status: string;
+
+  @Column({ type: 'varchar', length: 50 })
+  confidence_level: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  historical_performance: {
+    success_rate: number;
+    total_signals: number;
+    successful_signals: number;
+    failed_signals: number;
+    average_return: number;
+    last_updated: Date;
+  };
+
+  @Column({ type: 'boolean', default: false })
+  is_verified: boolean;
 }

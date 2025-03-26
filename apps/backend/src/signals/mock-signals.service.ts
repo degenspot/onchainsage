@@ -38,12 +38,10 @@ export class MockSignalService {
     }
     return signal;
   }
-
   getFilteredSignals(category?: string, token_pair?: string): TradingSignal[] {
     return this.signals.filter(signal => {
       return (!category || signal.category === category) && 
              (!token_pair || signal.token_pair === token_pair);
     });
   }
-  
 }

@@ -28,3 +28,4 @@ apps/backend/.DS_Store
 node_modules
 
 .turbo
+.qodo
