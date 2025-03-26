@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { SignalsService } from './signals.service';
 import { MockSignalService } from './mock-signals.service';
 import { TradingSignal } from 'src/interfaces/trading-signal.interface';
@@ -16,8 +16,11 @@ export class SignalsController {
   }
 
   @Get('mock')
-  getMockSignals(): TradingSignal[] {
-    return this.mockSignalsService.generateMockSignals();
+  getMockSignals(
+    @Query('category') category?: string, 
+    @Query('token_pair') token_pair?: string
+  ): TradingSignal[] {
+    return this.mockSignalsService.getFilteredSignals(category, token_pair);
   }
 
   @Get('/:id') 
@@ -25,5 +28,3 @@ export class SignalsController {
     return this.mockSignalsService.getMockSignalById(id)
   }
 }
-
-
