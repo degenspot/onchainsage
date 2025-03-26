@@ -2,6 +2,8 @@ import { Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { SignalsService } from './signals.service'; 
 import { MockSignalService } from './mock-signals.service'; 
 import { TradingSignal } from '../interfaces/trading-signal.interface';
+import { PaginatedResponse, PaginationDto } from '../interfaces/pagination.dto';
+
 @Controller('signals')
 export class SignalsController {
   constructor(
@@ -10,28 +12,46 @@ export class SignalsController {
   ) {}
 
   @Get()
-  findAll() {
-    return this.signalsService.findAll();
+  async findAll(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<TradingSignal>> {
+    // Get paginated signals from the service
+    const { data, total } = await this.signalsService.findAll(
+      paginationDto.page,
+      paginationDto.limit
+    );
+    
+    return {
+      data,
+      metadata: {
+        total,
+        page: paginationDto.page,
+        limit: paginationDto.limit
+      }
+    };
   }
 
   @Get('mock')
-  getMockSignals(
-    @Query('category') category?: string, 
-    @Query('token_pair') token_pair?: string
-  ): TradingSignal[] {
-    return this.mockSignalsService.getFilteredSignals(category, token_pair);
-  getMockSignals(): TradingSignal[] {
-    // Get mock signals from the service
-    const mockSignals = this.mockSignalsService.generateMockSignals();
+  async getMockSignals(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<TradingSignal>> {
+    // Get paginated mock signals from the service
+    const { data, total } = await this.mockSignalsService.generateMockSignals(
+      paginationDto.page,
+      paginationDto.limit
+    );
     
     // Invalidate the cache since new mock signals were generated
-    this.signalsService.invalidateCache();
+    await this.signalsService.invalidateCache();
     
-    return mockSignals;
+    return {
+      data,
+      metadata: {
+        total,
+        page: paginationDto.page,
+        limit: paginationDto.limit
+      }
+    };
   }
 
   @Get('/:id')
-  getOneSignalById(@Param("id") id: string) {
-    return this.mockSignalsService.getMockSignalById(id);
+  async getOneSignalById(@Param("id") id: string): Promise<TradingSignal> {
+    return await this.mockSignalsService.getMockSignalById(id);
   }
 }
