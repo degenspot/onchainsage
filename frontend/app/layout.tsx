@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <StarknetProvider>
           <div className="min-h-screen">
-            <Navbar />
+            {/* <Navbar /> */}
             {children}
           </div>
         </StarknetProvider>
