@@ -57,7 +57,7 @@ export default function Dashboard() {
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-full overflow-hidden bg-background">
+      <div className="flex h-screen w-full overflow-hidden bg-background dark">
         <Sidebar className="border-r">
           <SidebarHeader>
             <div className="flex items-center gap-2 px-4 py-2">
