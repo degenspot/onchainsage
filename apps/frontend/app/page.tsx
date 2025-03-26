@@ -4,6 +4,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { SplineSceneWithImage } from "@/components/SplineSceneWithImage";
 import NeuButton from "@/components/NeuButton";
+import { CTASection } from "@/components/CTASection";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -79,10 +81,13 @@ export default function Home() {
                 objectName="Plane" // Replace with the actual object name from your Spline scene
                 useOwlImage={true} // Use the owl image instead of a custom image URL
               />
+             
             </div>
           </div>
         </div>
       </div>
+      <CTASection />
+      <Footer />
     </div>
   );
 }
