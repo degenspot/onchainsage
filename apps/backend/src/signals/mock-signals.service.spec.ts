@@ -1,5 +1,5 @@
 import { MockSignalService } from './mock-signals.service';
-import { TradingSignal } from 'src/interfaces/trading-signal.interface';
+import { TradingSignal } from 'src/signals/interfaces/trading-signal.interface';
 
 describe('MockSignalService', () => {
   let service: MockSignalService;

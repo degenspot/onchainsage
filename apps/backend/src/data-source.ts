@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm';
-import { Signal } from './entities/signal.entity';
+import { Signal } from './signals/entities/signal.entity';
 import * as dotenv from 'dotenv';
 
 dotenv.config();

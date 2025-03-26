@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Signal } from '../entities/signal.entity';
+import { Signal } from './entities/signal.entity';
 import { RedisService } from '../redis/redis.service'; // Import existing Redis service
 
 @Injectable()
