@@ -5,6 +5,8 @@ import { SplineSceneWithImage } from "@/components/SplineSceneWithImage"
 import NeuButton from "@/components/NeuButton"
 import PricingSection from "@/components/pricing/pricing-section"
 import { useEffect } from "react"
+import { CTASection } from "@/components/CTASection"
+import { Footer } from "@/components/Footer"
 
 export default function Home() {
   // Function to handle smooth scrolling
@@ -108,6 +110,8 @@ export default function Home() {
 
       {/* Pricing Section */}
       <PricingSection />
+      <CTASection/>
+      <Footer/>
     </div>
   )
 }
