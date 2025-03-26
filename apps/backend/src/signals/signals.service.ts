@@ -16,24 +16,31 @@ export class SignalsService {
     private readonly redisService: RedisService, // Inject Redis service
   ) {}
 
-  // Fetches 100 signals ordered by timestamp (DESC)
-  async findAll(): Promise<Signal[]> {
+  // Fetches signals ordered by timestamp (DESC) with pagination
+  async findAll(page: number = 1, limit: number = 10): Promise<{ data: Signal[], total: number }> {
     // Try to get signals from cache first
     const cachedSignals = await this.getCachedSignals();
     if (cachedSignals) {
-      return cachedSignals;
+      return {
+        data: cachedSignals.slice((page - 1) * limit, page * limit),
+        total: cachedSignals.length,
+      };
     }
 
     // If not in cache, get from repository
-    const signals = await this.signalRepository.find({
-      take: 100,
+    const [signals, total] = await this.signalRepository.findAndCount({
+      take: limit,
+      skip: (page - 1) * limit,
       order: { timestamp: 'DESC' },
     });
 
     // Cache the signals
     await this.cacheSignals(signals);
     
-    return signals;
+    return {
+      data: signals,
+      total: total,
+    };
   }
 
   // Get signals from Redis cache

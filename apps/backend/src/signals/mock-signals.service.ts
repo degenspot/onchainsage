@@ -7,14 +7,11 @@ export class MockSignalService {
   private readonly categories = ["high-confidence", "medium-confidence", "low-confidence"];
   private readonly recommendations = ["buy", "sell", "hold"];
 
-  private signals: TradingSignal[];
+  private signals: TradingSignal[] = [];
 
   constructor() {
-    this.signals = this.generateMockSignals();
-  }
-
-  generateMockSignals(): TradingSignal[] {
-    return Array.from({ length: 5 }, (_, i) => this.generateSingleSignal());
+    // Generate a larger dataset of 50 signals for testing pagination
+    this.signals = Array.from({ length: 50 }, () => this.generateSingleSignal());
   }
 
   generateSingleSignal(): TradingSignal {
@@ -31,17 +28,21 @@ export class MockSignalService {
     };
   }
 
+  generateMockSignals(page: number = 1, limit: number = 10): { data: TradingSignal[], total: number } {
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    
+    return {
+      data: this.signals.slice(startIndex, endIndex),
+      total: this.signals.length
+    };
+  }
+
   getMockSignalById(id: string): TradingSignal {
     const signal = this.signals.find((signal) => signal.signal_id === id);
     if (!signal) {
       throw new NotFoundException(`Signal with ID ${id} not found`);
     }
     return signal;
-  }
-  getFilteredSignals(category?: string, token_pair?: string): TradingSignal[] {
-    return this.signals.filter(signal => {
-      return (!category || signal.category === category) && 
-             (!token_pair || signal.token_pair === token_pair);
-    });
   }
 }
