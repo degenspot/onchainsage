@@ -51,6 +51,8 @@
     "socket.io": "^4.8.1",
     "starknet": "^6.23.1",
     "typeorm": "^0.3.21",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
     "ws": "^8.18.1"
   },
   "devDependencies": {
