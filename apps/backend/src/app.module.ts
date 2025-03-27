@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -14,6 +14,7 @@ import { RedisController } from './redis/redis.controller';
 // import { SignalGateway } from './gateways/signal.gateway';
 import { UserModule } from './users/user.module';
 import { SignalGatewayModule } from './signal-gateway/signal-gateway.module';
+import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -49,10 +50,11 @@ console.log(ENV);
     UserModule,
     SignalGatewayModule,
   ],
-  controllers: [
-    AppController, 
-    RedisController
-  ],
+  controllers: [AppController, RedisController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RateLimitMiddleware).forRoutes('*'); // Apply to all routes
+  }
+}

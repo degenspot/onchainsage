@@ -1,37 +1,52 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { TradingSignal } from "src/interfaces/trading-signal.interface";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Signal  } from './entities/signal.entity';// Use Signal entity
 
 @Injectable()
 export class MockSignalService {
-  private readonly tokenPairs = ["BTC/USD", "ETH/USD", "SOL/USD", "AVAX/USD", "DOT/USD"];
-  private readonly categories = ["high-confidence", "medium-confidence", "low-confidence"];
-  private readonly recommendations = ["buy", "sell", "hold"];
+  private readonly signalTypes = ['price_movement', 'volume_spike', 'social_sentiment', 'technical_indicator'];
+  private readonly confidenceLevels = ['high', 'medium', 'low'];
+  private readonly statuses = ['successful', 'failed', 'pending'];
 
-  private signals: TradingSignal[];
+  private signals: Signal[] = [];
 
   constructor() {
-    this.signals = this.generateMockSignals();
+    // Generate a larger dataset of 50 signals for testing pagination
+    this.signals = Array.from({ length: 50 }, () => this.generateSingleSignal());
   }
 
-  generateMockSignals(): TradingSignal[] {
-    return Array.from({ length: 5 }, (_, i) => this.generateSingleSignal());
-  }
-
-  generateSingleSignal(): TradingSignal {
+  generateSingleSignal(): Signal {
+    const timestamp = new Date();
+    const status = this.statuses[Math.floor(Math.random() * this.statuses.length)];
     return {
-      signal_id: `sig_mock_${Date.now()}`, // Unique ID based on timestamp
-      timestamp: new Date().toISOString(),
-      token_pair: this.tokenPairs[Math.floor(Math.random() * this.tokenPairs.length)],
-      sentiment_score: Number.parseFloat((Math.random() * 2 - 1).toFixed(2)), // Range from -1 to 1
-      liquidity_usd: Math.floor(Math.random() * 5000000) + 500000, // Range from 500K to 5.5M
-      volume_usd: Math.floor(Math.random() * 1000000) + 100000, // Range from 100K to 1.1M
-      category: this.categories[Math.floor(Math.random() * this.categories.length)],
-      thesis: `This is a dynamically generated signal for real-time updates.`,
-      recommendation: this.recommendations[Math.floor(Math.random() * this.recommendations.length)],
+      signal_id: Date.now(), // Temporary ID (will be overridden by DB if saved)
+      timestamp, // Matches timestamptz
+      signal_type: this.signalTypes[Math.floor(Math.random() * this.signalTypes.length)],
+      value: Number.parseFloat((Math.random() * 10 - 5).toFixed(2)), // Matches numeric(10,2)
+      status,
+      confidence_level: this.confidenceLevels[Math.floor(Math.random() * this.confidenceLevels.length)],
+      historical_performance: {
+        success_rate: Math.random(),
+        total_signals: Math.floor(Math.random() * 100),
+        successful_signals: Math.floor(Math.random() * 50),
+        failed_signals: Math.floor(Math.random() * 50),
+        average_return: Number.parseFloat((Math.random() * 10 - 5).toFixed(2)),
+        last_updated: timestamp,
+      },
+      is_verified: Math.random() > 0.5, // Randomly true or false
     };
   }
 
-  getMockSignalById(id: string): TradingSignal {
+  generateMockSignals(page: number = 1, limit: number = 10): { data: Signal[]; total: number } {
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    
+    return {
+      data: this.signals.slice(startIndex, endIndex),
+      total: this.signals.length
+    };
+  }
+
+  getMockSignalById(id: number): Signal {
     const signal = this.signals.find((signal) => signal.signal_id === id);
     if (!signal) {
       throw new NotFoundException(`Signal with ID ${id} not found`);
