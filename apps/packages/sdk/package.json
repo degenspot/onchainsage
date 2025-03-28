@@ -1,0 +1,13 @@
+{
+    "name": "@yourproject/starknet-sdk",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "dependencies": {
+      "starknet": "^5.x.x"
+    },
+    "scripts": {
+      "build": "tsc",
+      "test": "jest"
+    }
+  }
