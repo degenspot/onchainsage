@@ -16,6 +16,7 @@ import { UserModule } from './users/user.module';
 import { SignalGatewayModule } from './signal-gateway/signal-gateway.module';
 import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 import { MailModule } from './mail/mail.module';
+import { NewsModule } from './news/news.module';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -51,7 +52,7 @@ console.log(ENV);
     UserModule,
     SignalGatewayModule,
     MailModule,
-    
+    NewsModule,
   ],
   controllers: [AppController, RedisController],
   providers: [AppService],

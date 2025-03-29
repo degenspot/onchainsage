@@ -5,5 +5,11 @@
   "scripts": {
     "backend": "cd apps/backend && npm run start:dev",
     "frontend": "cd apps/frontend && npm run dev"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.0.12",
+    "@nestjs/websockets": "^11.0.12",
+    "jest": "^29.7.0",
+    "ws": "^8.18.1"
   }
 }
