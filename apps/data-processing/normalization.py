@@ -1,6 +1,7 @@
 import pandas as pd
+from typing import List
 
-def min_max_normalize(df, columns):
+def min_max_normalize(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
     """
     Apply min-max normalization to specified columns of a DataFrame.
     
