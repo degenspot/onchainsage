@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -301,3 +302,26 @@
     0 3rem 3rem rgba(0, 0, 0, 0.3),
     0 1rem 1rem -0.6rem rgba(0, 0, 0, 0.8);
 }
+=======
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #ffffff;
+  --background: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground: #0a0a0a;
+    --background: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+>>>>>>> ec10c23ed1972727715baded9e973861b0de1483
