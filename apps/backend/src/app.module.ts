@@ -15,6 +15,7 @@ import { RedisController } from './redis/redis.controller';
 import { UserModule } from './users/user.module';
 import { SignalGatewayModule } from './signal-gateway/signal-gateway.module';
 import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
+import { MailModule } from './mail/mail.module';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -49,6 +50,8 @@ console.log(ENV);
     RedisModule,
     UserModule,
     SignalGatewayModule,
+    MailModule,
+    
   ],
   controllers: [AppController, RedisController],
   providers: [AppService],
