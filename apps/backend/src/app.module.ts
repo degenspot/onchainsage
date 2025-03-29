@@ -16,6 +16,7 @@ import { UserModule } from './users/user.module';
 import { SignalGatewayModule } from './signal-gateway/signal-gateway.module';
 import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 import { NewsModule } from './news/news.module';
+import { TasksModule } from './tasks/tasks.module';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -25,6 +26,7 @@ console.log(ENV);
     AuthModule,
     HealthModule,
     SignalsModule,
+    TasksModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ENV ? '.env' : `.env.${ENV.trim()}`,
