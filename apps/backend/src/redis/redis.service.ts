@@ -30,6 +30,14 @@ export class RedisService {
     await this.redis.del(key);
   }
 
+  async increment(key: string): Promise<number> {
+    return this.redis.incr(key);
+  }
+
+  async get(key: string): Promise<string | null> {
+    return this.redis.get(key);
+  }
+
   //fn to SET user preference
   public async setUserPreferences(userId: string, preferences: Preferences) {
     const key = `appName:user:${userId}:preferences`;

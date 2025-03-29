@@ -3,12 +3,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import * as Parser from 'rss-parser';
-
-interface NewsItem {
-  title: string;
-  link: string;
-  pubDate: string;
-}
+import { NewsItem } from './types';
 
 @Injectable()
 export class NewsService {
@@ -54,23 +49,31 @@ export class NewsService {
   }
 
   // Keep the existing methods for CRUD operations
-  create(createNewsDto: any) {
-    return 'This action adds a new news';
+  async create(createNewsDto: NewsItem): Promise<NewsItem> {
+    // TODO: Implement actual creation logic
+    return createNewsDto;
   }
 
-  findAll() {
-    return `This action returns all news`;
+  async findAll(): Promise<NewsItem[]> {
+    // For now, just return the latest news
+    return this.getLatestNews();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} news`;
+  async findOne(id: number): Promise<NewsItem> {
+    const allNews = await this.getLatestNews();
+    const news = allNews[id];
+    if (!news) {
+      throw new Error(`News #${id} not found`);
+    }
+    return news;
   }
 
-  update(id: number, updateNewsDto: any) {
-    return `This action updates a #${id} news`;
+  async update(id: number, updateNewsDto: NewsItem): Promise<NewsItem> {
+    // TODO: Implement actual update logic
+    return updateNewsDto;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} news`;
+  async remove(id: number): Promise<void> {
+    // TODO: Implement actual delete logic
   }
 }
