@@ -35,6 +35,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/platform-socket.io": "^10.4.15",
+    "@nestjs/throttler": "^5.1.2",
     "@nestjs/typeorm": "^11.0.0",
     "@nestjs/websockets": "^10.0.0",
     "backend": "^0.0.0",
