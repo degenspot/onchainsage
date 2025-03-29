@@ -1,22 +1,19 @@
-import { Injectable, type NestMiddleware } from "@nestjs/common"
-import type { Request, Response, NextFunction } from "express"
-import type { RedisService } from "../redis/redis.service"
+import { Controller, Get } from '@nestjs/common';
+import { RedisService } from '../redis/redis.service';
 
-@Injectable()
-export class StatsMiddleware implements NestMiddleware {
+@Controller('stats')
+export class StatsController {
   constructor(private readonly redisService: RedisService) {}
 
-  async use(req: Request, res: Response, next: NextFunction) {
-    const path = req.path
+  @Get('signals')
+  async getSignalsCount(): Promise<number> {
+    const count = await this.redisService.get('api:requests:signals');
+    return parseInt(count || '0', 10);
+  }
 
-    // Track specific endpoints
-    if (path.startsWith("/signals")) {
-      await this.redisService.increment("api:requests:signals")
-    } else if (path.startsWith("/users/preferences")) {
-      await this.redisService.increment("api:requests:preferences")
-    }
-
-    next()
+  @Get('preferences')
+  async getPreferencesCount(): Promise<number> {
+    const count = await this.redisService.get('api:requests:preferences');
+    return parseInt(count || '0', 10);
   }
 }
-
