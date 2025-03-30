@@ -1,0 +1,72 @@
+[
+    {
+        "id": "121BPh1iQCw58VDbQgZmNdnFFKnNB1La1cTGGfVzD7o2",
+        "mintA": "So11111111111111111111111111111111111111112",
+        "mintB": "CaM41daLtWdzzQkfzphhai6dHu8KiC9wy59edrsspump",
+        "tvl": 0.03546517591032413,
+        "price": 40797.133143823405
+    },
+    {
+        "id": "127DaJTpg4w2uH7WhewEgeBPLbMX6rs1oRrWMiSs3Cuy",
+        "mintA": "So11111111111111111111111111111111111111112",
+        "mintB": "GAyaSSjWbABVi5kRvCgFJ5icoDo3Rxn4MEvtYQvjT1K7",
+        "tvl": 8.46458337087014e-05,
+        "price": 199983.06203206666
+    },
+    {
+        "id": "128kASeG5236NxDHQJ1z8iLaQQsys3a1Fq2ejdbG6ChZ",
+        "mintA": "So11111111111111111111111111111111111111112",
+        "mintB": "GZT8cXcv2uCvFZFi8gGiryXrTXvLZ9RYkPjRuREypump",
+        "tvl": 38.14564492248354,
+        "price": 224018.6748030531
+    },
+    {
+        "id": "12BYvLJ9B7Xd6WfHZf9kBNVoZiMXcoURjbsnG6HiCRpB",
+        "mintA": "So11111111111111111111111111111111111111112",
+        "mintB": "4MvaiciJ5tn8ocGh1Q5zSpZ1yAycJqY3cWFWLToVJZq7",
+        "tvl": 0.015281578161948722,
+        "price": 32420998.05887419
+    },
+    {
+        "id": "12cHY4V5o4zZ8YL6xRp1EyzZdw61EgiELniBd4e6PW44",
+        "mintA": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "mintB": "J2KNFvkBhssxpQYZN1u9RMkz2Tuj59gyyi6CC2psQLU2",
+        "tvl": 0,
+        "price": 0.33
+    },
+    {
+        "id": "12DEJAmaxj58FYFAF6uAfP2v3256CCf1ZwAQLNvBP7EC",
+        "mintA": "So11111111111111111111111111111111111111112",
+        "mintB": "6eCoUpmkw9FrpvzxR2Rba922CsYho9bBwafEGCKNn3tm",
+        "tvl": 0.005509867782076905,
+        "price": 51583630.80826265
+    },
+    {
+        "id": "12dxDjzbiDWV9bhxZa1Jutnz4v7iitrJ661uq4PiSjK5",
+        "mintA": "6hqB2ooPNdopjMbYLJcLCqjviUmEC7xiD11vnriCCcrX",
+        "mintB": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "tvl": 5.574076,
+        "price": 0.15398412053771823
+    },
+    {
+        "id": "12hnyr9zstouGpBKLgYMBKRonV4RqMegPztGoRm8Fv99",
+        "mintA": "So11111111111111111111111111111111111111112",
+        "mintB": "3omE6uvekcdM716wFS4mUchgB9n11maAVyAh5raspump",
+        "tvl": 0,
+        "price": 714285.7142857143
+    },
+    {
+        "id": "12HYJWCuvsyej3T6yBZYHy5qauLfQgBX5wYXvdFmnDxX",
+        "mintA": "So11111111111111111111111111111111111111112",
+        "mintB": "2vSLQ4EEx51C71am6QkevJ3GJUK8SXSknfojNn6U16Ks",
+        "tvl": 4.744231941588442,
+        "price": 2362133744207347700
+    },
+    {
+        "id": "12jtgZmTM5iGfMxWMtQmJT7sqT7QPRmnHD5vZ3qZ358W",
+        "mintA": "X8ksb8unyA3c29mK9FQWtxtXqN1XfJAz7js5eYr7Rth",
+        "mintB": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "tvl": 1.8e-05,
+        "price": 0.4475272095296497
+    }
+]
