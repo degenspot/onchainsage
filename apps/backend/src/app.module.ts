@@ -15,6 +15,7 @@ import { RedisController } from './redis/redis.controller';
 import { UserModule } from './users/user.module';
 import { SignalGatewayModule } from './signal-gateway/signal-gateway.module';
 import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
+import { MailModule } from './mail/mail.module';
 import { NewsModule } from './news/news.module';
 import { TasksModule } from './tasks/tasks.module';
 
@@ -52,6 +53,7 @@ console.log(ENV);
     RedisModule,
     UserModule,
     SignalGatewayModule,
+    MailModule,
     NewsModule,
   ],
   controllers: [AppController, RedisController],

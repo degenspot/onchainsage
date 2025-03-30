@@ -43,4 +43,8 @@ export class User {
 
   @Column({ nullable: true })
   signature: string;
+
+  
+  @Column({ nullable: true })
+  email?: string;
 }
