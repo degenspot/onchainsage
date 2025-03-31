@@ -6,14 +6,6 @@
 [![codecov](https://codecov.io/gh/degenspot/onchainsage/branch/main/graph/badge.svg)](https://codecov.io/gh/degenspot/onchainsage)
 
 
-## Services Status
-
-| Service | Status |
-|---------|--------|
-| Backend | [![Backend Status](https://github.com/degenspot/onchainsage/actions/workflows/unified-ci-cd.yml/badge.svg?branch=main&event=push&job=backend-test)](https://github.com/degenspot/onchainsage/actions/workflows/unified-ci-cd.yml) |
-| Frontend | [![Frontend Status](https://github.com/degenspot/onchainsage/actions/workflows/unified-ci-cd.yml/badge.svg?branch=main&event=push&job=frontend-test)](https://github.com/degenspot/onchainsage/actions/workflows/unified-ci-cd.yml) |
-| Blockchain | [![Blockchain Status](https://github.com/degenspot/onchainsage/actions/workflows/unified-ci-cd.yml/badge.svg?branch=main&event=push&job=blockchain-test)](https://github.com/degenspot/onchainsage/actions/workflows/unified-ci-cd.yml) |
-| Data Processing | [![Data Processing Status](https://github.com/degenspot/onchainsage/actions/workflows/unified-ci-cd.yml/badge.svg?branch=main&event=push&job=data-processing-test)](https://github.com/degenspot/onchainsage/actions/workflows/unified-ci-cd.yml) |
 
 
 **"See the Unseen, Trade the Future."**
