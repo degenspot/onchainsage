@@ -8,6 +8,11 @@ def analyze_sentiments(tweets):
         scores[tweet] = vs['compound']
     return scores
 
+def analyze_tweet(tweet):
+    analyzer = SentimentIntensityAnalyzer()
+    vs = analyzer.polarity_scores(tweet)
+    return vs['compound']
+
 if __name__ == "__main__":
     sample_tweets = [
         "Bitcoin is great",
