@@ -7,7 +7,7 @@
 
 **"See the Unseen, Trade the Future."**
 
-OnChain Sage is an AI-driven, decentralized trading assistant that combines real-time social sentiment analysis with on-chain market data to identify high-potential crypto tickers. By integrating data from Twitter, Raydium, Dex Screener, and more, OnChain Sage empowers crypto traders with actionable insights to make informed decisions.
+OnChain Sage is an AI-driven, fully decentralized trading assistant that harnesses real-time social sentiment analysis and on-chain market data to identify high-potential crypto opportunities. Built on Starknet with Dojo, it integrates data from X, Raydium, and Dex Screener, empowering traders with actionable signals and a competitive community forum. This open-source platform prioritizes transparency, scalability, and community governance.
 
 ## Table of Contents
 
@@ -27,8 +27,10 @@ OnChain Sage leverages cutting-edge AI and blockchain technologies to provide a 
 ## Core Concept
 
 - **Data-Driven Trading:** Integrates social sentiment analysis from Twitter with on-chain analytics from platforms like Raydium and Dex Screener.
+- **Onchain Governance:** Uses Dojo smart contracts to manage user profiles, trading calls, badges, and clan rankings, ensuring decentralization.
 - **Decentralized Payment Model:** Utilizes the Starknet network and STRK tokens to manage gas fees and premium access.
 - **Open-Source Collaboration:** Encourages a vibrant contributor community with a modular monorepo structure for easy maintenance and scalability.
+- **Community-Driven:** Encourages degens to compete and collaborate via forums, with profitability-based hierarchies governed by community votes.
 
 ## Key Features
 
@@ -38,6 +40,10 @@ OnChain Sage leverages cutting-edge AI and blockchain technologies to provide a 
 - **User-Friendly Dashboard:** A responsive Next.js-based interface with dynamic visualizations (Chart.js/D3.js).
 - **Secure Blockchain Integration:** Smart contracts written in Cairo on Starknet manage STRK token transactions and premium access.
 - **Modular and Open-Source:** Encourages community contributions with a well-defined monorepo structure.
+- **Decentralized Forum & Clans:** A general forum and clan-specific forums where users post calls, vote, and earn badges based on profitability.
+- **Performance-Based Hierarchy:** Awards/removes badges (e.g., "Profit Pro") via onchain voting and metrics, with limits for non-badge holders.
+- **Responsive Dashboard:** A Next.js-based interface with Chart.js/D3.js visualizations, integrated with Starknet data.
+- **Secure Onchain Transactions:** Dojo smart contracts handle STRK token payments, premium access, and forum interactions.
 
 ## Architecture & Tech Stack
 
@@ -59,6 +65,7 @@ OnChain Sage leverages cutting-edge AI and blockchain technologies to provide a 
 ### **Blockchain Integration**
 
 - **Network:** Starknet
+- **Framework:** Dojo (Cairo-based smart contracts)
 - **Smart Contracts:** Written in Cairo
 - **Token Handling:** STRK for gas fees and premium services
 
