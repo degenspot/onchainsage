@@ -1,0 +1,75 @@
+api:
+  x:
+    bearer_token: "${X_BEARER_TOKEN}"
+    endpoint: "https://api.x.com/2/tweets/search/recent"
+    query: '("crypto news" OR "crypto" OR tokens) lang:en -is:retweet'
+    max_results: 100
+  
+  raydium:
+    endpoint: "https://api.raydium.io/v2"
+    rate_limit: 10  # requests per second
+    retry_attempts: 3
+    
+  dex_screener:
+    endpoint: "https://api.dexscreener.com/latest"
+    rate_limit: 5  # requests per second
+    retry_attempts: 3
+
+data:
+  forum_calls_path: "data/forum_calls.json"
+  cache_ttl: 86400  # 24 hours in seconds
+
+sentiment:
+  backend: "vader"  # Options: vader, tensorflow, keyword
+  weights:
+    text: 0.4
+    likes: 0.2
+    retweets: 0.2
+    comments: 0.2
+  thresholds:
+    strong_positive: 0.6
+    positive: 0.2
+    neutral: -0.2
+    negative: -0.6
+    strong_negative: -1.0
+
+signal:
+  weights:
+    sentiment: 0.3
+    market_metrics: 0.4
+    forum_profitability: 0.3
+  confidence_thresholds:
+    high: 0.8
+    medium: 0.6
+    low: 0.4
+  categories:
+    strong_buy: 0.6
+    buy: 0.2
+    neutral: -0.2
+    sell: -0.6
+    strong_sell: -1.0
+
+storage:
+  postgres:
+    host: "${POSTGRES_HOST}"
+    port: 5432
+    database: "onchainsage"
+    user: "${POSTGRES_USER}"
+    password: "${POSTGRES_PASSWORD}"
+    
+  redis:
+    host: "${REDIS_HOST}"
+    port: 6379
+    password: "${REDIS_PASSWORD}"
+    db: 0
+
+monitoring:
+  prometheus:
+    port: 9090
+  sentry:
+    dsn: "${SENTRY_DSN}"
+    environment: "production"
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s" 
