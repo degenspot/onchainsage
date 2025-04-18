@@ -1,149 +1,95 @@
-# onchainsage
+#!/bin/zsh
 
+# Script: dump.zsh
+# Purpose: Recursively traverse a directory and dump source code file contents into a single text file
 
+# Define the output file
+OUTPUT_FILE="codebase_dump.txt"
 
-## Services Status
+# List of source code file extensions to include
+typeset -A SOURCE_EXTENSIONS=(
+    py 1 js 1 ts 1 java 1 c 1 cpp 1 sh 1 zsh 1 html 1 css 1
+    rb 1 go 1 rs 1 php 1 swift 1 kt 1 scala 1 # Add more as needed
+)
 
+# Directories and patterns to skip (hidden dirs, build dirs, etc.)
+SKIP_DIRS=("(.git|.svn|node_modules|dist|build|__pycache__)")
 
-**"See the Unseen, Trade the Future."**
+# Check if a directory argument is provided, default to current directory
+TARGET_DIR=${1:-.}
 
-OnChain Sage is an AI-driven, fully decentralized trading assistant that harnesses real-time social sentiment analysis and on-chain market data to identify high-potential crypto opportunities. Built on Starknet with Dojo, it integrates data from X, Raydium, and Dex Screener, empowering traders with actionable signals and a competitive community forum. This open-source platform prioritizes transparency, scalability, and community governance.
+# Ensure the target directory exists and is accessible
+if [[ ! -d "$TARGET_DIR" ]]; then
+    echo "Error: '$TARGET_DIR' is not a valid directory" >&2
+    exit 1
+elif [[ ! -r "$TARGET_DIR" ]]; then
+    echo "Error: No read permission for '$TARGET_DIR'" >&2
+    exit 1
+fi
 
-## Table of Contents
+# Resolve the absolute path of the target directory for relative path calculation
+TARGET_DIR=$(realpath "$TARGET_DIR") || {
+    echo "Error: Failed to resolve path for '$TARGET_DIR'" >&2
+    exit 1
+}
 
-- [Overview](#overview)
-- [Core Concept](#core-concept)
-- [Key Features](#key-features)
-- [Architecture & Tech Stack](#architecture--tech-stack)
-- [Getting Started](#getting-started)
-- [Development](#development)
-- [Contributing](#contributing)
-- [License](#license)
+# Initialize or clear the output file
+: > "$OUTPUT_FILE" || {
+    echo "Error: Cannot write to '$OUTPUT_FILE'" >&2
+    exit 1
+}
 
-## Overview
+# Function to check if a file is a source code file based on extension
+is_source_file() {
+    local filename="$1"
+    local ext="${filename##*.}"
+    [[ -n "${SOURCE_EXTENSIONS[$ext]}" ]]
+}
 
-OnChain Sage leverages cutting-edge AI and blockchain technologies to provide a comprehensive analysis of crypto trends. It monitors both social media sentiment and on-chain metrics to deliver reliable trading signals. The platform is built as an open-source, modular system, inviting community contributions while ensuring robust, scalable performance.
+# Function to process each file
+process_file() {
+    local filepath="$1"
+    local relpath="${filepath#$TARGET_DIR/}"
 
-## Core Concept
+    # Skip hidden files or files in skipped directories
+    if [[ "$relpath" =~ "^\." || "$relpath" =~ $SKIP_DIRS ]]; then
+        return
+    fi
 
-- **Data-Driven Trading:** Integrates social sentiment analysis from Twitter with on-chain analytics from platforms like Raydium and Dex Screener.
-- **Onchain Governance:** Uses Dojo smart contracts to manage user profiles, trading calls, badges, and clan rankings, ensuring decentralization.
-- **Decentralized Payment Model:** Utilizes the Starknet network and STRK tokens to manage gas fees and premium access.
-- **Open-Source Collaboration:** Encourages a vibrant contributor community with a modular monorepo structure for easy maintenance and scalability.
-- **Community-Driven:** Encourages degens to compete and collaborate via forums, with profitability-based hierarchies governed by community votes.
+    # Check if it's a regular file and a source file
+    if [[ -f "$filepath" && ! -L "$filepath" ]] && is_source_file "$filepath"; then
+        # Check if the file is binary (using file command for portability)
+        if file "$filepath" | grep -q "text"; then
+            {
+                echo "# File: $relpath"
+                echo "----------------------------------------"
+                cat "$filepath"
+                echo -e "\n----------------------------------------\n"
+            } >> "$OUTPUT_FILE" 2>/dev/null || {
+                echo "Warning: Could not read '$filepath'" >&2
+            }
+        fi
+    fi
+}
 
-## Key Features
+# Main traversal logic using Zsh globbing
+# Enable extended globbing for pattern matching
+setopt EXTENDED_GLOB
 
-- **Real-Time Social Sentiment Analysis:** Uses NLP and ML models to analyze Twitter data and detect emerging trends.
-- **On-Chain Data Insights:** Monitors liquidity, volume, and whale activity via on-chain APIs.
-- **Actionable Trading Signals:** Provides categorized signals (high-confidence, emerging, risky) to guide trading decisions.
-- **User-Friendly Dashboard:** A responsive Next.js-based interface with dynamic visualizations (Chart.js/D3.js).
-- **Secure Blockchain Integration:** Smart contracts written in Cairo on Starknet manage STRK token transactions and premium access.
-- **Modular and Open-Source:** Encourages community contributions with a well-defined monorepo structure.
-- **Decentralized Forum & Clans:** A general forum and clan-specific forums where users post calls, vote, and earn badges based on profitability.
-- **Performance-Based Hierarchy:** Awards/removes badges (e.g., "Profit Pro") via onchain voting and metrics, with limits for non-badge holders.
-- **Responsive Dashboard:** A Next.js-based interface with Chart.js/D3.js visualizations, integrated with Starknet data.
-- **Secure Onchain Transactions:** Dojo smart contracts handle STRK token payments, premium access, and forum interactions.
+# Recursively find all files, excluding skipped directories
+for filepath in "$TARGET_DIR"/**/*(.); do
+    process_file "$filepath"
+done
 
-## Architecture & Tech Stack
+# Check if the output file was written successfully
+if [[ -s "$OUTPUT_FILE" ]]; then
+    echo "Source code dump completed successfully. Output written to '$OUTPUT_FILE'"
+else
+    echo "Warning: No source files found or output file is empty" >&2
+    [[ -f "$OUTPUT_FILE" ]] || {
+        echo "Error: Failed to create '$OUTPUT_FILE'" >&2
+        exit 1
+    }
+fi
 
-### **Frontend**
-
-- **Framework:** Next.js, React
-- **Styling:** Tailwind CSS
-- **Visualizations:** Chart.js, D3.js
-
-### **Backend**
-
-- **Runtime:** Node.js with NestJs
-- **Language:** TypeScript
-
-### **Data Processing**
-
-- **Languages:** Python (TensorFlow, PyTorch, OpenAI API)
-
-### **Blockchain Integration**
-
-- **Network:** Starknet
-- **Framework:** Dojo (Cairo-based smart contracts)
-- **Smart Contracts:** Written in Cairo
-- **Token Handling:** STRK for gas fees and premium services
-
-### **Database & Infrastructure**
-
-- **Database:** PostgreSQL/MongoDB, Redis for caching
-- **Containerization & Orchestration:** Docker, Kubernetes
-- **Deployment:** AWS/GCP or similar cloud platforms
-
-### **API Integrations**
-
-- **Social Data:** Twitter API
-- **On-Chain Analytics:** Raydium and Dex Screener APIs
-
-## Getting Started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v14+)
-- [npm](https://www.npmjs.com/)
-- [Python 3.8+](https://www.python.org/downloads/) (if working on data processing services)
-- Docker (for containerized development)
-- Access to a Starknet wallet (e.g., MetaMask or Argent)
-
-### Installation
-
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/degenspot/onchainsage.git
-   cd onchainsage
-   Install Dependencies
-   ```
-
-Using npm (for workspaces):
-
-npm install
-Environment Configuration
-
-Create environment configuration files for each app (e.g., .env in apps/frontend, apps/backend, etc.) based on the examples provided in the docs/ folder.
-Run the Applications
-
-Frontend:
-
-"npm run dev --workspace=apps/frontend"
-
-
-Backend:
-"npm run start:dev --workspace=apps/backend",
-
-Data Processing & Blockchain Services: Follow the README files in each respective directory.
-Development
-This project follows a monorepo structure managed via Turborepo or Nx. Each component is developed in its own folder under apps/ and shared utilities are stored under packages/.
-
-Folder Structure:
-
-```onchainsage/
-├── apps/
-│   ├── frontend/
-│   ├── backend/
-│   ├── blockchain/
-│   └── data-processing/
-├── packages/
-│   ├── ui/
-│   ├── sdk/
-│   ├── common/
-│   └── integrations/
-├── docs/
-├── infrastructure/
-└── .github/
-
-
-**Contributing**
-We welcome contributions from the community! Please see our CONTRIBUTING.md for details on our code of conduct, branching strategy, and how to submit pull requests.
-
-License
-MIT License
-
-For any questions or feedback, please open an issue or reach out to the maintainers.
-
-
-```
+exit 0
