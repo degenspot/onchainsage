@@ -19,8 +19,8 @@ import { MailModule } from './mail/mail.module';
 import { NewsModule } from './news/news.module';
 import { TasksModule } from './tasks/tasks.module';
 
-const ENV = process.env.NODE_ENV;
-console.log(ENV);
+const ENV = process.env.NODE_ENV || 'development';
+console.log('Current environment:', ENV);
 
 @Module({
   imports: [
@@ -30,7 +30,7 @@ console.log(ENV);
     TasksModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ENV ? '.env' : `.env.${ENV.trim()}`,
+      envFilePath: [`.env.${ENV}`, '.env'],
       load: [appConfig, databaseConfig],
     }),
     // TypeORM configuration
