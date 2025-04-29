@@ -18,6 +18,7 @@ import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 import { MailModule } from './mail/mail.module';
 import { NewsModule } from './news/news.module';
 import { TasksModule } from './tasks/tasks.module';
+import { ReputationModule } from './reputation/reputation.module';
 
 const ENV = process.env.NODE_ENV;
 console.log(ENV);
@@ -55,6 +56,7 @@ console.log(ENV);
     SignalGatewayModule,
     MailModule,
     NewsModule,
+    ReputationModule,
   ],
   controllers: [AppController, RedisController],
   providers: [AppService],
