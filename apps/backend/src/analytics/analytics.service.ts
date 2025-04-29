@@ -5,7 +5,7 @@ import { Cron, CronExpression } from "@nestjs/schedule"
 import { SmartContractEvent, EventType } from "./entities/smart-contract-event.entity"
 import { DailyAnalytics } from "./entities/daily-analytics.entity"
 import { AnalyticsSummary } from "./entities/analytics-summary.entity"
-import { ethers } from "ethers"
+import { BigNumber } from "@ethersproject/bignumber"
 
 @Injectable()
 export class AnalyticsService {
@@ -144,7 +144,7 @@ export class AnalyticsService {
         },
       })
 
-      let amountStaked = ethers.BigNumber.from(0)
+      let amountStaked = BigNumber.from(0)
       for (const event of stakedEvents) {
         amountStaked = amountStaked.add(event.data.amount || 0)
       }
@@ -158,7 +158,7 @@ export class AnalyticsService {
         },
       })
 
-      let amountUnstaked = ethers.BigNumber.from(0)
+      let amountUnstaked = BigNumber.from(0)
       for (const event of unstakedEvents) {
         amountUnstaked = amountUnstaked.add(event.data.amount || 0)
       }
@@ -220,7 +220,7 @@ export class AnalyticsService {
         where: { eventType: EventType.UNSTAKE },
       })
 
-      let totalStaked = ethers.BigNumber.from(0)
+      let totalStaked = BigNumber.from(0)
 
       for (const event of stakedEvents) {
         totalStaked = totalStaked.add(event.data.amount || 0)
