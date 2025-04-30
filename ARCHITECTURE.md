@@ -70,15 +70,30 @@ The architecture is divided into five main layers, each with specific responsibi
 - **Network**: Starknet
 - **Language**: Cairo
 - **Token**: STRK
+- **Framework**: Dojo (v1.2.2)
 - **Responsibilities**:
-  - Smart contract management
-  - Token transactions
-  - Access control
-  - Gas fee handling
-- **Contributor Entry Points**:
-  - Develop new contract features
-  - Enhance Starknet integration
-  - Improve gas efficiency
+  - Smart contract management using Dojo’s world-based architecture.
+  - Models:
+    - Signal: Stores trading signal data (e.g., token, buy/sell, confidence score, timestamp).
+    - Stake: Tracks user stakes on signals (e.g., user address, signal ID, STRK amount).
+    - ValidationVote: Records community votes on signal credibility (e.g., user address, signal ID, vote, reputation weight).
+    - UserReputation: Manages user reputation scores based on validation accuracy.
+  - Systems:
+    - SignalManager: Registers new signals (register_signal), updates signal metadata, and emits events.
+    - StakingSystem: Allows users to stake STRK on signals (stake_signal), tracks stakes, and distributes rewards.
+    - ValidationSystem: Manages community validation (vote_signal), updates credibility scores, and adjusts user reputation.
+  - Token transactions for staking and rewards.
+  - Access control using Dojo’s permission system (grant_writer, revoke_writer).
+  - Gas fee handling with Starknet’s fee model.
+    
+New Features:
+Signal Staking: Users can stake STRK on trading signals to signal confidence, with rewards distributed based on signal accuracy.
+Community-Driven Signal Validation: Users can vote on signal credibility, with votes weighted by reputation, influencing signal rankings.
+Reputation System: Users earn reputation points based on the accuracy of their validations, impacting their voting weight.
+Contributor Entry Points:
+Develop new Dojo models and systems for staking, validation, and reputation.
+Enhance Starknet integration with additional contract features (e.g., reward distribution logic).
+Improve gas efficiency by optimizing storage and computation in Cairo.
 
 ### 5. Database and Infrastructure
 - **Database**: PostgreSQL, Redis

@@ -6,12 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  RegisterDto,
-  LoginDto,
-  AuthResponseDto,
-  StarknetAuthResponseDto,
-} from './dto/auth.dto';
+import { StarknetAuthResponseDto } from './dto/auth.dto';
 import { User } from '../users/entities/user.entity';
 import {
   verifyStarknetSignature,
@@ -26,29 +21,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  register(registerDto: RegisterDto): Promise<RegisterDto> {
-    return Promise.resolve({
-      username: registerDto.username,
-      email: registerDto.email,
-      password: registerDto.password,
-    });
-  }
-
-  login(loginDto: LoginDto): Promise<AuthResponseDto> {
-    return Promise.resolve({
-      accessToken: 'access-token',
-      user: {
-        id: 1,
-        username: loginDto.username,
-      },
-    });
-  }
-
-  // Add new methods for Starknet wallet authentication
   async generateChallenge(
     walletAddress: string,
   ): Promise<{ challenge: string }> {
-    // Find or create user
     let user = await this.usersRepository.findOne({ where: { walletAddress } });
 
     if (!user) {
@@ -57,10 +32,7 @@ export class AuthService {
       });
     }
 
-    // Generate a new challenge
     const challenge = generateChallenge();
-
-    // Update user with new challenge
     user.lastChallenge = challenge;
     user.lastChallengeAt = new Date();
     await this.usersRepository.save(user);
@@ -72,8 +44,12 @@ export class AuthService {
     walletAddress: string,
     signature: string[],
     message: string,
+    metadata?: {
+      discordUsername?: string;
+      telegramUsername?: string;
+      email?: string;
+    },
   ): Promise<StarknetAuthResponseDto> {
-    // Find user
     const user = await this.usersRepository.findOne({
       where: { walletAddress },
     });
@@ -93,6 +69,21 @@ export class AuthService {
       throw new UnauthorizedException('Invalid signature');
     }
 
+    // Update user metadata if provided
+    if (metadata) {
+      if (metadata.email) {
+        user.email = metadata.email;
+      }
+      
+      if (metadata.discordUsername || metadata.telegramUsername) {
+        user.metadata = {
+          ...user.metadata,
+          discordUsername: metadata.discordUsername || user.metadata?.discordUsername,
+          telegramUsername: metadata.telegramUsername || user.metadata?.telegramUsername,
+        };
+      }
+    }
+
     // Update user login info
     user.lastLoginAt = new Date();
     user.isVerified = true;
@@ -110,7 +101,19 @@ export class AuthService {
         id: user.id,
         walletAddress: user.walletAddress,
         username: user.username,
+        email: user.email,
+        discordId: user.discordId,
+        telegramId: user.telegramId,
+        metadata: user.metadata,
       },
     });
+  }
+
+  async validateToken(token: string): Promise<any> {
+    try {
+      return this.jwtService.verify(token);
+    } catch {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }

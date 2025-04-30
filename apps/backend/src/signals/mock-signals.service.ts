@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Signal  } from './entities/signal.entity';// Use Signal entity
+import { Signal, SignalStatus } from './entities/signal.entity';
 
 @Injectable()
 export class MockSignalService {
   private readonly signalTypes = ['price_movement', 'volume_spike', 'social_sentiment', 'technical_indicator'];
   private readonly confidenceLevels = ['high', 'medium', 'low'];
-  private readonly statuses = ['successful', 'failed', 'pending'];
+  private readonly statuses = [SignalStatus.SUCCESSFUL, SignalStatus.FAILED, SignalStatus.PENDING];
 
   private signals: Signal[] = [];
 
@@ -16,10 +16,11 @@ export class MockSignalService {
 
   generateSingleSignal(): Signal {
     const timestamp = new Date();
-    const status = this.statuses[Math.floor(Math.random() * this.statuses.length)];
+    const status: SignalStatus = this.statuses[Math.floor(Math.random() * this.statuses.length)];
     return {
       signal_id: Date.now(), // Temporary ID (will be overridden by DB if saved)
       timestamp, // Matches timestamptz
+      expiresAt: new Date(timestamp.getTime() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
       signal_type: this.signalTypes[Math.floor(Math.random() * this.signalTypes.length)],
       value: Number.parseFloat((Math.random() * 10 - 5).toFixed(2)), // Matches numeric(10,2)
       status,

@@ -10,9 +10,6 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
-  RegisterDto,
-  LoginDto,
-  AuthResponseDto,
   StarknetChallengeDto,
   StarknetVerifyDto,
   StarknetAuthResponseDto,
@@ -23,18 +20,6 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // Keep existing endpoints
-  @Post('register')
-  async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
-  }
-
-  @Post('login')
-  async login(@Body() loginDto: LoginDto): Promise<AuthResponseDto> {
-    return this.authService.login(loginDto);
-  }
-
-  // Add new endpoints for Starknet wallet authentication
   @Post('starknet/challenge')
   @HttpCode(HttpStatus.OK)
   async getChallenge(@Body() challengeDto: StarknetChallengeDto) {
@@ -50,6 +35,7 @@ export class AuthController {
       verifyDto.walletAddress,
       verifyDto.signature,
       verifyDto.message,
+      verifyDto.metadata,
     );
   }
 
