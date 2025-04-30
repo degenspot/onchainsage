@@ -140,4 +140,8 @@ export class NotificationQueueService implements OnModuleInit {
           await this.processNotification(notification);
         }
       }
-    } finally {'
+    } finally {
+      this.processing = false;
+    }
+  }
+}

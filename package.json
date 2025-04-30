@@ -9,6 +9,7 @@
   "devDependencies": {
     "@nestjs/testing": "^11.0.12",
     "@nestjs/websockets": "^11.0.12",
+    "@types/node": "^22.15.3",
     "jest": "^29.7.0",
     "ws": "^8.18.1"
   }

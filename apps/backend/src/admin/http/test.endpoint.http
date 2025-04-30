@@ -1,0 +1,15 @@
+### Ban a user admin/post/:id/ban
+ 
+POST http://localhost:3000/admin/post/1/ban
+Authorization: Bearer 
+Content-Type: application/json 
+{
+
+}
+
+
+### Shadowban a user by wallet address admin/user/walletAddress/shadowban
+
+PATCH http://localhost:3000/admin/user/oxgkdkjjjjnsjh/shadowban
+Authorization: Bearer 
+Content-Type: application/json
