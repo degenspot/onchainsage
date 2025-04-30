@@ -5,32 +5,9 @@ import {
   MaxLength,
   IsArray,
   IsOptional,
+  IsObject,
 } from 'class-validator';
-import { Exclude } from 'class-transformer';
 
-export class RegisterDto {
-  @IsString()
-  @MinLength(3)
-  @MaxLength(20)
-  username: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  @MinLength(8)
-  password: string;
-}
-
-export class LoginDto {
-  @IsString()
-  username: string;
-
-  @IsString()
-  password: string;
-}
-
-// Add new DTOs for Starknet wallet authentication
 export class StarknetChallengeDto {
   @IsString()
   walletAddress: string;
@@ -45,6 +22,14 @@ export class StarknetVerifyDto {
 
   @IsString()
   message: string;
+
+  @IsOptional()
+  @IsObject()
+  metadata?: {
+    discordUsername?: string;
+    telegramUsername?: string;
+    email?: string;
+  };
 }
 
 export class StarknetAuthResponseDto {
@@ -53,6 +38,13 @@ export class StarknetAuthResponseDto {
     id: string;
     walletAddress: string;
     username?: string;
+    email?: string;
+    discordId?: string;
+    telegramId?: string;
+    metadata?: {
+      discordUsername?: string;
+      telegramUsername?: string;
+    };
   };
 
   constructor(partial: Partial<StarknetAuthResponseDto>) {
@@ -62,14 +54,9 @@ export class StarknetAuthResponseDto {
 
 export class AuthResponseDto {
   accessToken: string;
-
-  @Exclude()
   user: {
-    id: number;
-    username: string;
+    id: string;
+    walletAddress: string;
+    username?: string;
   };
-
-  constructor(partial: Partial<AuthResponseDto>) {
-    Object.assign(this, partial);
-  }
 }
