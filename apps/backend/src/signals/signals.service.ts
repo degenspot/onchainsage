@@ -1,9 +1,9 @@
-
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Signal } from './entities/signal.entity';
-import { RedisService } from '../redis/redis.service'; // Import existing Redis service
+import { Repository, Not } from 'typeorm';
+import { Signal, SignalStatus } from './entities/signal.entity';
+import { RedisService } from '../redis/redis.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SignalsService {
@@ -13,10 +13,11 @@ export class SignalsService {
   constructor(
     @InjectRepository(Signal)
     private readonly signalRepository: Repository<Signal>,
-    private readonly redisService: RedisService, // Inject Redis service
+    private readonly redisService: RedisService,
+    private readonly configService: ConfigService,
   ) {}
 
-  // Fetches signals ordered by timestamp (DESC) with pagination
+  // Fetches active signals ordered by timestamp (DESC) with pagination
   async findAll(page: number = 1, limit: number = 10): Promise<{ data: Signal[], total: number }> {
     // Try to get signals from cache first
     const cachedSignals = await this.getCachedSignals();
@@ -29,6 +30,7 @@ export class SignalsService {
 
     // If not in cache, get from repository
     const [signals, total] = await this.signalRepository.findAndCount({
+      where: { status: Not(SignalStatus.EXPIRED) },
       take: limit,
       skip: (page - 1) * limit,
       order: { timestamp: 'DESC' },
@@ -81,7 +83,61 @@ export class SignalsService {
 
   // Fetch a single signal by its ID
   async getOneSignalById(signal_id: number): Promise<Signal> {
-    return this.signalRepository.findOne({ where: { signal_id } });
+    const signal = await this.signalRepository.findOne({ where: { signal_id } });
+    if (!signal) {
+      throw new NotFoundException(`Signal #${signal_id} not found`);
+    }
+    return signal;
+  }
+
+  // Get top signals by confidence level
+  async getTopSignals(limit: number = 10): Promise<Signal[]> {
+    return this.signalRepository.find({
+      where: { status: Not(SignalStatus.EXPIRED) },
+      order: {
+        confidence_level: 'DESC',
+        timestamp: 'DESC'
+      },
+      take: limit
+    });
+  }
+
+  // Get latest signals
+  async getLatestSignals(limit: number = 10): Promise<Signal[]> {
+    return this.signalRepository.find({
+      where: { status: Not(SignalStatus.EXPIRED) },
+      order: { timestamp: 'DESC' },
+      take: limit
+    });
+  }
+
+  // Admin: Restore an expired signal
+  async restoreSignal(signal_id: number): Promise<Signal> {
+    const signal = await this.getOneSignalById(signal_id);
+    if (signal.status !== SignalStatus.EXPIRED) {
+      throw new Error('Signal is not expired');
+    }
+
+    signal.status = SignalStatus.ACTIVE;
+    signal.timestamp = new Date(); // Reset timestamp to now
+    await this.signalRepository.save(signal);
+    await this.invalidateCache();
+    return signal;
+  }
+
+  // Admin: Extend signal expiration
+  async extendSignal(signal_id: number): Promise<Signal> {
+    const signal = await this.getOneSignalById(signal_id);
+    const expirationDays = this.configService.get<number>('app.signalExpirationDays');
+    
+    signal.timestamp = new Date(); // Reset timestamp to now
+    if (signal.status === SignalStatus.EXPIRED) {
+      signal.status = SignalStatus.ACTIVE;
+    }
+    
+    await this.signalRepository.save(signal);
+    await this.invalidateCache();
+    return signal;
   }
 
   // Calculate historical performance for a signal type and confidence level
@@ -145,35 +201,35 @@ export class SignalsService {
         signal_type: 'price_movement',
         confidence_level: 'high',
         value: 5.2,
-        status: 'successful',
+        status: SignalStatus.SUCCESSFUL,
         is_verified: true,
       },
       {
         signal_type: 'price_movement',
         confidence_level: 'high',
         value: -2.1,
-        status: 'failed',
+        status: SignalStatus.FAILED,
         is_verified: true,
       },
       {
         signal_type: 'volume_spike',
         confidence_level: 'medium',
         value: 3.7,
-        status: 'successful',
+        status: SignalStatus.SUCCESSFUL,
         is_verified: true,
       },
       {
         signal_type: 'social_sentiment',
         confidence_level: 'high',
         value: 8.1,
-        status: 'successful',
+        status: SignalStatus.SUCCESSFUL,
         is_verified: true,
       },
       {
         signal_type: 'technical_indicator',
         confidence_level: 'low',
         value: 1.5,
-        status: 'failed',
+        status: SignalStatus.FAILED,
         is_verified: true,
       }
     ];

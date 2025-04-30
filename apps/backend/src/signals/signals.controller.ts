@@ -1,4 +1,7 @@
-import { Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, Put, UseGuards } from '@nestjs/common';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { UserRole } from '../users/entities/user.entity';
 import { SignalsService } from './signals.service'; 
 import { MockSignalService } from './mock-signals.service';
 import { Signal } from './entities/signal.entity'; 
@@ -50,8 +53,32 @@ export class SignalsController {
     };
   }
 
+  @Get('/top')
+  async getTopSignals(@Query('limit') limit: number = 10): Promise<Signal[]> {
+    return await this.signalsService.getTopSignals(limit);
+  }
+
+  @Get('/latest')
+  async getLatestSignals(@Query('limit') limit: number = 10): Promise<Signal[]> {
+    return await this.signalsService.getLatestSignals(limit);
+  }
+
   @Get('/:id')
-  async getOneSignalById(@Param("id") id: number): Promise<Signal> {
-    return await this.mockSignalsService.getMockSignalById(id);
+  async getOneSignalById(@Param('id') id: number): Promise<Signal> {
+    return await this.signalsService.getOneSignalById(id);
+  }
+
+  @Put('/:id/restore')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async restoreSignal(@Param('id') id: number): Promise<Signal> {
+    return await this.signalsService.restoreSignal(id);
+  }
+
+  @Put('/:id/extend')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async extendSignal(@Param('id') id: number): Promise<Signal> {
+    return await this.signalsService.extendSignal(id);
   }
 }
