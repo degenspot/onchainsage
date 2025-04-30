@@ -1,8 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { RpcProvider, Account, Contract, ec } from 'starknet';
 import * as fs from 'fs';
 import * as path from 'node:path';
-
 
 @Injectable()
 export class StarknetService {
@@ -15,16 +15,19 @@ export class StarknetService {
 
     const privateKey = process.env.PRIVATE_KEY!;
     const contractAddress = process.env.CONTRACT_ADDRESS!;
-    console.log('privatekey', privateKey)
+    console.log('privatekey', privateKey);
     // console.log('stark key', starkKey)
 
     // Key Conversion
-    const starkKey = ec.starkCurve.getStarkKey(privateKey); 
+    const starkKey = ec.starkCurve.getStarkKey(privateKey);
     this.account = new Account(this.provider, contractAddress, starkKey);
 
     // Fix ABI File Path
-    const abiPath = path.resolve(__dirname, '../../../../blockchain/contract_abi.json');
-    console.log(abiPath)
+    const abiPath = path.resolve(
+      __dirname,
+      '../../../../blockchain/contract_abi.json',
+    );
+    console.log(abiPath);
 
     if (!fs.existsSync(abiPath)) {
       throw new Error(`ABI file not found at ${abiPath}`);
@@ -40,7 +43,10 @@ export class StarknetService {
   }
 
   async getContractState(): Promise<any> {
-    console.log('Starknet Provider Connected:', await this.provider.getChainId());
+    console.log(
+      'Starknet Provider Connected:',
+      await this.provider.getChainId(),
+    );
     return await this.contract.call('get_balance', []);
   }
 
