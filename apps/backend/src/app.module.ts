@@ -19,8 +19,11 @@ import { MailModule } from './mail/mail.module';
 import { NewsModule } from './news/news.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ReputationModule } from './reputation/reputation.module';
+import { RateLimitViolation } from './entities/rate-limit-violation.entity';
+import { getThrottlerConfig } from './config/throttler.config';
 import { ForumReportModule } from './forum-report/forum-report.module';
 import { AdminModule } from './admin/admin.module';
+
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log('Current environment:', ENV);
