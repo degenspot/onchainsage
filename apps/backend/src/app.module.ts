@@ -21,8 +21,12 @@ import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 import { MailModule } from './mail/mail.module';
 import { NewsModule } from './news/news.module';
 import { ForumModule } from './forum_module/forum.module';
+import { ReputationModule } from './reputation/reputation.module';
+import { RateLimitViolation } from './entities/rate-limit-violation.entity';
+import { getThrottlerConfig } from './config/throttler.config';
 import { ForumReportModule } from './forum-report/forum-report.module';
 import { AdminModule } from './admin/admin.module';
+
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log('Current environment:', ENV);
@@ -58,6 +62,7 @@ console.log('Current environment:', ENV);
     SignalGatewayModule,
     MailModule,
     NewsModule,
+    ReputationModule,
 
     // Enable throttling with custom global settings
     ThrottlerModule.forRoot({
