@@ -6,7 +6,7 @@ import Redis from 'ioredis';
 @Global()
 @Module({
   imports: [ConfigModule],
-  providers: [
+  providers: [RedisService,
     {
       provide: 'REDIS',
       useFactory: (configService: ConfigService) => {

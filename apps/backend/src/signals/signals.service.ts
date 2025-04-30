@@ -1,9 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common"
 import { InjectRepository } from "@nestjs/typeorm"
-import type { Repository } from "typeorm"
+import { Repository } from "typeorm"
 import { Signal } from "./entities/signal.entity"
-import type { RedisService } from "../redis/redis.service" // Import existing Redis service
-import type { RankingOptions, WeightedSignal } from "./interfaces/ranking.interface"
+import { RedisService } from "../redis/redis.service" // Import existing Redis service
+import { RankingOptions, WeightedSignal } from "./interfaces/ranking.interface"
 
 @Injectable()
 export class SignalsService {

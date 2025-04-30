@@ -1,9 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common"
 import { Cron, CronExpression } from "@nestjs/schedule"
 import { InjectRepository } from "@nestjs/typeorm"
-import type { Repository } from "typeorm"
+import { Repository } from "typeorm"
 import { Signal } from "../signals/entities/signal.entity"
-import type { SignalGateway } from "../gateways/signal.gateway"
+import { SignalGateway } from "../gateways/signal.gateway"
 import { SignalsService } from "src/signals/signals.service"
 
 @Injectable()
