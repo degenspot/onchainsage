@@ -1,42 +1,54 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Index } from "typeorm"
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  Index,
+} from 'typeorm';
 
 export enum EventType {
-  STAKE = "stake",
-  UNSTAKE = "unstake",
-  SIGNAL = "signal",
-  VOTE = "vote",
+  STAKE = 'stake',
+  UNSTAKE = 'unstake',
+  SIGNAL = 'signal',
+  VOTE = 'vote',
+  SIGNAL_REGISTERED = 'signal_registered',
+  VOTE_RESOLVED = 'vote_resolved',
+  REPUTATION_CHANGED = 'reputation_changed',
+  REWARD_CLAIMED = 'reward_claimed',
+  SIGNAL_EXPIRED = 'signal_expired',
+  SIGNAL_FLAGGED = 'signal_flagged',
 }
 
-@Entity("smart_contract_events")
+@Entity('smart_contract_events')
 export class SmartContractEvent {
-  @PrimaryGeneratedColumn("uuid")
-  id: string
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column({ type: "varchar", length: 42 })
+  @Column({ type: 'varchar', length: 42 })
   @Index()
-  address: string
+  address: string;
 
-  @Column({ type: "varchar", length: 66 })
+  @Column({ type: 'varchar', length: 66 })
   @Index()
-  transactionHash: string
+  transactionHash: string;
 
-  @Column({ type: "integer" })
-  blockNumber: number
+  @Column({ type: 'integer' })
+  blockNumber: number;
 
-  @Column({ type: "timestamp" })
+  @Column({ type: 'timestamp' })
   @Index()
-  timestamp: Date
+  timestamp: Date;
 
-  @Column({ type: "enum", enum: EventType })
+  @Column({ type: 'enum', enum: EventType })
   @Index()
-  eventType: EventType
+  eventType: EventType;
 
-  @Column({ type: "jsonb" })
-  data: Record<string, any>
+  @Column({ type: 'jsonb' })
+  data: Record<string, any>;
 
-  @Column({ type: "boolean", default: false })
-  processed: boolean
+  @Column({ type: 'boolean', default: false })
+  processed: boolean;
 
   @CreateDateColumn()
-  createdAt: Date
+  createdAt: Date;
 }
