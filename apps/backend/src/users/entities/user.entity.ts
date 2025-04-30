@@ -6,6 +6,11 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin',
+}
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -58,4 +63,7 @@ export class User {
     discordUsername?: string;
     telegramUsername?: string;
   };
+
+  @Column({ type: 'varchar', length: 10, default: UserRole.USER })
+  role: UserRole;
 }
