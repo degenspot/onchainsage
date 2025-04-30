@@ -44,7 +44,18 @@ export class User {
   @Column({ nullable: true })
   signature: string;
 
-  
   @Column({ nullable: true })
   email?: string;
+
+  @Column({ nullable: true })
+  discordId?: string;
+
+  @Column({ nullable: true })
+  telegramId?: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  metadata?: {
+    discordUsername?: string;
+    telegramUsername?: string;
+  };
 }
