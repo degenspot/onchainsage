@@ -1,6 +1,14 @@
 // src/entities/signal.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
 
+export enum SignalStatus {
+  ACTIVE = 'active',
+  PENDING = 'pending',
+  SUCCESSFUL = 'successful',
+  FAILED = 'failed',
+  EXPIRED = 'expired'
+}
+
 @Entity('signals')
 export class Signal {
   @PrimaryGeneratedColumn()
@@ -16,8 +24,11 @@ export class Signal {
   @Column({ type: 'numeric', precision: 10, scale: 2 })
   value: number;
 
-  @Column({ type: 'varchar', length: 50 })
-  status: string;
+  @Column({ type: 'varchar', length: 50, default: SignalStatus.ACTIVE })
+  status: SignalStatus;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  expiresAt: Date;
 
   @Column({ type: 'varchar', length: 50 })
   confidence_level: string;

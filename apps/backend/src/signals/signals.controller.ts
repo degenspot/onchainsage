@@ -1,13 +1,16 @@
-import { Controller, Get, Param, Query } from "@nestjs/common"
-import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger"
-import type { MockSignalService } from "./mock-signals.service"
-import type { Signal } from "./entities/signal.entity"
-import type { PaginatedResponse, PaginationDto } from "./interfaces/pagination.dto"
-import { TopSignalsDto } from "./dtos/top-signals.dto"
-import { SignalsService } from "./signals.service"
+import { Controller, Get, Param, Post, Query, Put, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { UserRole } from '../users/entities/user.entity';
+import { SignalsService } from './signals.service'; 
+import { MockSignalService } from './mock-signals.service';
+import { Signal } from './entities/signal.entity'; 
+import { PaginatedResponse, PaginationDto } from './interfaces/pagination.dto';
+import { TopSignalsDto } from './dtos/top-signals.dto';
 
-@ApiTags("Signals")
-@Controller("signals")
+@ApiTags('Signals')
+@Controller('signals')
 export class SignalsController {
   constructor(
     private readonly signalsService: SignalsService,
@@ -15,15 +18,12 @@ export class SignalsController {
   ) {}
 
   @Get()
-  // @ApiOperation({ summary: 'Get all signals with pagination' })
   @ApiResponse({ status: 200, description: 'Returns paginated signals' })
   async findAll(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<Signal>> {
-    // Get paginated signals from the service
     const { data, total } = await this.signalsService.findAll(
       paginationDto.page,
       paginationDto.limit
     );
-    
     return {
       data,
       metadata: {
@@ -49,7 +49,6 @@ export class SignalsController {
       query.limit,
       query.filter
     );
-    
     return {
       data,
       metadata: {
@@ -60,19 +59,20 @@ export class SignalsController {
     };
   }
 
+  @Get('latest')
+  async getLatestSignals(@Query('limit') limit: number = 10): Promise<Signal[]> {
+    return await this.signalsService.getLatestSignals(limit);
+  }
+
   @Get('mock')
   @ApiOperation({ summary: 'Get mock signals with pagination' })
   @ApiResponse({ status: 200, description: 'Returns paginated mock signals' })
   async getMockSignals(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<Signal>> {
-    // Get paginated mock signals from the service
     const { data, total } = await this.mockSignalsService.generateMockSignals(
       paginationDto.page,
       paginationDto.limit
     );
-    
-    // Invalidate the cache since new mock signals were generated
     await this.signalsService.invalidateCache();
-    
     return {
       data,
       metadata: {
@@ -83,11 +83,25 @@ export class SignalsController {
     };
   }
 
-  @Get('/:id')
+  @Get(':id')
   @ApiOperation({ summary: 'Get a signal by ID' })
   @ApiResponse({ status: 200, description: 'Returns a single signal' })
   @ApiResponse({ status: 404, description: 'Signal not found' })
-  async getOneSignalById(@Param("id") id: number): Promise<Signal> {
-    return await this.mockSignalsService.getMockSignalById(id);
+  async getOneSignalById(@Param('id') id: number): Promise<Signal> {
+    return await this.signalsService.getOneSignalById(id);
+  }
+
+  @Put(':id/restore')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async restoreSignal(@Param('id') id: number): Promise<Signal> {
+    return await this.signalsService.restoreSignal(id);
+  }
+
+  @Put(':id/extend')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async extendSignal(@Param('id') id: number): Promise<Signal> {
+    return await this.signalsService.extendSignal(id);
   }
 }
