@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LessThan, Not, Repository } from 'typeorm';
 import { Signal, SignalStatus } from '../signals/entities/signal.entity';
 import { SignalGateway } from '../gateways/signal.gateway';
+import { SignalsService } from 'src/signals/signals.service';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -17,6 +18,7 @@ export class SignalTask {
     @InjectRepository(Signal)
     private readonly signalRepository: Repository<Signal>,
     private readonly signalGateway: SignalGateway,
+    private readonly signalService: SignalsService,
     private readonly configService: ConfigService,
   ) {}
 
@@ -27,16 +29,15 @@ export class SignalTask {
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - expirationDays);
 
-      // Find and update expired signals
       const result = await this.signalRepository.update(
         {
           timestamp: LessThan(cutoffDate),
-          status: Not(SignalStatus.EXPIRED)
+          status: Not(SignalStatus.EXPIRED),
         },
-        { status: SignalStatus.EXPIRED }
+        { status: SignalStatus.EXPIRED },
       );
 
-      if (result.affected > 0) {
+      if (result.affected && result.affected > 0) {
         this.logger.log(`Marked ${result.affected} signals as expired`);
       }
     } catch (error) {
@@ -47,7 +48,6 @@ export class SignalTask {
   @Cron(CronExpression.EVERY_MINUTE)
   async generateMockSignal() {
     try {
-      // Create a mock signal
       const mockSignal = this.signalRepository.create({
         signal_type: this.getRandomElement(this.signalTypes),
         value: this.getRandomValue(100, 10000),
@@ -62,12 +62,12 @@ export class SignalTask {
         },
       });
 
-      // Save to database
       const savedSignal = await this.signalRepository.save(mockSignal);
       this.logger.log(`Generated new mock signal: ${JSON.stringify(savedSignal)}`);
 
-      // Broadcast via WebSocket
       this.signalGateway.broadcastNewSignal(savedSignal);
+
+      await this.signalService.invalidateTopSignalsCache();
     } catch (error) {
       this.logger.error(`Error generating mock signal: ${error.message}`);
     }
