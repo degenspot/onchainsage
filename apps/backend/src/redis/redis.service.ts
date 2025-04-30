@@ -34,11 +34,7 @@ export class RedisService {
     return this.redis.incr(key);
   }
 
-  async get(key: string): Promise<string | null> {
-    return this.redis.get(key);
-  }
-
-  //fn to SET user preference
+  // fn to SET user preference
   public async setUserPreferences(userId: string, preferences: Preferences) {
     const key = `appName:user:${userId}:preferences`;
     const ttl = +this.configService.get('REDIS_TTL') || 3600;
@@ -46,12 +42,12 @@ export class RedisService {
     console.log(`User ${userId} preferences cached`);
   }
 
-  //fn to GET user preference
+  // fn to GET user preference
   public async getUserPreferences(userId: string): Promise<Preferences | null> {
     const key = `appName:user:${userId}:preferences`;
     const cachedPreferences = await this.getAsync(key);
     if (cachedPreferences) {
-      console.log(`fetching preferences for user ${userId} from cache`);
+      console.log(`Fetching preferences for user ${userId} from cache`);
       return JSON.parse(cachedPreferences);
     }
     return null;
@@ -64,26 +60,22 @@ export class RedisService {
     console.log(`User ${userId} preferences removed from cache`);
   }
 
-  // BATCH OPERATION : set multiple user preferences
-  public async setMultipleUserPreferences(
-    preferences: Record<string, Preferences>,
-  ) {
+  // BATCH OPERATION: set multiple user preferences
+  public async setMultipleUserPreferences(preferences: Record<string, Preferences>) {
     const pipeline = this.redis.pipeline();
+    const ttl = +this.configService.get('REDIS_TTL') || 3600;
 
     for (const [userId, userPreferences] of Object.entries(preferences)) {
       const key = `appName:user:${userId}:preferences`;
-      const ttl = +this.configService.get('REDIS_TTL') || 3600;
       pipeline.setex(key, ttl, JSON.stringify(userPreferences));
     }
 
-    await pipeline.exec(); // Execute all at once
+    await pipeline.exec();
     console.log('Batch user preferences cached');
   }
 
-  // BATCH OPERATION : get multiple user preferences
-  public async getMultipleUserPreferences(
-    userIds: string[],
-  ): Promise<Record<string, Preferences | null>> {
+  // BATCH OPERATION: get multiple user preferences
+  public async getMultipleUserPreferences(userIds: string[]): Promise<Record<string, Preferences | null>> {
     const pipeline = this.redis.pipeline();
 
     userIds.forEach((userId) => {
@@ -91,9 +83,9 @@ export class RedisService {
       pipeline.get(key);
     });
 
-    const results = await pipeline.exec(); // Execute all at once
-
+    const results = await pipeline.exec();
     const preferences: Record<string, Preferences | null> = {};
+
     userIds.forEach((userId, index) => {
       const value = results[index][1] as string | null;
       preferences[userId] = value ? JSON.parse(value) : null;
@@ -106,7 +98,7 @@ export class RedisService {
   // CACHE WARMING STRATEGY
   public async warmUpCache() {
     console.log('Warming up cache...');
-    const commonUserIds = ['user1', 'user2', 'user3']; //  user IDs sample
+    const commonUserIds = ['user1', 'user2', 'user3'];
 
     for (const userId of commonUserIds) {
       const key = `appName:user:${userId}:preferences`;
@@ -122,10 +114,8 @@ export class RedisService {
     }
   }
 
-  // Mock function to simulate fetching preferences from the DB
-  private async fetchPreferencesFromDatabase(
-    userId: string,
-  ): Promise<Preferences | null> {
+  // Mock function to simulate fetching preferences from DB
+  private async fetchPreferencesFromDatabase(userId: string): Promise<Preferences | null> {
     return {
       theme: 'dark',
       notifications: true,
@@ -133,16 +123,25 @@ export class RedisService {
     };
   }
 
-  //CACHE INVALIDATION PATTERN: when preferences changes
+  // CACHE INVALIDATION
   public async invalidateUserPreferences(userId: string) {
     const key = `appName:user:${userId}:preferences`;
     await this.del(key);
     console.log(`Cache invalidated for user ${userId}`);
   }
 
-  // Example: Invalidate cache on data update
   public async updateUserPreferences(userId: string, preferences: Preferences) {
     await this.setUserPreferences(userId, preferences);
     await this.invalidateUserPreferences(userId);
   }
+
+  // Utility: Get all keys matching a pattern
+  public async keys(pattern: string): Promise<string[]> {
+    return this.redis.keys(pattern);
+  }
+
+  async get(key: string): Promise<string | null> {
+    return this.getAsync(key);
+  }
+  
 }
