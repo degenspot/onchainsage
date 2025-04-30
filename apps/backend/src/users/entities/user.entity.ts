@@ -9,6 +9,8 @@ import {
 export enum UserRole {
   USER = 'user',
   ADMIN = 'admin',
+  Moderator = 'moderator',
+  Viewer = 'viewer',
 }
 
 @Entity()
@@ -24,6 +26,10 @@ export class User {
 
   @Column({ default: false })
   isVerified: boolean;
+
+  @Column({ default: false })
+  isShadowbanned: boolean;
+
 
   @Column({ type: 'jsonb', nullable: true })
   preferences: Record<string, any>;
