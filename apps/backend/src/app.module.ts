@@ -20,6 +20,7 @@ import { NewsModule } from './news/news.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ForumReportModule } from './forum-report/forum-report.module';
 import { AdminModule } from './admin/admin.module';
+import { SignalAuditModule } from './signal-audit/signal-audit.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log('Current environment:', ENV);
@@ -59,6 +60,7 @@ console.log('Current environment:', ENV);
     NewsModule,
     ForumReportModule,
     AdminModule,
+    SignalAuditModule,
   ],
   controllers: [AppController, RedisController],
   providers: [AppService],

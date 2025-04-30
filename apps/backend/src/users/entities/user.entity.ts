@@ -64,6 +64,9 @@ export class User {
   @Column({ nullable: true })
   telegramId?: string;
 
+  @Column({ nullable: true })
+  signalAudits?: string;
+
   @Column({ type: 'jsonb', nullable: true })
   metadata?: {
     discordUsername?: string;
