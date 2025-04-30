@@ -18,6 +18,8 @@ import { RateLimitMiddleware } from './middleware/rate-limit.middleware';
 import { MailModule } from './mail/mail.module';
 import { NewsModule } from './news/news.module';
 import { TasksModule } from './tasks/tasks.module';
+import { ForumReportModule } from './forum-report/forum-report.module';
+import { AdminModule } from './admin/admin.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log('Current environment:', ENV);
@@ -55,6 +57,8 @@ console.log('Current environment:', ENV);
     SignalGatewayModule,
     MailModule,
     NewsModule,
+    ForumReportModule,
+    AdminModule,
   ],
   controllers: [AppController, RedisController],
   providers: [AppService],
