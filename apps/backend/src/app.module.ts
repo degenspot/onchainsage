@@ -26,6 +26,7 @@ import { RateLimitViolation } from './entities/rate-limit-violation.entity';
 import { getThrottlerConfig } from './config/throttler.config';
 import { ForumReportModule } from './forum-report/forum-report.module';
 import { AdminModule } from './admin/admin.module';
+import { SignalAuditModule } from './signal-audit/signal-audit.module';
 
 
 const ENV = process.env.NODE_ENV || 'development';
@@ -75,6 +76,7 @@ console.log('Current environment:', ENV);
     ForumModule,
     ForumReportModule,
     AdminModule,
+    SignalAuditModule,
   ],
   controllers: [AppController, RedisController],
   providers: [
