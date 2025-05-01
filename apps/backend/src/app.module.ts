@@ -27,7 +27,7 @@ import { getThrottlerConfig } from './config/throttler.config';
 import { ForumReportModule } from './forum-report/forum-report.module';
 import { AdminModule } from './admin/admin.module';
 import { SignalAuditModule } from './signal-audit/signal-audit.module';
-
+import { ExportModule } from './export/export.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log('Current environment:', ENV);
@@ -70,13 +70,13 @@ console.log('Current environment:', ENV);
       ttl: 60,
       limit: 10,
     } as any),
-    
-    
+
     // Forum feature module
     ForumModule,
     ForumReportModule,
     AdminModule,
     SignalAuditModule,
+    ExportModule,
   ],
   controllers: [AppController, RedisController],
   providers: [
