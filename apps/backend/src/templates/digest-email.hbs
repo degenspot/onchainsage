@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>OnChain Sage Digest</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #4a56e2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #4a56e2;
+        }
+        .item {
+            margin-bottom: 10px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+        .reputation {
+            font-weight: bold;
+            color: {{#if reputationPositive}}green{{else}}red{{/if}};
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #4a56e2;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .token-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>OnChain Sage Digest</h1>
+        <p>Your {{periodText}} summary</p>
+    </div>
+    
+    <div class="content">
+        <p>Hello {{userName}},</p>
+        <p>Here's your OnChain Sage activity summary for the {{periodText}}:</p>
+        
+        {{#if signalCount}}
+        <div class="section">
+            <div class="section-title">📊 Signals ({{signalCount}})</div>
+            {{#each signals}}
+            <div class="item">
+                • {{this.name}}: {{this.description}}
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+        
+        {{#if passedVotesCount}}
+        <div class="section">
+            <div class="section-title">✅ Passed Votes ({{passedVotesCount}})</div>
+            {{#each passedVotes}}
+            <div class="item">
+                • {{this.title}} - Passed with {{this.approvalPercentage}}% approval
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+        
+        {{#if failedVotesCount}}
+        <div class="section">
+            <div class="section-title">❌ Failed Votes ({{failedVotesCount}})</div>
+            {{#each failedVotes}}
+            <div class="item">
+                • {{this.title}} - Failed with {{this.approvalPercentage}}% approval
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+        
+        <div class="section">
+            <div class="section-title">⭐ Reputation</div>
+            <p>Your reputation has 
+                <span class="reputation">
+                    {{#if reputationPositive}}increased by {{else}}decreased by {{/if}}
+                    {{abs reputationDelta}} points
+                </span> 
+                since the last digest.
+            </p>
+        </div>
+        
+        {{#if suggestedTokensCount}}
+        <div class="section">
+            <div class="section-title">💎 Suggested Tokens to Watch ({{suggestedTokensCount}})</div>
+            {{#each suggestedTokens}}
+            <div class="token-card">
+                <strong>{{this.symbol}}</strong> - {{this.name}}<br>
+                <small>Suggested based on your activity patterns</small>
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+        
+        <div class="section">
+            <p>Visit OnChain Sage to see more details and engage with the community:</p>
+            <a href="https://onchainsage.com/dashboard" class="cta-button">Go to Dashboard</a>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>This digest covers activity from {{formatDate periodStart}} to {{formatDate periodEnd}}.</p>
+        <p>
+            You received this email because you have signed up for {{periodText}} digests.
+            <a href="https://onchainsage.com/preferences">Manage your notification preferences</a>
+        </p>
+        <p>&copy; 2023 OnChain Sage. All rights reserved.</p>
+    </div>
+</body>
+</html>
