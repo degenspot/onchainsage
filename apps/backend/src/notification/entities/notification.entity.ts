@@ -20,7 +20,13 @@ export enum NotificationPriority {
 export enum NotificationChannel {
   EMAIL = 'email',
   PUSH = 'push',
+  WEBHOOK = 'webhook',
   IN_APP = 'in-app',
+}
+export enum SignalType {
+  LOW_CONFIDENCE = 'low_confidence',
+  MEDIUM_CONFIDENCE = 'medium_confidence',
+  HIGH_CONFIDENCE = 'high_confidence',
 }
 
 @Entity()

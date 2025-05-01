@@ -1,7 +1,7 @@
 // src/notification/services/webhook.service.ts
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ArrayContains, Repository } from 'typeorm'; // Import ArrayContains
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
@@ -201,7 +201,7 @@ export class WebhookService {
       where: {
         active: true,
         verified: true,
-        eventTypes: [event], // This would need to be modified for typeorm to match array contains
+        eventTypes: ArrayContains([event]), // Use ArrayContains operator
       },
     });
     
@@ -289,10 +289,12 @@ export class WebhookService {
     }
     
     // Track delivery attempt
+    // TODO: Revisit webhook delivery tracking. trackDeliveryStart expects a notificationId,
+    // but webhooks aren't directly tied to a single notification record.
+    // Passing webhook.id to satisfy the type signature for now.
     const deliveryRecord = await this.deliveryTrackingService.trackDeliveryStart(
-      null, // We need a proper way to track webhook deliveries
-      'webhook' as any, // This would need to be adjusted for the actual schema
-      webhook.id
+      webhook.id,       // Passing webhook ID as placeholder for notificationId (string)
+      'webhook' as any  // Passing channel type (NotificationChannel)
     );
     
     try {

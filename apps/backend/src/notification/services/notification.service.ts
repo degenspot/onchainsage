@@ -11,6 +11,7 @@ import { UpdateNotificationDto } from '../dto/update-notification.dto';
 import { PaginationDto } from '../dto/pagination.dto';
 import { NotificationQueueService } from './notification-queue.service';
 import { NotificationTemplateService } from './notification-template.service';
+import { EventType } from '../../analytics/entities/smart-contract-event.entity';
 
 @Injectable()
 export class NotificationService {
@@ -61,12 +62,13 @@ export class NotificationService {
     }
     
     // Check user preferences
+    const template = createNotificationDto.templateId ? 
+      await this.templateRepository.findOne({ where: { id: createNotificationDto.templateId } }) : null;
+    
     const userPreferences = await this.preferenceRepository.findOne({
       where: { 
         userId: createNotificationDto.userId,
-        eventType: createNotificationDto.templateId ? 
-          (await this.templateRepository.findOne({ where: { id: createNotificationDto.templateId } }))?.eventType : 
-          'direct', // For direct notifications without a template
+        eventType: (template?.eventType as EventType) || EventType.SIGNAL
       }
     });
 
@@ -236,7 +238,7 @@ export class NotificationService {
   }
 
   // Get notification channels for a user and event type
-  async getChannelsForUser(userId: string, eventType: string): Promise<NotificationChannel[]> {
+  async getChannelsForUser(userId: string, eventType: EventType): Promise<NotificationChannel[]> {
     const preference = await this.preferenceRepository.findOne({
       where: { userId, eventType }
     });

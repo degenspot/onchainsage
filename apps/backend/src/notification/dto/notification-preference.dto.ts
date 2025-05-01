@@ -1,25 +1,50 @@
-import { IsEnum, IsBoolean, IsArray } from 'class-validator';
+import { IsEnum, IsBoolean, IsArray, IsOptional, IsString, IsObject, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { EventType } from '../../analytics/entities/smart-contract-event.entity';
+import { NotificationChannel } from '../entities/notification.entity';
 
-export enum NotificationChannel {
-  EMAIL = 'email',
-  WEBSOCKET = 'websocket'
+export class WebhookConfigDto {
+  @IsOptional()
+  @IsObject()
+  headers?: Record<string, string>;
+
+  @IsOptional()
+  @IsObject()
+  retryStrategy?: {
+    maxRetries: number;
+    initialDelay: number;
+    backoffMultiplier: number;
+  };
 }
 
-export enum SignalType {
-  HIGH_CONFIDENCE = 'high_confidence',
-  MARKET_CHANGE = 'market_change',
-  TREND_ALERT = 'trend_alert'
-}
+export class UpdateNotificationPreferenceDto {
+  @IsEnum(EventType)
+  eventType: EventType;
 
-export class UpdateNotificationPreferencesDto {
   @IsArray()
-  @IsEnum(SignalType, { each: true })
-  enabledSignalTypes: SignalType[];
-
   @IsEnum(NotificationChannel, { each: true })
-  preferredChannels: NotificationChannel[];
+  channels: NotificationChannel[];
 
   @IsBoolean()
-  isEnabled: boolean;
+  enabled: boolean;
+
+  @IsOptional()
+  @IsString()
+  emailAddress?: string;
+
+  @IsOptional()
+  @IsString()
+  webhookUrl?: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => WebhookConfigDto)
+  webhookConfig?: WebhookConfigDto;
 }
 
+export class BulkUpdateNotificationPreferencesDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateNotificationPreferenceDto)
+  preferences: UpdateNotificationPreferenceDto[];
+}

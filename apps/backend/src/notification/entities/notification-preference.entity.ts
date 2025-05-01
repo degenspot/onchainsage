@@ -7,13 +7,8 @@ import {
   UpdateDateColumn,
   Index,
 } from 'typeorm';
-import { EventType } from '../../../analytics/entities/smart-contract-event.entity';
-
-export enum NotificationChannel {
-  EMAIL = 'email',
-  WEBHOOK = 'webhook',
-  IN_APP = 'in-app',
-}
+import { EventType } from '../../analytics/entities/smart-contract-event.entity';
+import { NotificationChannel } from './notification.entity';
 
 @Entity()
 @Index(['userId', 'eventType'])
