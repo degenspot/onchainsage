@@ -1,0 +1,34 @@
+# Scarb formatting configuration for OnChain Sage Dojo
+
+[fmt]
+# Indentation settings
+tab_size = 4
+use_tabs = false
+
+# Line length settings
+max_width = 100
+
+# Imports formatting
+imports_granularity = "Item"
+group_imports = "StdExternalCrate"
+
+# Function formatting
+fn_single_line = false
+fn_args_layout = "Tall"
+
+# Control flow formatting
+control_brace_style = "AlwaysSameLine"
+match_arm_trailing_comma = true
+
+# Comments and documentation
+normalize_comments = true
+wrap_comments = true
+comment_width = 80
+
+# Whitespace handling
+trailing_whitespace = "Ignore"
+blank_lines_upper_bound = 2
+blank_lines_lower_bound = 0
+
+# String formatting
+string_literal_max_width = 80 

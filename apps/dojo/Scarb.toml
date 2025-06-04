@@ -1,0 +1,30 @@
+[package]
+cairo-version = "=2.10.1"
+name = "onchainsage_dojo"
+version = "0.1.0"
+edition = "2024_07"
+authors = ["OnChain Sage Team"]
+description = "Smart contracts for OnChain Sage - AI-driven decentralized trading assistant"
+
+[cairo]
+sierra-replace-ids = true
+
+[scripts]
+migrate = "sozo build && sozo migrate"
+deploy-dev = "sozo build && sozo migrate --name dev"
+deploy-testnet = "sozo build && sozo migrate --name testnet"
+deploy-mainnet = "sozo build && sozo migrate --name mainnet"
+test = "sozo test"
+build = "sozo build"
+
+[dependencies]
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.5.0" }
+
+[[target.starknet-contract]]
+build-external-contracts = ["dojo::world::world_contract::world"]
+
+[dev-dependencies]
+dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.5.0" }
+
+[tool.fmt]
+tab_size = 4
