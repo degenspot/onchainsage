@@ -1,7 +1,7 @@
 // src/notifications/entities/user-notification-setting.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { NotificationChannel, SignalType } from '../dto/notification-preference.dto';
+import { NotificationChannel, SignalType } from './notification.entity';
 
 @Entity()
 export class UserNotificationSetting {

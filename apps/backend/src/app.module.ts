@@ -27,6 +27,12 @@ import { getThrottlerConfig } from './config/throttler.config';
 import { ForumReportModule } from './forum-report/forum-report.module';
 import { AdminModule } from './admin/admin.module';
 import { SignalAuditModule } from './signal-audit/signal-audit.module';
+import { ExportModule } from './export/export.module';
+import { DigestModule } from './digest/digest.module';
+import { WebHookModule } from './web-hook/web-hook.module';
+import { TemplatesModule } from './templates/templates.module';
+import { FeatureFlagsService } from './config/feature-flag';
+import { FeatureFlagMiddleware } from './middleware/feature-flag.middleware';
 
 
 const ENV = process.env.NODE_ENV || 'development';
@@ -70,23 +76,33 @@ console.log('Current environment:', ENV);
       ttl: 60,
       limit: 10,
     } as any),
-    
-    
+
     // Forum feature module
     ForumModule,
     ForumReportModule,
     AdminModule,
     SignalAuditModule,
+    ExportModule,
+    DigestModule,
+    WebHookModule,
+    TemplatesModule,
   ],
   controllers: [AppController, RedisController],
   providers: [
-    AppService,
+    AppService,FeatureFlagsService,
     // Apply throttling guard globally
     { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RateLimitMiddleware).forRoutes('*');
+    consumer
+      .apply(RateLimitMiddleware)
+      .forRoutes('*');
+
+    consumer
+      .apply(FeatureFlagMiddleware)
+      .forRoutes('signals', 'users/preferences');
   }
 }
+

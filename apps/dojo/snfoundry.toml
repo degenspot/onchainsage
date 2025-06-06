@@ -1,0 +1,37 @@
+# Starknet Foundry configuration for OnChain Sage Dojo
+
+[sncast.default]
+account = "dev_account"
+accounts-file = "accounts.json"
+keystore = "keystore"
+
+# Network configurations
+[sncast.sepolia]
+url = "https://starknet-sepolia.infura.io/v3/"
+
+[sncast.mainnet]
+url = "https://starknet-mainnet.infura.io/v3/"
+
+[sncast.local]
+url = "http://localhost:5050"
+
+# Forge testing configuration
+[snforge.default]
+sierra = true
+casm = true
+
+# Test execution settings
+[snforge.test]
+max_n_steps = 1000000
+print_logs = true
+detailed_resources = true
+
+# Coverage settings
+[snforge.coverage]
+enabled = true
+output_dir = "coverage"
+
+# Fuzzing configuration
+[snforge.fuzz]
+runs = 1000
+seed = 12345 
