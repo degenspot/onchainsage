@@ -1,4 +1,5 @@
 use starknet::ContractAddress;
+use dojo::model::Model; // Required for u256 type
 
 #[derive(Copy, Drop, Serde)]
 #[dojo::model]
@@ -30,6 +31,31 @@ pub enum Direction {
     Right,
     Up,
     Down,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct Reputation {
+    #[key]
+    pub user_address: ContractAddress,
+    pub current_score: u256,
+    pub total_calls: u32,
+    pub successful_calls: u32,
+    pub accuracy_percentage: u8,
+    pub last_updated: u64, // Timestamp of the last update
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct ReputationHistory {
+    #[key]
+    pub user_address: ContractAddress,
+    #[key]
+    pub timestamp: u64, // Timestamp of the snapshot
+    pub score_snapshot: u256,
+    pub total_calls_snapshot: u32,
+    pub successful_calls_snapshot: u32,
+    pub accuracy_percentage_snapshot: u8,
 }
 
 impl DirectionIntoFelt252 of Into<Direction, felt252> {
