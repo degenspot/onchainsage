@@ -8,3 +8,4 @@ pub mod payment_history;
 pub mod payment_validator;
 pub mod refund_manager;
 pub mod subscription_manager;
+mod UserProfile;

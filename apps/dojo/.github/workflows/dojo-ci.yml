@@ -1,0 +1,218 @@
+name: OnChain Sage Dojo CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths: 
+      - 'apps/dojo/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'apps/dojo/**'
+
+env:
+  WORKING_DIRECTORY: apps/dojo
+
+jobs:
+  lint-and-format:
+    name: 🔍 Lint and Format Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Dojo
+      run: |
+        curl -L https://install.dojoengine.org | bash
+        echo "$HOME/.dojo/bin" >> $GITHUB_PATH
+
+    - name: Setup Dojo toolchain
+      run: |
+        dojoup --version v1.5.1
+        sozo --version
+
+    - name: Check code formatting
+      run: |
+        find src -name "*.cairo" -exec scarb fmt --check {} \;
+
+    - name: Lint Cairo code
+      run: |
+        sozo build --check
+
+  test:
+    name: 🧪 Run Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-format
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Dojo
+      run: |
+        curl -L https://install.dojoengine.org | bash
+        echo "$HOME/.dojo/bin" >> $GITHUB_PATH
+
+    - name: Install Starknet Foundry
+      run: |
+        curl -L https://raw.githubusercontent.com/foundry-rs/starknet-foundry/master/scripts/install.sh | sh
+        echo "$HOME/.foundry/bin" >> $GITHUB_PATH
+
+    - name: Setup toolchains
+      run: |
+        dojoup --version v1.5.1
+        snfoundryup
+
+    - name: Run Dojo tests
+      run: |
+        sozo test
+
+    - name: Run Starknet Foundry tests
+      run: |
+        if [ -d "tests_foundry" ]; then
+          snforge test
+        else
+          echo "No Foundry tests found"
+        fi
+
+    - name: Generate test coverage
+      run: |
+        if command -v snforge &> /dev/null && [ -d "tests_foundry" ]; then
+          snforge test --coverage
+        fi
+
+    - name: Upload coverage reports
+      if: success()
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: ${{ env.WORKING_DIRECTORY }}/coverage/
+
+  build:
+    name: 🔧 Build Contracts
+    runs-on: ubuntu-latest
+    needs: test
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Dojo
+      run: |
+        curl -L https://install.dojoengine.org | bash
+        echo "$HOME/.dojo/bin" >> $GITHUB_PATH
+
+    - name: Setup Dojo toolchain
+      run: |
+        dojoup --version v1.5.1
+
+    - name: Build contracts
+      run: |
+        sozo build
+
+    - name: Build for release
+      run: |
+        sozo build --release
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: |
+          ${{ env.WORKING_DIRECTORY }}/target/
+          ${{ env.WORKING_DIRECTORY }}/manifest_*.json
+
+  deploy-testnet:
+    name: 🚀 Deploy to Testnet
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    environment: testnet
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Dojo
+      run: |
+        curl -L https://install.dojoengine.org | bash
+        echo "$HOME/.dojo/bin" >> $GITHUB_PATH
+
+    - name: Setup Dojo toolchain
+      run: |
+        dojoup --version v1.5.1
+
+    - name: Create testnet environment file
+      run: |
+        echo "STARKNET_RPC_URL=${{ secrets.TESTNET_RPC_URL }}" > .env.testnet
+        echo "ACCOUNT_ADDRESS=${{ secrets.TESTNET_ACCOUNT_ADDRESS }}" >> .env.testnet
+        echo "PRIVATE_KEY=${{ secrets.TESTNET_PRIVATE_KEY }}" >> .env.testnet
+
+    - name: Deploy to testnet
+      run: |
+        chmod +x scripts/deploy-testnet.sh
+        ./scripts/deploy-testnet.sh
+
+    - name: Upload deployment artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: testnet-deployment
+        path: |
+          ${{ env.WORKING_DIRECTORY }}/deployment/
+          ${{ env.WORKING_DIRECTORY }}/manifest_*.json
+
+  deploy-mainnet:
+    name: 🌐 Deploy to Mainnet
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: mainnet
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Dojo
+      run: |
+        curl -L https://install.dojoengine.org | bash
+        echo "$HOME/.dojo/bin" >> $GITHUB_PATH
+
+    - name: Setup Dojo toolchain
+      run: |
+        dojoup --version v1.5.1
+
+    - name: Create mainnet environment file
+      run: |
+        echo "STARKNET_RPC_URL=${{ secrets.MAINNET_RPC_URL }}" > .env.mainnet
+        echo "ACCOUNT_ADDRESS=${{ secrets.MAINNET_ACCOUNT_ADDRESS }}" >> .env.mainnet
+        echo "PRIVATE_KEY=${{ secrets.MAINNET_PRIVATE_KEY }}" >> .env.mainnet
+
+    - name: Deploy to mainnet
+      run: |
+        chmod +x scripts/deploy-mainnet.sh
+        # Note: mainnet deployment requires manual approval
+        echo "Mainnet deployment ready. Manual execution required."
+
+    - name: Upload deployment artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: mainnet-deployment
+        path: |
+          ${{ env.WORKING_DIRECTORY }}/deployment/
+          ${{ env.WORKING_DIRECTORY }}/manifest_*.json 
