@@ -1,2 +1,10 @@
-mod payment_handler;
-use payment_handler::STRKPaymentHandler;
+pub mod payment_handler;
+pub mod payment_models;
+pub mod strk_token_interface;
+pub mod emergency_controls;
+pub mod gas_fee_manager;
+pub mod payment_expiration;
+pub mod payment_history;
+pub mod payment_validator;
+pub mod refund_manager;
+pub mod subscription_manager;

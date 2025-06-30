@@ -2,5 +2,23 @@
 version = 1
 
 [[package]]
+name = "snforge_scarb_plugin"
+version = "0.33.2"
+source = "registry+https://scarbs.xyz/"
+checksum = "sha256:9cf5313f5ec3b594b5bfbbf99b20f1f95dc2220cf68674e1732b6d7e45e37457"
+
+[[package]]
+name = "snforge_std"
+version = "0.33.2"
+source = "registry+https://scarbs.xyz/"
+checksum = "sha256:9b91300b0464f77ad701c982c005a903d0ca411c0e2e631e5cc08666485a902f"
+dependencies = [
+ "snforge_scarb_plugin",
+]
+
+[[package]]
 name = "strk_payment_handler"
 version = "0.1.0"
+dependencies = [
+ "snforge_std",
+]
