@@ -1,11 +1,11 @@
 export class AnalyticsSummaryDto {
-  totalUsers: number
+  totalUsers: number;
 
-  totalSignals: number
+  totalSignals: number;
 
-  totalVotes: number
+  totalVotes: number;
 
-  totalStaked: string
+  totalStaked: string;
 
-  lastUpdated: Date
+  lastUpdated: Date;
 }

@@ -1,4 +1,12 @@
-import { IsEnum, IsBoolean, IsArray, IsOptional, IsString, IsObject, ValidateNested } from 'class-validator';
+import {
+  IsEnum,
+  IsBoolean,
+  IsArray,
+  IsOptional,
+  IsString,
+  IsObject,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { EventType } from '../../analytics/entities/smart-contract-event.entity';
 import { NotificationChannel } from '../entities/notification.entity';

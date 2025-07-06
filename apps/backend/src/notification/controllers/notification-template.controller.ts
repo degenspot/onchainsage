@@ -1,6 +1,21 @@
 // src/notification/controllers/notification-template.controller.ts
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { NotificationTemplateService } from '../services/notification-template.service';
 import { CreateTemplateDto } from '../dto/create-template.dto';
 import { UpdateTemplateDto } from '../dto/update-template.dto';
@@ -42,7 +57,10 @@ export class NotificationTemplateController {
   @Roles('admin')
   @ApiOperation({ summary: 'Update a notification template' })
   @ApiResponse({ status: 200, description: 'Template updated successfully.' })
-  update(@Param('id') id: string, @Body() updateTemplateDto: UpdateTemplateDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateTemplateDto: UpdateTemplateDto,
+  ) {
     return this.templateService.update(id, updateTemplateDto);
   }
 

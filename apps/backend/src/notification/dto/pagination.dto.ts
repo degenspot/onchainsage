@@ -28,7 +28,12 @@ export class PaginationDto {
   @IsString()
   sortBy?: string;
 
-  @ApiProperty({ description: 'Sort order', enum: SortOrder, default: SortOrder.DESC, required: false })
+  @ApiProperty({
+    description: 'Sort order',
+    enum: SortOrder,
+    default: SortOrder.DESC,
+    required: false,
+  })
   @IsOptional()
   @IsEnum(SortOrder)
   sortOrder?: SortOrder = SortOrder.DESC;

@@ -18,9 +18,12 @@ export class ReputationService {
     const adjustments = await this.adjustRepo.find({ where: { address } });
 
     const totalStake = votes.reduce((sum, v) => sum + Number(v.stake), 0);
-    const wins = votes.filter(v => v.voteResult).length;
+    const wins = votes.filter((v) => v.voteResult).length;
     const accuracy = votes.length > 0 ? wins / votes.length : 0;
-    const totalAdjustments = adjustments.reduce((sum, a) => sum + Number(a.adjustment), 0);
+    const totalAdjustments = adjustments.reduce(
+      (sum, a) => sum + Number(a.adjustment),
+      0,
+    );
 
     return accuracy * totalStake + totalAdjustments;
   }
@@ -38,17 +41,18 @@ export class ReputationService {
       })),
     );
 
-    return scores
-      .sort((a, b) => b.reputation - a.reputation)
-      .slice(0, 100);
+    return scores.sort((a, b) => b.reputation - a.reputation).slice(0, 100);
   }
 
   async getProfile(address: string) {
-    const votes = await this.voteRepo.find({ where: { address }, order: { timestamp: 'ASC' } });
+    const votes = await this.voteRepo.find({
+      where: { address },
+      order: { timestamp: 'ASC' },
+    });
     const totalVotes = votes.length;
-    const wins = votes.filter(v => v.voteResult).length;
+    const wins = votes.filter((v) => v.voteResult).length;
     const accuracy = totalVotes > 0 ? wins / totalVotes : 0;
-    const stakeHistory = votes.map(v => ({
+    const stakeHistory = votes.map((v) => ({
       stake: Number(v.stake),
       timestamp: v.timestamp,
     }));

@@ -1,13 +1,20 @@
 // src/engagement-analytics/dto/engagement-query.dto.ts
-import { IsDateString, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { Type } from 'class-transformer';
+import { EngagementType } from '../entities/engagement.entity';
 
 export enum TimeFrame {
   HOUR = 'hour',
   DAY = 'day',
   WEEK = 'week',
   MONTH = 'month',
-  CUSTOM = 'custom'
+  CUSTOM = 'custom',
 }
 
 export class EngagementQueryDto {

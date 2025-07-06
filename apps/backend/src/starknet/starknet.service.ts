@@ -151,4 +151,58 @@ export class StarknetService {
       throw new Error(`Failed to retrieve user data: ${error.message}`);
     }
   }
+
+  async deposit(walletAddress: string, amount: number): Promise<string> {
+    this.logger.log(`Deposit for ${walletAddress} with amount ${amount}`);
+    return '0x_mock_tx_hash';
+  }
+
+  async upgradeTier(walletAddress: string): Promise<string> {
+    this.logger.log(`Upgrade tier for ${walletAddress}`);
+    return '0x_mock_tx_hash';
+  }
+
+  async payForCall(walletAddress: string, amount: number): Promise<string> {
+    this.logger.log(`Pay for call for ${walletAddress} with amount ${amount}`);
+    return '0x_mock_tx_hash';
+  }
+
+  async getTransactionStatus(txHash: string): Promise<any> {
+    this.logger.log(`Get transaction status for ${txHash}`);
+    return {
+      status: 'ACCEPTED_ON_L2',
+      block_number: 1,
+      block_hash: '0x_mock_block_hash',
+      actual_fee: '1',
+      events: [],
+    };
+  }
+
+  async getBalance(walletAddress: string): Promise<number> {
+    this.logger.log(`Get balance for ${walletAddress}`);
+    return 1000;
+  }
+
+  async batchTransfer(
+    transfers: { recipient: string; amount: number }[],
+  ): Promise<string> {
+    this.logger.log(`Batch transfer: ${JSON.stringify(transfers)}`);
+    return '0x_mock_tx_hash';
+  }
+
+  async refund(txHash: string, reason: string): Promise<string> {
+    this.logger.log(`Refund for ${txHash} with reason: ${reason}`);
+    return '0x_mock_tx_hash';
+  }
+
+  async transfer(
+    sender: string,
+    recipient: string,
+    amount: number,
+  ): Promise<string> {
+    this.logger.log(
+      `Transfer from ${sender} to ${recipient} with amount ${amount}`,
+    );
+    return '0x_mock_tx_hash';
+  }
 }

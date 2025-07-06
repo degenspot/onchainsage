@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { ForumReport } from "src/forum-report/entities/forum-report.entity";
-import { User } from "../users/entities/user.entity";
-import { Repository } from "typeorm";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ForumReport } from 'src/forum-report/entities/forum-report.entity';
+import { User } from '../users/entities/user.entity';
+import { Repository } from 'typeorm';
 import { Post } from '../forum_module/entities/post.entity';
 
 @Injectable()
@@ -36,4 +36,3 @@ export class StatsService {
     };
   }
 }
-

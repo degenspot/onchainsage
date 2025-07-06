@@ -1,8 +1,8 @@
-import { 
-    Entity, 
-    PrimaryGeneratedColumn, 
-    Column, 
-    CreateDateColumn 
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -16,9 +16,9 @@ export class ForumReport {
   @Column()
   reason: string;
 
-  @Column({ 
-    default: false 
-})
+  @Column({
+    default: false,
+  })
   resolved: boolean;
 
   @CreateDateColumn()

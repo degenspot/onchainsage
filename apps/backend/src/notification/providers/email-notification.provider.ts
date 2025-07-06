@@ -8,4 +8,4 @@ export class EmailNotificationProvider {
     console.log(`Sending email notification: ${notification.title}`);
     return true;
   }
-} 
+}

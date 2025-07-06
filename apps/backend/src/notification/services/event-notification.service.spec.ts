@@ -2,17 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EventNotificationService } from './event-notification.service';
 import { NotificationPreferenceService } from './notification-preference.service';
 import { NotificationService } from './notification.service';
-import { WebhookService } from './webhook.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Redis } from 'ioredis';
 import { EventType } from '../../../analytics/entities/smart-contract-event.entity';
-import { NotificationChannel } from '../entities/notification-preference.entity';
 
 describe('EventNotificationService', () => {
   let service: EventNotificationService;
   let notificationPreferenceService: NotificationPreferenceService;
   let notificationService: NotificationService;
-  let webhookService: WebhookService;
   let redis: Redis;
 
   beforeEach(async () => {
@@ -29,12 +26,6 @@ describe('EventNotificationService', () => {
           provide: NotificationService,
           useValue: {
             create: jest.fn(),
-          },
-        },
-        {
-          provide: WebhookService,
-          useValue: {
-            deliverEvent: jest.fn(),
           },
         },
         {
@@ -60,7 +51,6 @@ describe('EventNotificationService', () => {
       NotificationPreferenceService,
     );
     notificationService = module.get<NotificationService>(NotificationService);
-    webhookService = module.get<WebhookService>(WebhookService);
     redis = module.get<Redis>(Redis);
   });
 
@@ -77,12 +67,6 @@ describe('EventNotificationService', () => {
       };
 
       const mockUsers = ['user1', 'user2'];
-      const mockPreference = {
-        enabled: true,
-        channels: [NotificationChannel.EMAIL, NotificationChannel.WEBHOOK],
-        emailAddress: 'test@example.com',
-        webhookUrl: 'https://webhook.example.com',
-      };
 
       jest
         .spyOn(notificationPreferenceService, 'getUsersToNotify')
@@ -109,11 +93,6 @@ describe('EventNotificationService', () => {
       };
 
       const mockUsers = ['user1'];
-      const mockPreference = {
-        enabled: true,
-        channels: [NotificationChannel.EMAIL],
-        emailAddress: 'test@example.com',
-      };
 
       jest
         .spyOn(notificationPreferenceService, 'getUsersToNotify')

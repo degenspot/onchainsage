@@ -10,7 +10,11 @@ export class VoteService {
     private voteRepository: Repository<VotingHistory>,
   ) {}
 
-  async castVote(userId: string, signalId: string, voteType: 'upvote' | 'downvote') {
+  async castVote(
+    userId: string,
+    signalId: string,
+    voteType: 'upvote' | 'downvote',
+  ) {
     const vote = this.voteRepository.create({
       userId,
       signalId,
@@ -21,4 +25,4 @@ export class VoteService {
   }
 
   // Placeholder for other vote-related methods
-} 
+}

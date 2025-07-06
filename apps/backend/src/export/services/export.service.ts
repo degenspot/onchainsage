@@ -14,7 +14,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as csv from 'csv-stringify';
 import * as os from 'os';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ExportService {

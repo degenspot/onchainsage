@@ -2,11 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { NotificationPreference } from '../entities/notification-preference.entity';
+import { EventType } from 'src/analytics/entities/smart-contract-event.entity';
 import {
   UpdateNotificationPreferenceDto,
   BulkUpdateNotificationPreferencesDto,
 } from '../dto/notification-preference.dto';
-import { EventType } from '../../../analytics/entities/smart-contract-event.entity';
 
 @Injectable()
 export class NotificationPreferenceService {

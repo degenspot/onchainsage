@@ -1,4 +1,13 @@
-import { Controller, Post, Body, UseGuards, Req, Get, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Req,
+  Get,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { DigestService } from './digest.service';
 import { UpdateDigestPreferenceDto } from './dto/update-digest-preference.dto';
@@ -14,12 +23,18 @@ export class DigestController {
 
   @Post('preferences')
   @UseGuards(JwtAuthGuard)
-  async updatePreferences(@Req() req, @Body() updateDigestPreferenceDto: UpdateDigestPreferenceDto) {
+  async updatePreferences(
+    @Req() req,
+    @Body() updateDigestPreferenceDto: UpdateDigestPreferenceDto,
+  ) {
     const userId = (req as any).user?.id || null;
     if (!userId) {
       throw new Error('User not authenticated');
     }
-    return this.digestService.updateUserPreferences(userId, updateDigestPreferenceDto);
+    return this.digestService.updateUserPreferences(
+      userId,
+      updateDigestPreferenceDto,
+    );
   }
 
   @Get('generate')
@@ -30,8 +45,14 @@ export class DigestController {
     try {
       return await this.digestService.generateDailyDigest();
     } catch (error) {
-      this.logger.error(`Failed to generate digest: ${error.message}`, error.stack);
-      throw new HttpException('Failed to generate digest', HttpStatus.INTERNAL_SERVER_ERROR);
+      this.logger.error(
+        `Failed to generate digest: ${error.message}`,
+        error.stack,
+      );
+      throw new HttpException(
+        'Failed to generate digest',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

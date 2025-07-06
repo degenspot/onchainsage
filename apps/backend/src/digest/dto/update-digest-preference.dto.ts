@@ -1,5 +1,8 @@
-import { IsEnum, IsOptional, IsUrl, ValidateIf } from 'class-validator';
-import { DigestFrequency, DigestDeliveryMethod } from '../entities/user-digest-preference.entity';
+import { IsEnum, IsUrl, ValidateIf } from 'class-validator';
+import {
+  DigestFrequency,
+  DigestDeliveryMethod,
+} from '../entities/user-digest-preference.entity';
 
 export class UpdateDigestPreferenceDto {
   @IsEnum(DigestFrequency)
@@ -8,7 +11,11 @@ export class UpdateDigestPreferenceDto {
   @IsEnum(DigestDeliveryMethod)
   deliveryMethod: DigestDeliveryMethod;
 
-  @ValidateIf(o => o.deliveryMethod === DigestDeliveryMethod.WEBHOOK || o.deliveryMethod === DigestDeliveryMethod.BOTH)
+  @ValidateIf(
+    (o) =>
+      o.deliveryMethod === DigestDeliveryMethod.WEBHOOK ||
+      o.deliveryMethod === DigestDeliveryMethod.BOTH,
+  )
   @IsUrl()
   webhookUrl?: string;
 }

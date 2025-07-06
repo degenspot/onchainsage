@@ -1,5 +1,23 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Query, Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  UseGuards,
+  Query,
+  Logger,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../../auth/guards/admin.guard';
 import {
@@ -8,7 +26,10 @@ import {
 } from '../entities/delivery-record.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Notification, NotificationStatus } from '../entities/notification.entity';
+import {
+  Notification,
+  NotificationStatus,
+} from '../entities/notification.entity';
 import { In } from 'typeorm';
 import { NotificationAdminService } from '../services/notification-admin.service';
 import { CreateNotificationTemplateDto } from '../dto/create-notification-template.dto';
@@ -27,7 +48,7 @@ export class AdminNotificationController {
     private deliveryRecordRepository: Repository<DeliveryRecord>,
     @InjectRepository(Notification)
     private notificationRepository: Repository<Notification>,
-    private readonly adminService: NotificationAdminService
+    private readonly adminService: NotificationAdminService,
   ) {}
 
   @Get('failed')
@@ -125,12 +146,20 @@ export class AdminNotificationController {
   @Post('templates')
   @ApiOperation({ summary: 'Create a new notification template (Admin only)' })
   @ApiResponse({ status: 201, description: 'Template created successfully' })
-  async createTemplate(@Body() createTemplateDto: CreateNotificationTemplateDto) {
+  async createTemplate(
+    @Body() createTemplateDto: CreateNotificationTemplateDto,
+  ) {
     try {
       return await this.adminService.createTemplate(createTemplateDto);
     } catch (error) {
-      this.logger.error(`Failed to create template: ${error.message}`, error.stack);
-      throw new HttpException('Failed to create template', HttpStatus.INTERNAL_SERVER_ERROR);
+      this.logger.error(
+        `Failed to create template: ${error.message}`,
+        error.stack,
+      );
+      throw new HttpException(
+        'Failed to create template',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -141,8 +170,14 @@ export class AdminNotificationController {
     try {
       return await this.adminService.getAllTemplates();
     } catch (error) {
-      this.logger.error(`Failed to get templates: ${error.message}`, error.stack);
-      throw new HttpException('Failed to get templates', HttpStatus.INTERNAL_SERVER_ERROR);
+      this.logger.error(
+        `Failed to get templates: ${error.message}`,
+        error.stack,
+      );
+      throw new HttpException(
+        'Failed to get templates',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -153,20 +188,35 @@ export class AdminNotificationController {
     try {
       return await this.adminService.getTemplateById(id);
     } catch (error) {
-      this.logger.error(`Failed to get template: ${error.message}`, error.stack);
-      throw new HttpException('Failed to get template', HttpStatus.INTERNAL_SERVER_ERROR);
+      this.logger.error(
+        `Failed to get template: ${error.message}`,
+        error.stack,
+      );
+      throw new HttpException(
+        'Failed to get template',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   @Put('templates/:id')
   @ApiOperation({ summary: 'Update a notification template (Admin only)' })
   @ApiResponse({ status: 200, description: 'Template updated successfully' })
-  async updateTemplate(@Param('id') id: string, @Body() updateTemplateDto: CreateNotificationTemplateDto) {
+  async updateTemplate(
+    @Param('id') id: string,
+    @Body() updateTemplateDto: CreateNotificationTemplateDto,
+  ) {
     try {
       return await this.adminService.updateTemplate(id, updateTemplateDto);
     } catch (error) {
-      this.logger.error(`Failed to update template: ${error.message}`, error.stack);
-      throw new HttpException('Failed to update template', HttpStatus.INTERNAL_SERVER_ERROR);
+      this.logger.error(
+        `Failed to update template: ${error.message}`,
+        error.stack,
+      );
+      throw new HttpException(
+        'Failed to update template',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -177,8 +227,14 @@ export class AdminNotificationController {
     try {
       return await this.adminService.deleteTemplate(id);
     } catch (error) {
-      this.logger.error(`Failed to delete template: ${error.message}`, error.stack);
-      throw new HttpException('Failed to delete template', HttpStatus.INTERNAL_SERVER_ERROR);
+      this.logger.error(
+        `Failed to delete template: ${error.message}`,
+        error.stack,
+      );
+      throw new HttpException(
+        'Failed to delete template',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -188,10 +244,19 @@ export class AdminNotificationController {
   async sendBroadcast(@Body() broadcastDto: any) {
     try {
       // Placeholder for broadcast logic
-      return { message: 'Broadcast functionality not implemented yet', data: broadcastDto };
+      return {
+        message: 'Broadcast functionality not implemented yet',
+        data: broadcastDto,
+      };
     } catch (error) {
-      this.logger.error(`Failed to send broadcast: ${error.message}`, error.stack);
-      throw new HttpException('Failed to send broadcast', HttpStatus.INTERNAL_SERVER_ERROR);
+      this.logger.error(
+        `Failed to send broadcast: ${error.message}`,
+        error.stack,
+      );
+      throw new HttpException(
+        'Failed to send broadcast',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

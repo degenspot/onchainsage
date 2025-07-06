@@ -1,17 +1,23 @@
 // src/engagement-analytics/dto/engagement-report.dto.ts
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsDateString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsDateString,
+} from 'class-validator';
 
 export enum ReportFormat {
   JSON = 'json',
   CSV = 'csv',
-  PDF = 'pdf'
+  PDF = 'pdf',
 }
 
 export enum ReportType {
   DAILY = 'daily',
   WEEKLY = 'weekly',
   MONTHLY = 'monthly',
-  CUSTOM = 'custom'
+  CUSTOM = 'custom',
 }
 
 export class EngagementReportDto {
@@ -35,4 +41,3 @@ export class EngagementReportDto {
   @IsString()
   title?: string;
 }
-

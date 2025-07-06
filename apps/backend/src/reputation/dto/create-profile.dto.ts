@@ -1,4 +1,4 @@
-import { StakeHistoryDto } from "./stake-history.dto";
+import { StakeHistoryDto } from './stake-history.dto';
 
 export class ProfileDto {
   address: string;

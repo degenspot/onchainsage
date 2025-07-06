@@ -68,11 +68,13 @@ export class NewsService {
     return news;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async update(id: number, updateNewsDto: NewsItem): Promise<NewsItem> {
     // TODO: Implement actual update logic
     return updateNewsDto;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async remove(id: number): Promise<void> {
     // TODO: Implement actual delete logic
   }

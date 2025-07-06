@@ -20,16 +20,16 @@ export class CreateTemplateDto {
   @IsString()
   contentTemplate: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Channel-specific templates',
     required: false,
     type: 'object',
     example: {
-      'email': {
-        'titleTemplate': 'Email: {{title}}',
-        'contentTemplate': '<h1>{{title}}</h1><p>{{content}}</p>'
-      }
-    }
+      email: {
+        titleTemplate: 'Email: {{title}}',
+        contentTemplate: '<h1>{{title}}</h1><p>{{content}}</p>',
+      },
+    },
   })
   @IsObject()
   @IsOptional()
@@ -40,10 +40,10 @@ export class CreateTemplateDto {
     };
   };
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Additional metadata',
     required: false,
-    type: 'object'
+    type: 'object',
   })
   @IsObject()
   @IsOptional()
@@ -52,7 +52,7 @@ export class CreateTemplateDto {
   @ApiProperty({
     description: 'Whether the template is active',
     default: true,
-    required: false
+    required: false,
   })
   @IsBoolean()
   @IsOptional()

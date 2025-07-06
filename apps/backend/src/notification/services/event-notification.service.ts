@@ -5,11 +5,10 @@ import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { NotificationPreferenceService } from './notification-preference.service';
 import { NotificationService } from './notification.service';
 import { WebhookService } from './webhook.service';
-import { EventType } from '../../../analytics/entities/smart-contract-event.entity';
-import {
-  NotificationPreference,
-  NotificationChannel,
-} from '../entities/notification-preference.entity';
+import { EventType } from 'src/analytics/entities/smart-contract-event.entity';
+import { NotificationPreference } from '../entities/notification-preference.entity';
+import { NotificationChannel } from '../entities/notification.entity';
+import { User } from 'src/users/entities/user.entity';
 import { Redis } from 'ioredis';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 
@@ -124,11 +123,17 @@ export class EventNotificationService {
       timestamp: event.timestamp,
     };
 
+    // Construct a partial WebhookRegistration object to satisfy the method signature
+    const mockWebhook: any = {
+      url: preference.webhookUrl,
+      configuration: preference.webhookConfig || {},
+      method: 'POST', // Assuming POST, as it's the default in deliverEvent
+    };
+
     await this.webhookService.deliverEvent(
-      preference.webhookUrl,
+      mockWebhook,
       event.eventType,
       payload,
-      preference.webhookConfig,
     );
   }
 

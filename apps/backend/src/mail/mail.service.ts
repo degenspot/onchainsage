@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class MailService {
   // Placeholder for mail-related methods
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async sendMail(to: string, subject: string, text: string, html?: string) {
     // Implementation for sending email would go here
     console.log(`Sending email to ${to} with subject: ${subject}`);
@@ -12,4 +13,4 @@ export class MailService {
   async sendDigestEmail(to: string, subject: string, content: string) {
     return this.sendMail(to, subject, content, content);
   }
-} 
+}

@@ -1,9 +1,18 @@
-import { WebSocketGateway, WebSocketServer, OnGatewayInit, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect } from "@nestjs/websockets";
-import { Server, Socket } from "socket.io";
-import { MockSignalService } from "src/signals/mock-signals.service";
+import {
+  WebSocketGateway,
+  WebSocketServer,
+  OnGatewayInit,
+  SubscribeMessage,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+} from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+import { MockSignalService } from 'src/signals/mock-signals.service';
 
 @WebSocketGateway({ cors: true })
-export class SignalGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class SignalGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: Server;
 
@@ -20,10 +29,13 @@ export class SignalGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       // Emit an initial signal when a client connects
       const newSignal = this.mockSignalService.generateSingleSignal();
       if (this.server) {
-        client.emit("signalUpdate", newSignal);
+        client.emit('signalUpdate', newSignal);
       }
     } catch (error) {
-      console.error(`Error handling connection for client ${client.id}:`, error);
+      console.error(
+        `Error handling connection for client ${client.id}:`,
+        error,
+      );
     }
   }
 
@@ -35,16 +47,19 @@ export class SignalGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     try {
       console.log(`Client disconnected: ${client.id}`);
     } catch (error) {
-      console.error(`Error handling disconnection for client ${client.id}:`, error);
+      console.error(
+        `Error handling disconnection for client ${client.id}:`,
+        error,
+      );
     }
   }
 
   afterInit() {
     try {
-      console.log("WebSocket Server Initialized");
+      console.log('WebSocket Server Initialized');
       this.startSignalBroadcast();
     } catch (error) {
-      console.error("Error initializing WebSocket server:", error);
+      console.error('Error initializing WebSocket server:', error);
     }
   }
 
@@ -54,27 +69,29 @@ export class SignalGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         try {
           const newSignal = this.mockSignalService.generateSingleSignal();
           if (this.server) {
-            this.server.emit("signalUpdate", newSignal);
+            this.server.emit('signalUpdate', newSignal);
             // console.log("Broadcasted new signal:", newSignal);
           } else {
-            console.warn("WebSocket server is undefined. Unable to broadcast signal.");
+            console.warn(
+              'WebSocket server is undefined. Unable to broadcast signal.',
+            );
           }
         } catch (error) {
-          console.error("Error broadcasting signal:", error);
+          console.error('Error broadcasting signal:', error);
         }
       }, 30000); // Every 30 seconds
     } catch (error) {
-      console.error("Error starting signal broadcast:", error);
+      console.error('Error starting signal broadcast:', error);
     }
   }
 
-  @SubscribeMessage("signals")
+  @SubscribeMessage('signals')
   handleSignalUpdate() {
     try {
       const newSignal = this.mockSignalService.generateSingleSignal();
       return newSignal;
     } catch (error) {
-      console.error("Error handling signal update:", error);
+      console.error('Error handling signal update:', error);
     }
   }
 }

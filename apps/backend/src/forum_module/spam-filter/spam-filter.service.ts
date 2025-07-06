@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Filter } from 'bad-words';
+import * as BadWords from 'bad-words';
 
 @Injectable()
 export class SpamFilterService {
-  private filter = new Filter();
+  private filter = new BadWords();
 
   score(content: string): number {
     let score = 0;

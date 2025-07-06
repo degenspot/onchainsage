@@ -11,8 +11,6 @@ import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 describe('SocialEngagementService', () => {
   let service: SocialEngagementService;
-  let repository: SocialEngagementRepository;
-  let eventEmitter: EventEmitter2;
   let rateLimiter: RateLimiterService;
 
   const mockRepository = {
@@ -51,8 +49,6 @@ describe('SocialEngagementService', () => {
     }).compile();
 
     service = module.get<SocialEngagementService>(SocialEngagementService);
-    repository = module.get<SocialEngagementRepository>(SocialEngagementRepository);
-    eventEmitter = module.get<EventEmitter2>(EventEmitter2);
     rateLimiter = module.get<RateLimiterService>(RateLimiterService);
   });
 
@@ -96,7 +92,11 @@ describe('SocialEngagementService', () => {
 
       const result = await service.createEngagement(userId, dto);
 
-      expect(rateLimiter.checkLimit).toHaveBeenCalledWith(`engagement_${userId}`, 10, 60);
+      expect(rateLimiter.checkLimit).toHaveBeenCalledWith(
+        `engagement_${userId}`,
+        10,
+        60,
+      );
       expect(mockRepository.createOrUpdateEngagement).toHaveBeenCalledWith(
         userId,
         dto.contentId,
@@ -180,8 +180,14 @@ describe('SocialEngagementService', () => {
 
       await service.removeEngagement(userId, engagementId);
 
-      expect(mockRepository.findUserEngagement).toHaveBeenCalledWith(userId, engagementId, null);
-      expect(mockRepository.removeEngagement).toHaveBeenCalledWith(engagementId);
+      expect(mockRepository.findUserEngagement).toHaveBeenCalledWith(
+        userId,
+        engagementId,
+        null,
+      );
+      expect(mockRepository.removeEngagement).toHaveBeenCalledWith(
+        engagementId,
+      );
       expect(mockEventEmitter.emit).toHaveBeenCalledWith(
         'engagement.removed',
         expect.objectContaining({
@@ -199,9 +205,9 @@ describe('SocialEngagementService', () => {
 
       mockRepository.findUserEngagement.mockResolvedValue(null);
 
-      await expect(service.removeEngagement(userId, engagementId)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.removeEngagement(userId, engagementId),
+      ).rejects.toThrow(NotFoundException);
       expect(mockRepository.removeEngagement).not.toHaveBeenCalled();
     });
 
@@ -222,9 +228,9 @@ describe('SocialEngagementService', () => {
 
       mockRepository.findUserEngagement.mockResolvedValue(mockEngagement);
 
-      await expect(service.removeEngagement(userId, engagementId)).rejects.toThrow(
-        ForbiddenException,
-      );
+      await expect(
+        service.removeEngagement(userId, engagementId),
+      ).rejects.toThrow(ForbiddenException);
       expect(mockRepository.removeEngagement).not.toHaveBeenCalled();
     });
   });
@@ -234,7 +240,7 @@ describe('SocialEngagementService', () => {
       const userId = 'user-123';
       const contentId = 'content-123';
       const contentType = ContentType.TRADING_SIGNAL;
-      
+
       const mockEngagement = {
         id: 'engagement-123',
         userId,
@@ -258,14 +264,22 @@ describe('SocialEngagementService', () => {
       mockRepository.findUserEngagement.mockResolvedValue(mockEngagement);
       mockRepository.getEngagementCounters.mockResolvedValue(mockCounters);
 
-      const result = await service.getUserEngagement(userId, contentId, contentType);
+      const result = await service.getUserEngagement(
+        userId,
+        contentId,
+        contentType,
+      );
 
-      expect(mockRepository.findUserEngagement).toHaveBeenCalledWith(userId, contentId, contentType);
+      expect(mockRepository.findUserEngagement).toHaveBeenCalledWith(
+        userId,
+        contentId,
+        contentType,
+      );
       expect(mockRepository.getEngagementCounters).toHaveBeenCalledWith({
         contentId,
         contentType,
       });
-      
+
       expect(result).toEqual({
         id: mockEngagement.id,
         userId: mockEngagement.userId,
@@ -289,7 +303,11 @@ describe('SocialEngagementService', () => {
 
       mockRepository.findUserEngagement.mockResolvedValue(null);
 
-      const result = await service.getUserEngagement(userId, contentId, contentType);
+      const result = await service.getUserEngagement(
+        userId,
+        contentId,
+        contentType,
+      );
 
       expect(result).toBeNull();
       expect(mockRepository.getEngagementCounters).not.toHaveBeenCalled();
@@ -300,7 +318,7 @@ describe('SocialEngagementService', () => {
     it('should return engagement counts for content', async () => {
       const contentId = 'content-123';
       const contentType = ContentType.TRADING_SIGNAL;
-      
+
       const mockCounters = {
         id: 'counter-123',
         contentId,
@@ -312,7 +330,10 @@ describe('SocialEngagementService', () => {
 
       mockRepository.getEngagementCounters.mockResolvedValue(mockCounters);
 
-      const result = await service.getContentEngagementCounts(contentId, contentType);
+      const result = await service.getContentEngagementCounts(
+        contentId,
+        contentType,
+      );
 
       expect(mockRepository.getEngagementCounters).toHaveBeenCalledWith({
         contentId,
@@ -331,7 +352,7 @@ describe('SocialEngagementService', () => {
       const contentType = ContentType.TRADING_SIGNAL;
       const page = 1;
       const limit = 10;
-      
+
       const mockEngagements = [
         {
           id: 'engagement-123',
@@ -364,24 +385,32 @@ describe('SocialEngagementService', () => {
         updatedAt: new Date(),
       };
 
-      mockRepository.findContentEngagements.mockResolvedValue([mockEngagements, 2]);
+      mockRepository.findContentEngagements.mockResolvedValue([
+        mockEngagements,
+        2,
+      ]);
       mockRepository.getEngagementCounters.mockResolvedValue(mockCounters);
 
-      const result = await service.getContentEngagements(contentId, contentType, page, limit);
+      const result = await service.getContentEngagements(
+        contentId,
+        contentType,
+        page,
+        limit,
+      );
 
       expect(mockRepository.findContentEngagements).toHaveBeenCalledWith(
         contentId,
         contentType,
         page,
-        limit
+        limit,
       );
       expect(mockRepository.getEngagementCounters).toHaveBeenCalledWith({
         contentId,
         contentType,
       });
-      
+
       expect(result).toEqual({
-        engagements: mockEngagements.map(engagement => ({
+        engagements: mockEngagements.map((engagement) => ({
           id: engagement.id,
           userId: engagement.userId,
           contentId: engagement.contentId,

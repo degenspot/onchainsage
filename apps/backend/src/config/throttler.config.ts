@@ -1,7 +1,7 @@
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ConfigService } from '@nestjs/config';
 
-export const getThrottlerConfig = (configService: ConfigService) => {
+export const getThrottlerConfig = () => {
   return ThrottlerModule.forRootAsync({
     inject: [ConfigService],
     useFactory: (config: ConfigService) => ({

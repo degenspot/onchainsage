@@ -1,5 +1,5 @@
 import { MockSignalService } from './mock-signals.service';
-import { TradingSignal } from 'src/signals/interfaces/trading-signal.interface';
+import { Signal } from './entities/signal.entity';
 
 describe('MockSignalService', () => {
   let service: MockSignalService;
@@ -12,26 +12,21 @@ describe('MockSignalService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should generate an array of mock trading signals', () => {
-    const signals: TradingSignal[] = service.generateMockSignals();
+  it('should generate an array of mock signals', () => {
+    const result = service.generateMockSignals();
+    const signals: Signal[] = result.data;
 
+    expect(result.total).toBe(50);
     expect(signals).toBeInstanceOf(Array);
-    expect(signals.length).toBe(5);
+    expect(signals.length).toBe(10); // Default page size
 
-    signals.forEach((signal, index) => {
+    signals.forEach((signal) => {
       expect(signal.signal_id).toBeDefined();
       expect(signal.timestamp).toBeDefined();
-      expect(signal.token_pair).toBeDefined();
-      expect(signal.sentiment_score).toBeGreaterThanOrEqual(-1);
-      expect(signal.sentiment_score).toBeLessThanOrEqual(1);
-      expect(signal.liquidity_usd).toBeGreaterThanOrEqual(500000);
-      expect(signal.liquidity_usd).toBeLessThanOrEqual(5500000);
-      expect(signal.volume_usd).toBeGreaterThanOrEqual(100000);
-      expect(signal.volume_usd).toBeLessThanOrEqual(1100000);
-      expect(signal.category).toMatch(
-        /high-confidence|medium-confidence|low-confidence/,
-      );
-      expect(signal.recommendation).toMatch(/buy|sell|hold/);
+      expect(signal.signal_type).toBeDefined();
+      expect(signal.value).toBeDefined();
+      expect(signal.status).toBeDefined();
+      expect(signal.confidence_level).toBeDefined();
     });
   });
 });

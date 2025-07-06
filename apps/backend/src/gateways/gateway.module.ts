@@ -5,4 +5,4 @@ import { SignalGateway } from './signal.gateway';
   providers: [SignalGateway],
   exports: [SignalGateway],
 })
-export class GatewayModule {} 
+export class GatewayModule {}

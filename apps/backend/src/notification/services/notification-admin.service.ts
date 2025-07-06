@@ -16,7 +16,10 @@ export class NotificationAdminService {
     return Array.isArray(savedTemplate) ? savedTemplate[0] : savedTemplate;
   }
 
-  async updateTemplate(id: string, updateData: any): Promise<NotificationTemplate | null> {
+  async updateTemplate(
+    id: string,
+    updateData: any,
+  ): Promise<NotificationTemplate | null> {
     await this.templateRepository.update(id, updateData);
     return await this.templateRepository.findOneBy({ id });
   }
@@ -32,4 +35,4 @@ export class NotificationAdminService {
   async getTemplateById(id: string): Promise<NotificationTemplate | null> {
     return await this.templateRepository.findOneBy({ id });
   }
-} 
+}

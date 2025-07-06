@@ -1,4 +1,3 @@
-
 // src/notification/dto/update-template.dto.ts
 import { IsString, IsOptional, IsObject, IsBoolean } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -25,10 +24,10 @@ export class UpdateTemplateDto {
   @IsOptional()
   contentTemplate?: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Channel-specific templates',
     required: false,
-    type: 'object'
+    type: 'object',
   })
   @IsObject()
   @IsOptional()
@@ -39,10 +38,10 @@ export class UpdateTemplateDto {
     };
   };
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Additional metadata',
     required: false,
-    type: 'object'
+    type: 'object',
   })
   @IsObject()
   @IsOptional()
@@ -50,7 +49,7 @@ export class UpdateTemplateDto {
 
   @ApiProperty({
     description: 'Whether the template is active',
-    required: false
+    required: false,
   })
   @IsBoolean()
   @IsOptional()

@@ -1,4 +1,10 @@
-import { WebSocketGateway as WSGateway, WebSocketServer, SubscribeMessage, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
+import {
+  WebSocketGateway as WSGateway,
+  WebSocketServer,
+  SubscribeMessage,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { NotificationService } from '../services/notification.service';
 import { NotificationPreferenceService } from '../services/notification-preference.service';
@@ -9,7 +15,9 @@ import { NotificationChannel } from '../entities/notification.entity';
     origin: '*',
   },
 })
-export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class NotificationGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: Server;
 
@@ -23,7 +31,7 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
   handleConnection(client: Socket) {
     const userId = client.handshake.query.userId as string;
     if (userId) {
-      let userSockets = this.userSockets.get(userId) || [];
+      const userSockets = this.userSockets.get(userId) || [];
       userSockets.push(client);
       this.userSockets.set(userId, userSockets);
     }
@@ -33,7 +41,7 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     const userId = client.handshake.query.userId as string;
     if (userId) {
       let userSockets = this.userSockets.get(userId) || [];
-      userSockets = userSockets.filter(socket => socket.id !== client.id);
+      userSockets = userSockets.filter((socket) => socket.id !== client.id);
       if (userSockets.length === 0) {
         this.userSockets.delete(userId);
       } else {
@@ -43,11 +51,17 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
   }
 
   async sendNotification(userId: string, message: any) {
-    const preferences = await this.preferenceService.getPreference(userId, message.eventType);
-    if (preferences?.enabled && preferences.channels.includes(NotificationChannel.IN_APP)) {
+    const preferences = await this.preferenceService.getPreference(
+      userId,
+      message.eventType,
+    );
+    if (
+      preferences?.enabled &&
+      preferences.channels.includes(NotificationChannel.IN_APP)
+    ) {
       const userSockets = this.userSockets.get(userId);
       if (userSockets?.length) {
-        userSockets.forEach(socket => socket.emit('notification', message));
+        userSockets.forEach((socket) => socket.emit('notification', message));
       }
     }
   }

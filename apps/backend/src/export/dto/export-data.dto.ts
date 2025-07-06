@@ -11,4 +11,4 @@ export class ExportDataDto {
   @IsEnum(ExportFormat)
   @IsOptional()
   format: ExportFormat = ExportFormat.CSV;
-} 
+}

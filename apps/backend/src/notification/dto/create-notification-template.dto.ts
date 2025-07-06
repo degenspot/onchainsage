@@ -14,7 +14,10 @@ export class CreateNotificationTemplateDto {
   @IsString()
   name: string;
 
-  @ApiProperty({ enum: EventType, description: 'Type of event triggering the notification' })
+  @ApiProperty({
+    enum: EventType,
+    description: 'Type of event triggering the notification',
+  })
   @IsEnum(EventType)
   eventType: EventType;
 
@@ -30,4 +33,4 @@ export class CreateNotificationTemplateDto {
   @IsString()
   @IsOptional()
   channel?: string;
-} 
+}

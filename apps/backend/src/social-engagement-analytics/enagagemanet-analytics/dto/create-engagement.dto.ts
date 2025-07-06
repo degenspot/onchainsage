@@ -1,5 +1,11 @@
 // src/engagement-analytics/dto/create-engagement.dto.ts
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 import { EngagementType } from '../entities/engagement.entity';
 
 export class CreateEngagementDto {

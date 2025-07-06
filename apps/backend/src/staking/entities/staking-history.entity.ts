@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity('staking_history')
 export class StakingHistory {
@@ -19,4 +24,4 @@ export class StakingHistory {
 
   @CreateDateColumn()
   createdAt: Date;
-} 
+}

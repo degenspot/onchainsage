@@ -10,9 +10,19 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class SignalTask {
   private readonly logger = new Logger(SignalTask.name);
-  private readonly signalTypes = ['PRICE_BREAKOUT', 'VOLUME_SPIKE', 'TREND_REVERSAL', 'MOMENTUM_SHIFT'];
+  private readonly signalTypes = [
+    'PRICE_BREAKOUT',
+    'VOLUME_SPIKE',
+    'TREND_REVERSAL',
+    'MOMENTUM_SHIFT',
+  ];
   private readonly confidenceLevels = ['HIGH', 'MEDIUM', 'LOW'];
-  private readonly statuses = [SignalStatus.ACTIVE, SignalStatus.PENDING, SignalStatus.SUCCESSFUL, SignalStatus.FAILED];
+  private readonly statuses = [
+    SignalStatus.ACTIVE,
+    SignalStatus.PENDING,
+    SignalStatus.SUCCESSFUL,
+    SignalStatus.FAILED,
+  ];
 
   constructor(
     @InjectRepository(Signal)
@@ -25,7 +35,9 @@ export class SignalTask {
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async checkExpiredSignals() {
     try {
-      const expirationDays = this.configService.get<number>('app.signalExpirationDays');
+      const expirationDays = this.configService.get<number>(
+        'app.signalExpirationDays',
+      );
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - expirationDays);
 
@@ -63,7 +75,9 @@ export class SignalTask {
       });
 
       const savedSignal = await this.signalRepository.save(mockSignal);
-      this.logger.log(`Generated new mock signal: ${JSON.stringify(savedSignal)}`);
+      this.logger.log(
+        `Generated new mock signal: ${JSON.stringify(savedSignal)}`,
+      );
 
       this.signalGateway.broadcastNewSignal(savedSignal);
 

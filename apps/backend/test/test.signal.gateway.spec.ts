@@ -1,6 +1,5 @@
-
 import { Test, TestingModule } from '@nestjs/testing';
-import { SignalGateway } from '../src/gateways/signal.gateway'; 
+import { SignalGateway } from '../src/gateways/signal.gateway';
 import { MockSignalService } from '../src/signals/mock-signals.service';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
@@ -28,10 +27,10 @@ describe('SignalGateway (WebSocket Integration)', () => {
 
     mockSignalService = moduleFixture.get<MockSignalService>(MockSignalService);
 
-    // Create HTTP server and socket.io 
+    // Create HTTP server and socket.io
     httpServer = createServer();
     ioServer = new Server(httpServer, {
-      cors: { origin: "*" },
+      cors: { origin: '*' },
     });
 
     gateway = moduleFixture.get(SignalGateway);
@@ -47,7 +46,7 @@ describe('SignalGateway (WebSocket Integration)', () => {
         socket.emit('signalUpdate', signal);
       });
 
-      // Simulate preference update 
+      // Simulate preference update
       socket.on('preferences', () => {
         socket.emit('preferenceUpdate', { preference: 'mocked-preference' });
       });

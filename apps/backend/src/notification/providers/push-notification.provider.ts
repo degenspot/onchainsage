@@ -8,4 +8,4 @@ export class PushNotificationProvider {
     console.log(`Sending push notification: ${notification.title}`);
     return true;
   }
-} 
+}

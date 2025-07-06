@@ -1,7 +1,15 @@
 // src/database/migrations/create-social-engagement-tables.migration.ts
-import { MigrationInterface, QueryRunner, Table, TableIndex, TableForeignKey } from 'typeorm';
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableIndex,
+  TableForeignKey,
+} from 'typeorm';
 
-export class CreateSocialEngagementTables1715076125000 implements MigrationInterface {
+export class CreateSocialEngagementTables1715076125000
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     // Create ContentType enum
     await queryRunner.query(`

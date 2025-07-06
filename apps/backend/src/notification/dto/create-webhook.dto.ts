@@ -1,5 +1,14 @@
 // src/notification/dto/create-webhook.dto.ts
-import { IsString, IsOptional, IsUrl, IsArray, IsEnum, IsObject, ValidateNested, IsNumber, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsUrl,
+  IsArray,
+  IsObject,
+  ValidateNested,
+  IsNumber,
+  IsBoolean,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
@@ -36,12 +45,18 @@ class WebhookConfigurationDto {
   @Type(() => RateLimitDto)
   rateLimit?: RateLimitDto;
 
-  @ApiProperty({ description: 'Secret key for webhook signature', required: false })
+  @ApiProperty({
+    description: 'Secret key for webhook signature',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   secretKey?: string;
 
-  @ApiProperty({ description: 'Request timeout in milliseconds', required: false })
+  @ApiProperty({
+    description: 'Request timeout in milliseconds',
+    required: false,
+  })
   @IsNumber()
   @IsOptional()
   timeout?: number;
@@ -82,4 +97,3 @@ export class CreateWebhookDto {
   @IsOptional()
   active?: boolean;
 }
-

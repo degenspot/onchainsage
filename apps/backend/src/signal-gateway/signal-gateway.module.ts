@@ -4,6 +4,6 @@ import { SignalsModule } from 'src/signals/signals.module';
 
 @Module({
   imports: [SignalsModule],
-  providers: [SignalGateway]
+  providers: [SignalGateway],
 })
 export class SignalGatewayModule {}

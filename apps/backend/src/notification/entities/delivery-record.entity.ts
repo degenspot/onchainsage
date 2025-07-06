@@ -1,5 +1,12 @@
 // src/notification/entities/delivery-record.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+  Index,
+} from 'typeorm';
 import { Notification, NotificationChannel } from './notification.entity';
 
 export enum DeliveryStatus {

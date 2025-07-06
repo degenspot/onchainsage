@@ -1,5 +1,4 @@
 export class StakeHistoryDto {
-    stake: number;
-    timestamp: Date;
-  }
-  
+  stake: number;
+  timestamp: Date;
+}

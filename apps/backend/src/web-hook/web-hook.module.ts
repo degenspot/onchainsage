@@ -17,15 +17,15 @@ import * as handlebars from 'handlebars';
 import * as moment from 'moment';
 
 // Register Handlebars helpers
-handlebars.registerHelper('abs', function(value) {
+handlebars.registerHelper('abs', function (value) {
   return Math.abs(value);
 });
 
-handlebars.registerHelper('formatDate', function(date) {
+handlebars.registerHelper('formatDate', function (date) {
   return moment(date).format('MMM D, YYYY');
 });
 
-handlebars.registerHelper('if', function(conditional, options) {
+handlebars.registerHelper('if', function (conditional, options) {
   if (conditional) {
     return options.fn(this);
   } else {

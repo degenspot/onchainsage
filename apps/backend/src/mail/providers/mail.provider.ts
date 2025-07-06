@@ -32,7 +32,11 @@ export class MailProvider {
     });
   }
 
-  async sendNotificationEmail(email: string, signalType: string, message: string): Promise<void> {
+  async sendNotificationEmail(
+    email: string,
+    signalType: string,
+    message: string,
+  ): Promise<void> {
     await this.transporter.sendMail({
       to: email,
       subject: `New ${signalType} Signal`,
@@ -41,9 +45,16 @@ export class MailProvider {
     });
   }
 
-  async sendDigestEmail(to: string, subject: string, context: any): Promise<void> {
+  async sendDigestEmail(
+    to: string,
+    subject: string,
+    context: any,
+  ): Promise<void> {
     try {
-      const templatePath = path.resolve(__dirname, '../templates/digest-email.hbs');
+      const templatePath = path.resolve(
+        __dirname,
+        '../templates/digest-email.hbs',
+      );
       const template = fs.readFileSync(templatePath, 'utf8');
       const compiledTemplate = handlebars.compile(template);
       const html = compiledTemplate(context);
@@ -55,7 +66,10 @@ export class MailProvider {
       });
       this.logger.log(`Digest email sent to ${to}`);
     } catch (error) {
-      this.logger.error(`Failed to send digest email to ${to}: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to send digest email to ${to}: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }

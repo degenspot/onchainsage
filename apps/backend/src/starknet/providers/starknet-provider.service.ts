@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { RpcProvider, Account, Contract, ec } from 'starknet';
 import * as fs from 'fs';
 import * as path from 'node:path';
@@ -10,13 +11,21 @@ export class StarknetService {
   private account: Account;
   private contract: Contract;
 
-  constructor() {
-    this.provider = new RpcProvider({ nodeUrl: process.env.STARKNET_RPC_URL });
+  constructor(private configService: ConfigService) {
+    this.provider = new RpcProvider({
+      nodeUrl: this.configService.get<string>('STARKNET_RPC_URL'),
+    });
 
-    const privateKey = process.env.PRIVATE_KEY!;
-    const contractAddress = process.env.CONTRACT_ADDRESS!;
+    const privateKey = this.configService.get<string>('PRIVATE_KEY');
+    const contractAddress = this.configService.get<string>('CONTRACT_ADDRESS');
     console.log('privatekey', privateKey);
     // console.log('stark key', starkKey)
+
+    if (!privateKey || !contractAddress) {
+      throw new Error(
+        'PRIVATE_KEY and CONTRACT_ADDRESS must be defined in the environment variables.',
+      );
+    }
 
     // Key Conversion
     const starkKey = ec.starkCurve.getStarkKey(privateKey);

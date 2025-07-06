@@ -4,7 +4,6 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-verifyMessage;
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { verifyMessage } from 'ethers';
@@ -46,7 +45,7 @@ export class WalletAuthGuard implements CanActivate {
       request.user = payload;
 
       return true;
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Invalid token or signature');
     }
   }
@@ -70,7 +69,7 @@ export class WalletAuthGuard implements CanActivate {
 
       // Compare the recovered address with the wallet address
       return recoveredAddress.toLowerCase() === walletAddress.toLowerCase();
-    } catch (error) {
+    } catch {
       return false;
     }
   }

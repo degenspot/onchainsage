@@ -1,4 +1,3 @@
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
@@ -13,8 +12,12 @@ describe('AuthService', () => {
         {
           provide: 'UserRepository',
           useValue: {
-            findOne: jest.fn().mockResolvedValue({ id: '1', walletAddress: '0x123' }),
-            save: jest.fn().mockResolvedValue({ id: '1', walletAddress: '0x123' }),
+            findOne: jest
+              .fn()
+              .mockResolvedValue({ id: '1', walletAddress: '0x123' }),
+            save: jest
+              .fn()
+              .mockResolvedValue({ id: '1', walletAddress: '0x123' }),
           },
         },
         {

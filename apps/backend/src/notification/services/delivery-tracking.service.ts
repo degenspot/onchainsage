@@ -2,8 +2,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { DeliveryRecord, DeliveryStatus } from '../entities/delivery-record.entity';
-import { Notification, NotificationChannel, NotificationStatus } from '../entities/notification.entity';
+import {
+  DeliveryRecord,
+  DeliveryStatus,
+} from '../entities/delivery-record.entity';
+import {
+  Notification,
+  NotificationChannel,
+  NotificationStatus,
+} from '../entities/notification.entity';
 
 @Injectable()
 export class DeliveryTrackingService {
@@ -29,7 +36,9 @@ export class DeliveryTrackingService {
     });
 
     if (!notification) {
-      throw new NotFoundException(`Notification with ID ${notificationId} not found`);
+      throw new NotFoundException(
+        `Notification with ID ${notificationId} not found`,
+      );
     }
 
     const deliveryRecord = this.deliveryRecordRepository.create({
@@ -59,7 +68,9 @@ export class DeliveryTrackingService {
     });
 
     if (!deliveryRecord) {
-      throw new NotFoundException(`DeliveryRecord with ID ${deliveryId} not found`);
+      throw new NotFoundException(
+        `DeliveryRecord with ID ${deliveryId} not found`,
+      );
     }
 
     deliveryRecord.status = DeliveryStatus.DELIVERED;
@@ -92,7 +103,9 @@ export class DeliveryTrackingService {
     });
 
     if (!deliveryRecord) {
-      throw new NotFoundException(`DeliveryRecord with ID ${deliveryId} not found`);
+      throw new NotFoundException(
+        `DeliveryRecord with ID ${deliveryId} not found`,
+      );
     }
 
     deliveryRecord.errorMessage = errorMessage;
@@ -107,7 +120,12 @@ export class DeliveryTrackingService {
 
     if (deliveryRecord.retryCount <= retryStrategy.maxRetries) {
       // Schedule retry with exponential backoff
-      const delay = retryStrategy.initialDelay * Math.pow(retryStrategy.backoffMultiplier, deliveryRecord.retryCount - 1);
+      const delay =
+        retryStrategy.initialDelay *
+        Math.pow(
+          retryStrategy.backoffMultiplier,
+          deliveryRecord.retryCount - 1,
+        );
       deliveryRecord.status = DeliveryStatus.RETRY_SCHEDULED;
       deliveryRecord.nextRetryAt = new Date(Date.now() + delay);
     } else {
@@ -133,7 +151,12 @@ export class DeliveryTrackingService {
   async getDeliveryHistory(
     notificationId: string,
     pagination: { page: number; limit: number } = { page: 1, limit: 10 },
-  ): Promise<{ items: DeliveryRecord[]; total: number; page: number; limit: number }> {
+  ): Promise<{
+    items: DeliveryRecord[];
+    total: number;
+    page: number;
+    limit: number;
+  }> {
     const [items, total] = await this.deliveryRecordRepository.findAndCount({
       where: { notificationId },
       order: { createdAt: 'DESC' },

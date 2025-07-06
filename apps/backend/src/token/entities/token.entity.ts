@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('tokens')
 export class Token {
@@ -22,4 +28,4 @@ export class Token {
 
   @UpdateDateColumn()
   updatedAt: Date;
-} 
+}

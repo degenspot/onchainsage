@@ -1,7 +1,19 @@
 // src/notification/dto/create-notification.dto.ts
-import { IsString, IsOptional, IsEnum, IsArray, IsUUID, IsObject, IsBoolean, IsDate } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsArray,
+  IsUUID,
+  IsObject,
+  IsBoolean,
+  IsDate,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { NotificationPriority, NotificationChannel } from '../entities/notification.entity';
+import {
+  NotificationPriority,
+  NotificationChannel,
+} from '../entities/notification.entity';
 
 export class CreateNotificationDto {
   @ApiProperty({ description: 'ID of the recipient user' })
@@ -17,38 +29,38 @@ export class CreateNotificationDto {
   @IsString()
   content: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Notification priority',
     enum: NotificationPriority,
-    default: NotificationPriority.MEDIUM
+    default: NotificationPriority.MEDIUM,
   })
   @IsEnum(NotificationPriority)
   @IsOptional()
   priority?: NotificationPriority;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Notification channels',
     type: [String],
     enum: NotificationChannel,
-    default: [NotificationChannel.IN_APP]
+    default: [NotificationChannel.IN_APP],
   })
   @IsArray()
   @IsEnum(NotificationChannel, { each: true })
   @IsOptional()
   channels?: NotificationChannel[];
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Additional metadata',
     required: false,
-    type: 'object'
+    type: 'object',
   })
   @IsObject()
   @IsOptional()
   metadata?: Record<string, any>;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'ID of the template to use',
-    required: false
+    required: false,
   })
   @IsUUID()
   @IsOptional()
@@ -57,7 +69,7 @@ export class CreateNotificationDto {
   @ApiProperty({
     description: 'Data to populate the template',
     required: false,
-    type: 'object'
+    type: 'object',
   })
   @IsObject()
   @IsOptional()
@@ -65,7 +77,7 @@ export class CreateNotificationDto {
 
   @ApiProperty({
     description: 'Date when the notification expires',
-    required: false
+    required: false,
   })
   @IsDate()
   @IsOptional()
@@ -74,7 +86,7 @@ export class CreateNotificationDto {
   @ApiProperty({
     description: 'If true, notification will be marked as read upon creation',
     default: false,
-    required: false
+    required: false,
   })
   @IsBoolean()
   @IsOptional()

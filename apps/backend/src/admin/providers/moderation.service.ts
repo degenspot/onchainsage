@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { AuditLogService } from "../audit-log/audit-log.service";
-import { User } from "src/users/entities/user.entity";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { AuditLogService } from '../audit-log/audit-log.service';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class ModerationService {
@@ -12,9 +12,8 @@ export class ModerationService {
 
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-    
-    private readonly auditService: AuditLogService,
 
+    private readonly auditService: AuditLogService,
   ) {}
 
   // public async banPost(postId: string, performedBy: string) {
@@ -39,26 +38,29 @@ export class ModerationService {
 
   public async shadowbanUser(walletAddress: string, performedBy: string) {
     const user = await this.userRepo.findOne({ where: { walletAddress } });
-  
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
-  
+
     user.isShadowbanned = true;
     await this.userRepo.save(user);
-  
+
     await this.auditService.logAction({
       action: 'SHADOWBAN_USER',
       performedBy,
       targetId: walletAddress,
       details: `User with wallet ${walletAddress} was shadowbanned.`,
     });
-  
+
     return { message: ' This User has been shadowbanned.' };
   }
-  
+
   async banPost(postId: string, walletAddress: string): Promise<any> {
     // Implementation for banning a post
-    return { success: true, message: `Post ${postId} banned for user with wallet ${walletAddress}` };
+    return {
+      success: true,
+      message: `Post ${postId} banned for user with wallet ${walletAddress}`,
+    };
   }
 }

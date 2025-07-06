@@ -31,10 +31,7 @@ import { NotificationGateway } from './websocket/websocket.getway';
       }),
     }),
   ],
-  controllers: [
-    NotificationController,
-    NotificationPreferencesController,
-  ],
+  controllers: [NotificationController, NotificationPreferencesController],
   providers: [
     NotificationService,
     NotificationPreferenceService,
