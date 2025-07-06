@@ -7,4 +7,5 @@ export interface RateLimitOptions {
   duration: number;
 }
 
-export const RateLimit = (points: number, duration: number) => SetMetadata(RATE_LIMIT_KEY, { points, duration });
+export const RateLimit = (points: number, duration: number) =>
+  SetMetadata(RATE_LIMIT_KEY, { points, duration });

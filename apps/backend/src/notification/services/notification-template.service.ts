@@ -15,7 +15,9 @@ export class NotificationTemplateService {
     private templateRepository: Repository<NotificationTemplate>,
   ) {}
 
-  async create(createTemplateDto: CreateTemplateDto): Promise<NotificationTemplate> {
+  async create(
+    createTemplateDto: CreateTemplateDto,
+  ): Promise<NotificationTemplate> {
     const template = this.templateRepository.create(createTemplateDto);
     return this.templateRepository.save(template);
   }
@@ -35,7 +37,10 @@ export class NotificationTemplateService {
     return template;
   }
 
-  async update(id: string, updateTemplateDto: UpdateTemplateDto): Promise<NotificationTemplate> {
+  async update(
+    id: string,
+    updateTemplateDto: UpdateTemplateDto,
+  ): Promise<NotificationTemplate> {
     const template = await this.findOne(id);
     Object.assign(template, updateTemplateDto);
     this.templateCache.delete(id); // Clear cache when template is updated

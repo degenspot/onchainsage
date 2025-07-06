@@ -1,5 +1,12 @@
 // src/notification/entities/webhook-registration.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Index,
+} from 'typeorm';
 
 @Entity()
 @Index(['userId'])
@@ -66,4 +73,3 @@ export class WebhookRegistration {
   @UpdateDateColumn()
   updatedAt: Date;
 }
-

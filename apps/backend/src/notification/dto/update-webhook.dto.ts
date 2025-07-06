@@ -1,5 +1,13 @@
 // src/notification/dto/update-webhook.dto.ts
-import { IsString, IsOptional, IsUrl, IsArray, IsObject, ValidateNested, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsUrl,
+  IsArray,
+  IsObject,
+  ValidateNested,
+  IsBoolean,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -46,7 +54,10 @@ export class UpdateWebhookDto {
   @Type(() => WebhookConfigurationDto)
   configuration?: WebhookConfigurationDto;
 
-  @ApiProperty({ description: 'Whether the webhook is active', required: false })
+  @ApiProperty({
+    description: 'Whether the webhook is active',
+    required: false,
+  })
   @IsBoolean()
   @IsOptional()
   active?: boolean;

@@ -1,54 +1,60 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Index } from "typeorm"
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  Index,
+} from 'typeorm';
 
 @Entity()
 export class PaymentTransaction {
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @Column()
   @Index()
-  transactionHash: string
+  transactionHash: string;
 
   @Column()
   @Index()
-  senderAddress: string
+  senderAddress: string;
 
   @Column()
   @Index()
-  recipientAddress: string
+  recipientAddress: string;
 
-  @Column("decimal", { precision: 20, scale: 8 })
-  amount: number
+  @Column('decimal', { precision: 20, scale: 8 })
+  amount: number;
 
   @Column({
-    type: "enum",
-    enum: ["DEPOSIT", "UPGRADE", "CALL_FEE", "TRANSFER", "REFUND", "BATCH"],
-    default: "TRANSFER",
+    type: 'enum',
+    enum: ['DEPOSIT', 'UPGRADE', 'CALL_FEE', 'TRANSFER', 'REFUND', 'BATCH'],
+    default: 'TRANSFER',
   })
   @Index()
-  type: "DEPOSIT" | "UPGRADE" | "CALL_FEE" | "TRANSFER" | "REFUND" | "BATCH"
+  type: 'DEPOSIT' | 'UPGRADE' | 'CALL_FEE' | 'TRANSFER' | 'REFUND' | 'BATCH';
 
   @Column({
-    type: "enum",
-    enum: ["PENDING", "CONFIRMED", "FAILED", "REFUNDED"],
-    default: "PENDING",
+    type: 'enum',
+    enum: ['PENDING', 'CONFIRMED', 'FAILED', 'REFUNDED'],
+    default: 'PENDING',
   })
   @Index()
-  status: "PENDING" | "CONFIRMED" | "FAILED" | "REFUNDED"
+  status: 'PENDING' | 'CONFIRMED' | 'FAILED' | 'REFUNDED';
 
   @Column({ nullable: true })
-  reference: string | null
+  reference: string | null;
 
   @Column({ nullable: true })
-  refundTransactionHash: string | null
+  refundTransactionHash: string | null;
 
   @Column({ nullable: true })
-  scheduledPaymentId: string | null
+  scheduledPaymentId: string | null;
 
   @Column({ nullable: true })
-  batchId: string | null
+  batchId: string | null;
 
   @CreateDateColumn()
   @Index()
-  timestamp: Date
+  timestamp: Date;
 }

@@ -1,12 +1,4 @@
-import {
-  IsString,
-  IsEmail,
-  MinLength,
-  MaxLength,
-  IsArray,
-  IsOptional,
-  IsObject,
-} from 'class-validator';
+import { IsString, IsArray, IsOptional, IsObject } from 'class-validator';
 
 export class StarknetChallengeDto {
   @IsString()

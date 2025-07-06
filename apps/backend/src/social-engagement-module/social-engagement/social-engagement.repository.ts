@@ -6,6 +6,7 @@ import { SocialEngagement } from './entities/social-engagement.entity';
 import { EngagementCounter } from './entities/engagement-counter.entity';
 import { ContentPolymorph } from '../shared/interfaces/content-polymorph.interface';
 import { EngagementType } from '../shared/enums/engagement-type.enum';
+import { ContentType } from '../shared/enums/content-type.enum';
 
 @Injectable()
 export class SocialEngagementRepository {
@@ -17,13 +18,20 @@ export class SocialEngagementRepository {
     private dataSource: DataSource,
   ) {}
 
-  async findUserEngagement(userId: string, contentId: string, contentType: string): Promise<SocialEngagement | null> {
+  async findUserEngagement(
+    userId: string,
+    contentId: string,
+    contentType: ContentType,
+  ): Promise<SocialEngagement | null> {
     return this.engagementRepo.findOne({
       where: { userId, contentId, contentType },
     });
   }
 
-  async getEngagementCounters({ contentId, contentType }: ContentPolymorph): Promise<EngagementCounter> {
+  async getEngagementCounters({
+    contentId,
+    contentType,
+  }: ContentPolymorph): Promise<EngagementCounter> {
     const counter = await this.counterRepo.findOne({
       where: { contentId, contentType },
     });
@@ -44,9 +52,9 @@ export class SocialEngagementRepository {
   }
 
   async createOrUpdateEngagement(
-    userId: string, 
-    contentId: string, 
-    contentType: string, 
+    userId: string,
+    contentId: string,
+    contentType: ContentType,
     type: EngagementType,
     metadata?: Record<string, any>,
   ): Promise<{ engagement: SocialEngagement; counters: EngagementCounter }> {
@@ -112,17 +120,17 @@ export class SocialEngagementRepository {
         }
 
         await manager.remove(existingEngagement);
-        return { 
-          engagement: null, 
-          counters: await manager.save(counter) 
+        return {
+          engagement: null,
+          counters: await manager.save(counter),
         };
       }
 
       // Save both entities
       await manager.save(counter);
-      return { 
-        engagement: await manager.save(engagement), 
-        counters: counter 
+      return {
+        engagement: await manager.save(engagement),
+        counters: counter,
       };
     });
   }
@@ -140,9 +148,9 @@ export class SocialEngagementRepository {
     await this.dataSource.transaction(async (manager) => {
       // Get counter
       const counter = await manager.findOne(EngagementCounter, {
-        where: { 
-          contentId: engagement.contentId, 
-          contentType: engagement.contentType 
+        where: {
+          contentId: engagement.contentId,
+          contentType: engagement.contentType,
         },
       });
 
@@ -162,8 +170,8 @@ export class SocialEngagementRepository {
   }
 
   async findContentEngagements(
-    contentId: string, 
-    contentType: string,
+    contentId: string,
+    contentType: ContentType,
     page = 1,
     limit = 10,
   ): Promise<[SocialEngagement[], number]> {

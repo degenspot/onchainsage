@@ -5,7 +5,11 @@ import * as path from 'path';
 @Injectable()
 export class FeatureFlagsService implements OnModuleInit {
   private flags: Record<string, boolean> = {};
-  private readonly flagsFilePath = path.join(process.cwd(), 'config', 'flags.json');
+  private readonly flagsFilePath = path.join(
+    process.cwd(),
+    'config',
+    'flags.json',
+  );
 
   async onModuleInit() {
     await this.loadFlags();

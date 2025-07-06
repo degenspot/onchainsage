@@ -1,9 +1,7 @@
-import { Controller } from "@nestjs/common";
-import { ForumReportService } from "./forum-report.service";
+import { Controller } from '@nestjs/common';
+import { ForumReportService } from './forum-report.service';
 
 @Controller('forum-report')
-export class ForumReportController{
-  constructor(
-    private readonly forumReportService:ForumReportService
-  ){}
+export class ForumReportController {
+  constructor(private readonly forumReportService: ForumReportService) {}
 }

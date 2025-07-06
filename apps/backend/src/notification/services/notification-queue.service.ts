@@ -1,11 +1,18 @@
 // src/notification/services/notification-queue.service.ts
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan, In } from 'typeorm';
+import { Repository, LessThan } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Notification, NotificationStatus, NotificationPriority } from '../entities/notification.entity';
-import { DeliveryRecord, DeliveryStatus } from '../entities/delivery-record.entity';
+import {
+  Notification,
+  NotificationStatus,
+  NotificationPriority,
+} from '../entities/notification.entity';
+import {
+  DeliveryRecord,
+  DeliveryStatus,
+} from '../entities/delivery-record.entity';
 import { EmailNotificationProvider } from '../providers/email-notification.provider';
 import { PushNotificationProvider } from '../providers/push-notification.provider';
 import { InAppNotificationProvider } from '../providers/in-app-notification.provider';
@@ -23,11 +30,11 @@ export class NotificationQueueService implements OnModuleInit {
     [NotificationPriority.MEDIUM]: [],
     [NotificationPriority.LOW]: [],
   };
-  
+
   private processing = false;
-  
+
   private readonly logger = new Logger(NotificationQueueService.name);
-  
+
   constructor(
     @InjectRepository(Notification)
     private notificationRepository: Repository<Notification>,
@@ -52,11 +59,11 @@ export class NotificationQueueService implements OnModuleInit {
       where: { status: NotificationStatus.PENDING },
       order: { priority: 'DESC', createdAt: 'ASC' },
     });
-    
+
     for (const notification of pendingNotifications) {
       this.queues[notification.priority].push(notification);
     }
-    
+
     // Start processing queue if there are pending notifications
     if (pendingNotifications.length > 0) {
       this.processQueue();
@@ -65,7 +72,7 @@ export class NotificationQueueService implements OnModuleInit {
 
   addToQueue(notification: Notification): void {
     this.queues[notification.priority].push(notification);
-    
+
     // Start processing queue if not already processing
     if (!this.processing) {
       this.processQueue();
@@ -75,7 +82,7 @@ export class NotificationQueueService implements OnModuleInit {
   @Cron(CronExpression.EVERY_MINUTE)
   async processRetries(): Promise<void> {
     const now = new Date();
-    
+
     // Find delivery records that need retry
     const recordsToRetry = await this.deliveryRecordRepository.find({
       where: {
@@ -84,12 +91,12 @@ export class NotificationQueueService implements OnModuleInit {
       },
       relations: ['notification'],
     });
-    
+
     for (const record of recordsToRetry) {
       // Update status to indicate we're retrying
       record.status = DeliveryStatus.SENDING;
       await this.deliveryRecordRepository.save(record);
-      
+
       // Add the notification back to the queue for processing
       if (record.notification) {
         record.notification.status = NotificationStatus.PENDING;
@@ -102,7 +109,7 @@ export class NotificationQueueService implements OnModuleInit {
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async cleanupExpiredNotifications(): Promise<void> {
     const now = new Date();
-    
+
     // Find expired notifications
     const expiredNotifications = await this.notificationRepository.find({
       where: {
@@ -110,18 +117,18 @@ export class NotificationQueueService implements OnModuleInit {
         status: NotificationStatus.PENDING,
       },
     });
-    
+
     // Mark them as failed
     for (const notification of expiredNotifications) {
       notification.status = NotificationStatus.FAILED;
       await this.notificationRepository.save(notification);
-      
+
       // Mark any pending delivery records as failed
       await this.deliveryRecordRepository.update(
         { notificationId: notification.id, status: DeliveryStatus.PENDING },
-        { status: DeliveryStatus.FAILED, errorMessage: 'Notification expired' }
+        { status: DeliveryStatus.FAILED, errorMessage: 'Notification expired' },
       );
-      
+
       // Emit event
       this.eventEmitter.emit('notification.expired', notification);
     }
@@ -129,7 +136,7 @@ export class NotificationQueueService implements OnModuleInit {
 
   private async processQueue(): Promise<void> {
     this.processing = true;
-    
+
     try {
       // Process queues in priority order
       for (const priority of [
@@ -140,7 +147,7 @@ export class NotificationQueueService implements OnModuleInit {
       ]) {
         while (this.queues[priority].length > 0) {
           const notification = this.queues[priority].shift();
-          
+
           // Process the notification
           await this.processNotification(notification);
         }
@@ -152,7 +159,10 @@ export class NotificationQueueService implements OnModuleInit {
 
   private async processNotification(notification: Notification): Promise<void> {
     try {
-      const channel = notification.channels && notification.channels.length > 0 ? notification.channels[0] : 'in-app';
+      const channel =
+        notification.channels && notification.channels.length > 0
+          ? notification.channels[0]
+          : 'in-app';
       const provider = this.getProviderForChannel(channel);
       if (provider) {
         await provider.send(notification);
@@ -163,7 +173,10 @@ export class NotificationQueueService implements OnModuleInit {
         (notification as any).errorMessage = 'No provider found for channel';
       }
     } catch (error) {
-      this.logger.error(`Error processing notification: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error processing notification: ${error.message}`,
+        error.stack,
+      );
       notification.status = NotificationStatus.FAILED;
       (notification as any).errorMessage = error.message;
     } finally {
@@ -171,7 +184,13 @@ export class NotificationQueueService implements OnModuleInit {
     }
   }
 
-  private getProviderForChannel(channel: string): EmailNotificationProvider | PushNotificationProvider | InAppNotificationProvider | undefined {
+  private getProviderForChannel(
+    channel: string,
+  ):
+    | EmailNotificationProvider
+    | PushNotificationProvider
+    | InAppNotificationProvider
+    | undefined {
     switch (channel) {
       case 'email':
         return this.emailProvider;

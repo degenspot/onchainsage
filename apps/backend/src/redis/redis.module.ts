@@ -6,7 +6,8 @@ import Redis from 'ioredis';
 @Global()
 @Module({
   imports: [ConfigModule],
-  providers: [RedisService,
+  providers: [
+    RedisService,
     {
       provide: 'REDIS',
       useFactory: (configService: ConfigService) => {
@@ -16,7 +17,7 @@ import Redis from 'ioredis';
           // password: configService.get<string>('REDIS_PASSWORD', ''), //
           maxRetriesPerRequest: null, // Keeps the connection alive
           enableOfflineQueue: true,
-          retryStrategy: (times) => Math.min(times * 50, 2000), // Custom retry strategy 
+          retryStrategy: (times) => Math.min(times * 50, 2000), // Custom retry strategy
         });
       },
       inject: [ConfigService],

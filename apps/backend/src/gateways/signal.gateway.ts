@@ -6,7 +6,7 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
-import { Server } from 'socket.io';  // Change to socket.io
+import { Server } from 'socket.io'; // Change to socket.io
 
 @WebSocketGateway({ cors: true })
 export class SignalGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -34,11 +34,14 @@ export class SignalGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('preferences')
   handlePreferences(client: any, preferences: any): void {
-    this.logger.log(`Received updated preferences from ${client.id}: ${JSON.stringify(preferences)}`);
+    this.logger.log(
+      `Received updated preferences from ${client.id}: ${JSON.stringify(preferences)}`,
+    );
     // Handle preferences update
   }
 
   @SubscribeMessage('message')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleMessage(client: any, payload: any): string {
     return 'Hello world!';
   }

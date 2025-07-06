@@ -8,4 +8,4 @@ export class InAppNotificationProvider implements NotificationProvider {
     // Placeholder for in-app notification logic
     console.log(`Sending in-app notification: ${notification.title}`);
   }
-} 
+}

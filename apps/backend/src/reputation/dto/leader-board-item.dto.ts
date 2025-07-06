@@ -1,5 +1,4 @@
 export class LeaderboardItemDto {
-    address: string;
-    reputation: number;
-  }
-  
+  address: string;
+  reputation: number;
+}

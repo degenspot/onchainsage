@@ -7,6 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [TypeOrmModule.forFeature([SignalAudit])],
   controllers: [SignalAuditController],
-  providers: [SignalAuditService]
+  providers: [SignalAuditService],
 })
 export class SignalAuditModule {}

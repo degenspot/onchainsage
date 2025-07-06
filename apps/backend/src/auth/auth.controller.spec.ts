@@ -12,14 +12,18 @@ describe('AuthController', () => {
       providers: [
         AuthService,
         {
-          provide: 'UserRepository', 
+          provide: 'UserRepository',
           useValue: {
-            findOne: jest.fn().mockResolvedValue({ id: '1', walletAddress: '0x123' }),
-            save: jest.fn().mockResolvedValue({ id: '1', walletAddress: '0x123' }),
+            findOne: jest
+              .fn()
+              .mockResolvedValue({ id: '1', walletAddress: '0x123' }),
+            save: jest
+              .fn()
+              .mockResolvedValue({ id: '1', walletAddress: '0x123' }),
           },
         },
         {
-          provide: JwtService, 
+          provide: JwtService,
           useValue: {
             sign: jest.fn().mockReturnValue('mocked-token'),
           },

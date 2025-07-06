@@ -10,6 +10,6 @@ import { RedisModule } from '../redis/redis.module';
   imports: [TypeOrmModule.forFeature([Signal]), RedisModule],
   controllers: [SignalsController],
   providers: [SignalsService, MockSignalService],
-  exports: [SignalsService, MockSignalService]
+  exports: [SignalsService, MockSignalService],
 })
 export class SignalsModule {}

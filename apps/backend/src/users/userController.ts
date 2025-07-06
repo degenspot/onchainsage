@@ -43,7 +43,7 @@ export class UserController {
       const userId = req.user.walletAddress;
 
       // Find user or create if doesn't exist
-      let user = await this.userRepository.findOne({ where: { id: userId } });
+      const user = await this.userRepository.findOne({ where: { id: userId } });
 
       if (!user) {
         return res.status(HttpStatus.NOT_FOUND).json({

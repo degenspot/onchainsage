@@ -1,7 +1,7 @@
-import { InjectRepository } from "@nestjs/typeorm";
-import { ForumReport } from "./entities/forum-report.entity";
-import { Repository } from "typeorm";
-import { Injectable } from "@nestjs/common";
+import { InjectRepository } from '@nestjs/typeorm';
+import { ForumReport } from './entities/forum-report.entity';
+import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ForumReportService {
@@ -11,9 +11,9 @@ export class ForumReportService {
   ) {}
 
   public async getOpenReports() {
-    return this.reportRepo.find({ 
-      where: { resolved: false }, 
-      order: { createdAt: 'DESC' } 
+    return this.reportRepo.find({
+      where: { resolved: false },
+      order: { createdAt: 'DESC' },
     });
   }
 }

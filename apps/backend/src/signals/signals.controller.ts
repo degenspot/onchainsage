@@ -1,11 +1,11 @@
-import { Controller, Get, Param, Post, Query, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, Put, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRole } from '../users/entities/user.entity';
-import { SignalsService } from './signals.service'; 
+import { SignalsService } from './signals.service';
 import { MockSignalService } from './mock-signals.service';
-import { Signal } from './entities/signal.entity'; 
+import { Signal } from './entities/signal.entity';
 import { PaginatedResponse, PaginationDto } from './interfaces/pagination.dto';
 import { TopSignalsDto } from './dtos/top-signals.dto';
 
@@ -19,58 +19,68 @@ export class SignalsController {
 
   @Get()
   @ApiResponse({ status: 200, description: 'Returns paginated signals' })
-  async findAll(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<Signal>> {
+  async findAll(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<PaginatedResponse<Signal>> {
     const { data, total } = await this.signalsService.findAll(
       paginationDto.page,
-      paginationDto.limit
+      paginationDto.limit,
     );
     return {
       data,
       metadata: {
         total,
         page: paginationDto.page,
-        limit: paginationDto.limit
-      }
+        limit: paginationDto.limit,
+      },
     };
   }
 
   @Get('top')
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Get top-ranked signals',
-    description: 'Returns signals ranked by a combination of reputation and recency'
+    description:
+      'Returns signals ranked by a combination of reputation and recency',
   })
-  @ApiResponse({ 
-    status: 200, 
-    description: 'Returns paginated top signals ranked by reputation and recency' 
+  @ApiResponse({
+    status: 200,
+    description:
+      'Returns paginated top signals ranked by reputation and recency',
   })
-  async getTopSignals(@Query() query: TopSignalsDto): Promise<PaginatedResponse<Signal>> {
+  async getTopSignals(
+    @Query() query: TopSignalsDto,
+  ): Promise<PaginatedResponse<Signal>> {
     const { data, total } = await this.signalsService.getTopSignals(
       query.page,
       query.limit,
-      query.filter
+      query.filter,
     );
     return {
       data,
       metadata: {
         total,
         page: query.page,
-        limit: query.limit
-      }
+        limit: query.limit,
+      },
     };
   }
 
   @Get('latest')
-  async getLatestSignals(@Query('limit') limit: number = 10): Promise<Signal[]> {
+  async getLatestSignals(
+    @Query('limit') limit: number = 10,
+  ): Promise<Signal[]> {
     return await this.signalsService.getLatestSignals(limit);
   }
 
   @Get('mock')
   @ApiOperation({ summary: 'Get mock signals with pagination' })
   @ApiResponse({ status: 200, description: 'Returns paginated mock signals' })
-  async getMockSignals(@Query() paginationDto: PaginationDto): Promise<PaginatedResponse<Signal>> {
+  async getMockSignals(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<PaginatedResponse<Signal>> {
     const { data, total } = await this.mockSignalsService.generateMockSignals(
       paginationDto.page,
-      paginationDto.limit
+      paginationDto.limit,
     );
     await this.signalsService.invalidateCache();
     return {
@@ -78,8 +88,8 @@ export class SignalsController {
       metadata: {
         total,
         page: paginationDto.page,
-        limit: paginationDto.limit
-      }
+        limit: paginationDto.limit,
+      },
     };
   }
 

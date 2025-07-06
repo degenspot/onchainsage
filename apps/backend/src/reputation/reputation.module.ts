@@ -9,5 +9,6 @@ import { ReputationController } from './reputation.controller';
   imports: [TypeOrmModule.forFeature([Vote, ReputationAdjustment])],
   providers: [ReputationService],
   controllers: [ReputationController],
+  exports: [ReputationService],
 })
 export class ReputationModule {}

@@ -22,8 +22,6 @@ import { MailModule } from './mail/mail.module';
 import { NewsModule } from './news/news.module';
 import { ForumModule } from './forum_module/forum.module';
 import { ReputationModule } from './reputation/reputation.module';
-import { RateLimitViolation } from './entities/rate-limit-violation.entity';
-import { getThrottlerConfig } from './config/throttler.config';
 import { ForumReportModule } from './forum-report/forum-report.module';
 import { AdminModule } from './admin/admin.module';
 import { SignalAuditModule } from './signal-audit/signal-audit.module';
@@ -31,8 +29,10 @@ import { ExportModule } from './export/export.module';
 import { DigestModule } from './digest/digest.module';
 import { WebhookModule } from './web-hook/web-hook.module';
 import { TemplatesModule } from './templates/templates.module';
-import { FeatureFlagsService } from './config/feature-flag';
+import { FeatureFlagsService } from './config/feature-flags';
 import { FeatureFlagMiddleware } from './middleware/feature-flag.middleware';
+import { StatsModule } from './stats/stats.modules';
+import { SharedModule } from './shared/shared.module';
 
 
 const ENV = process.env.NODE_ENV || 'development';
@@ -86,22 +86,28 @@ console.log('Current environment:', ENV);
     DigestModule,
     WebhookModule,
     TemplatesModule,
+    StatsModule,
+    SharedModule,
   ],
   controllers: [AppController, RedisController],
   providers: [
-    AppService,FeatureFlagsService,
+    AppService,
+    FeatureFlagsService,
     // Apply throttling guard globally
     { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class AppModule implements NestModule {
+  constructor(private readonly configService: ConfigService) {}
   configure(consumer: MiddlewareConsumer) {
+    // consumer
+    //   .apply(RateLimitMiddleware)
+    //   .forRoutes('*');
+    
+    const featureFlagsService = new FeatureFlagsService(this.configService);
+    const featureFlagMiddleware = new FeatureFlagMiddleware(featureFlagsService);
     consumer
-      .apply(RateLimitMiddleware)
-      .forRoutes('*');
-
-    consumer
-      .apply(FeatureFlagMiddleware)
+      .apply((req, res, next) => featureFlagMiddleware.use(req, res, next))
       .forRoutes('signals', 'users/preferences');
   }
 }

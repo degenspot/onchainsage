@@ -1,13 +1,13 @@
 export class DailyAnalyticsDto {
-  date: Date
+  date: Date;
 
-  newSignals: number
+  newSignals: number;
 
-  newVotes: number
+  newVotes: number;
 
-  activeUsers: number
+  activeUsers: number;
 
-  amountStaked: string
+  amountStaked: string;
 
-  amountUnstaked: string
+  amountUnstaked: string;
 }

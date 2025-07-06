@@ -6,7 +6,7 @@ export enum SignalStatus {
   PENDING = 'pending',
   SUCCESSFUL = 'successful',
   FAILED = 'failed',
-  EXPIRED = 'expired'
+  EXPIRED = 'expired',
 }
 
 @Entity('signals')

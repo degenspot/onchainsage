@@ -1,4 +1,3 @@
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { SignalsService } from './signals.service';
 
@@ -13,7 +12,9 @@ describe('SignalsService', () => {
           provide: 'SignalRepository',
           useValue: {
             find: jest.fn().mockResolvedValue([]),
-            findOne: jest.fn().mockResolvedValue({ id: 1, value: 'test-signal' }),
+            findOne: jest
+              .fn()
+              .mockResolvedValue({ id: 1, value: 'test-signal' }),
             save: jest.fn().mockResolvedValue({ id: 1, value: 'test-signal' }),
           },
         },

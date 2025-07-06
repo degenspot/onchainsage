@@ -9,7 +9,7 @@ export class Thread {
   @Column()
   signalId: string;
 
-  @OneToMany(() => Post, post => post.thread, { cascade: true })
+  @OneToMany(() => Post, (post) => post.thread, { cascade: true })
   posts: Post[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

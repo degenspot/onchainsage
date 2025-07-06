@@ -61,7 +61,9 @@ export class RedisService {
   }
 
   // BATCH OPERATION: set multiple user preferences
-  public async setMultipleUserPreferences(preferences: Record<string, Preferences>) {
+  public async setMultipleUserPreferences(
+    preferences: Record<string, Preferences>,
+  ) {
     const pipeline = this.redis.pipeline();
     const ttl = +this.configService.get('REDIS_TTL') || 3600;
 
@@ -75,7 +77,9 @@ export class RedisService {
   }
 
   // BATCH OPERATION: get multiple user preferences
-  public async getMultipleUserPreferences(userIds: string[]): Promise<Record<string, Preferences | null>> {
+  public async getMultipleUserPreferences(
+    userIds: string[],
+  ): Promise<Record<string, Preferences | null>> {
     const pipeline = this.redis.pipeline();
 
     userIds.forEach((userId) => {
@@ -115,7 +119,9 @@ export class RedisService {
   }
 
   // Mock function to simulate fetching preferences from DB
-  private async fetchPreferencesFromDatabase(userId: string): Promise<Preferences | null> {
+  private async fetchPreferencesFromDatabase(
+    _userId: string,
+  ): Promise<Preferences | null> {
     return {
       theme: 'dark',
       notifications: true,
@@ -143,5 +149,4 @@ export class RedisService {
   async get(key: string): Promise<string | null> {
     return this.getAsync(key);
   }
-  
 }

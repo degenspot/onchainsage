@@ -90,7 +90,7 @@ describe('RateLimitMiddleware', () => {
       const next = jest.fn();
 
       (throttlerGuard.handleRequest as jest.Mock).mockRejectedValueOnce(
-        new ThrottlerException()
+        new ThrottlerException(),
       );
 
       await middleware.use(req, res, next);
@@ -105,7 +105,7 @@ describe('RateLimitMiddleware', () => {
           walletAddress: '0x123456',
           endpoint: '/vote',
           method: 'POST',
-        })
+        }),
       );
     });
 
@@ -159,7 +159,9 @@ describe('RateLimitMiddleware', () => {
       const next = jest.fn();
       const testError = new Error('Test error');
 
-      (throttlerGuard.handleRequest as jest.Mock).mockRejectedValueOnce(testError);
+      (throttlerGuard.handleRequest as jest.Mock).mockRejectedValueOnce(
+        testError,
+      );
 
       await middleware.use(req, res, next);
 

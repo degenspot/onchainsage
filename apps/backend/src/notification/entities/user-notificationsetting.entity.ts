@@ -11,17 +11,17 @@ export class UserNotificationSetting {
   @ManyToOne(() => User)
   user: User;
 
-  @Column('enum', { 
-    enum: NotificationChannel, 
-    array: true, 
-    default: [NotificationChannel.EMAIL] 
+  @Column('enum', {
+    enum: NotificationChannel,
+    array: true,
+    default: [NotificationChannel.EMAIL],
   })
   preferredChannels: NotificationChannel[];
 
-  @Column('enum', { 
-    enum: SignalType, 
-    array: true, 
-    default: [SignalType.HIGH_CONFIDENCE] 
+  @Column('enum', {
+    enum: SignalType,
+    array: true,
+    default: [SignalType.HIGH_CONFIDENCE],
   })
   enabledSignalTypes: SignalType[];
 

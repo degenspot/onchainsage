@@ -20,7 +20,10 @@ export class SignalsService {
     private readonly configService: ConfigService,
   ) {}
 
-  async findAll(page = 1, limit = 10): Promise<{ data: Signal[]; total: number }> {
+  async findAll(
+    page = 1,
+    limit = 10,
+  ): Promise<{ data: Signal[]; total: number }> {
     const cachedSignals = await this.getCachedSignals();
     if (cachedSignals) {
       return {
@@ -53,19 +56,29 @@ export class SignalsService {
 
   private async cacheSignals(signals: Signal[]): Promise<void> {
     try {
-      await this.redisService.setAsync(this.CACHE_KEY, JSON.stringify(signals), this.CACHE_TTL);
+      await this.redisService.setAsync(
+        this.CACHE_KEY,
+        JSON.stringify(signals),
+        this.CACHE_TTL,
+      );
     } catch (error) {
       this.logger.error('Error caching signals:', error);
     }
   }
 
   async getOneSignalById(signal_id: number): Promise<Signal> {
-    const signal = await this.signalRepository.findOne({ where: { signal_id } });
+    const signal = await this.signalRepository.findOne({
+      where: { signal_id },
+    });
     if (!signal) throw new NotFoundException(`Signal #${signal_id} not found`);
     return signal;
   }
 
-  async getTopSignals(page = 1, limit = 10, filter?: string): Promise<{ data: Signal[]; total: number }> {
+  async getTopSignals(
+    page = 1,
+    limit = 10,
+    filter?: string,
+  ): Promise<{ data: Signal[]; total: number }> {
     try {
       const cacheKey = `${this.TOP_SIGNALS_CACHE_KEY}:${filter || 'all'}`;
       const cachedSignals = await this.redisService.getAsync(cacheKey);
@@ -79,7 +92,8 @@ export class SignalsService {
       }
 
       const queryBuilder = this.signalRepository.createQueryBuilder('signal');
-      if (filter) queryBuilder.where('signal.signal_type = :filter', { filter });
+      if (filter)
+        queryBuilder.where('signal.signal_type = :filter', { filter });
 
       const total = await queryBuilder.getCount();
       const signals = await queryBuilder
@@ -88,7 +102,11 @@ export class SignalsService {
         .getMany();
 
       const rankedSignals = this.rankSignals(signals);
-      await this.redisService.setAsync(cacheKey, JSON.stringify(rankedSignals), this.CACHE_TTL);
+      await this.redisService.setAsync(
+        cacheKey,
+        JSON.stringify(rankedSignals),
+        this.CACHE_TTL,
+      );
 
       return {
         data: rankedSignals.slice((page - 1) * limit, page * limit),
@@ -110,7 +128,8 @@ export class SignalsService {
     };
 
     const weightedSignals: WeightedSignal<Signal>[] = signals.map((signal) => {
-      const ageInHours = (now.getTime() - signal.timestamp.getTime()) / (1000 * 60 * 60);
+      const ageInHours =
+        (now.getTime() - signal.timestamp.getTime()) / (1000 * 60 * 60);
       if (ageInHours > config.maxAgeHours) return { signal, weight: 0 };
 
       const recencyScore = Math.exp(-config.decayFactor * ageInHours);
@@ -132,7 +151,9 @@ export class SignalsService {
         }
       }
 
-      const weight = reputationScore * config.reputationWeight + recencyScore * config.recencyWeight;
+      const weight =
+        reputationScore * config.reputationWeight +
+        recencyScore * config.recencyWeight;
       return { signal, weight };
     });
 
@@ -143,10 +164,14 @@ export class SignalsService {
 
   async invalidateTopSignalsCache(): Promise<void> {
     try {
-      const keys = await this.redisService.keys(`${this.TOP_SIGNALS_CACHE_KEY}:*`);
+      const keys = await this.redisService.keys(
+        `${this.TOP_SIGNALS_CACHE_KEY}:*`,
+      );
       for (const key of keys) await this.redisService.del(key);
     } catch (error) {
-      this.logger.error(`Error invalidating top signals cache: ${error.message}`);
+      this.logger.error(
+        `Error invalidating top signals cache: ${error.message}`,
+      );
     }
   }
 
@@ -190,7 +215,10 @@ export class SignalsService {
     return signal;
   }
 
-  async calculateHistoricalPerformance(signalType: string, confidenceLevel: string): Promise<any> {
+  async calculateHistoricalPerformance(
+    signalType: string,
+    confidenceLevel: string,
+  ): Promise<any> {
     const signals = await this.signalRepository.find({
       where: {
         signal_type: signalType,
@@ -200,8 +228,12 @@ export class SignalsService {
     });
 
     const totalSignals = signals.length;
-    const successfulSignals = signals.filter((s) => s.status === SignalStatus.SUCCESSFUL).length;
-    const failedSignals = signals.filter((s) => s.status === SignalStatus.FAILED).length;
+    const successfulSignals = signals.filter(
+      (s) => s.status === SignalStatus.SUCCESSFUL,
+    ).length;
+    const failedSignals = signals.filter(
+      (s) => s.status === SignalStatus.FAILED,
+    ).length;
     const successRate = totalSignals > 0 ? successfulSignals / totalSignals : 0;
     const totalReturn = signals.reduce((sum, s) => sum + Number(s.value), 0);
     const averageReturn = totalSignals > 0 ? totalReturn / totalSignals : 0;
@@ -216,8 +248,14 @@ export class SignalsService {
     };
   }
 
-  async updateHistoricalPerformance(signalType: string, confidenceLevel: string): Promise<void> {
-    const performance = await this.calculateHistoricalPerformance(signalType, confidenceLevel);
+  async updateHistoricalPerformance(
+    signalType: string,
+    confidenceLevel: string,
+  ): Promise<void> {
+    const performance = await this.calculateHistoricalPerformance(
+      signalType,
+      confidenceLevel,
+    );
     await this.signalRepository.update(
       { signal_type: signalType, confidence_level: confidenceLevel },
       { historical_performance: performance },
@@ -238,11 +276,41 @@ export class SignalsService {
 
   async generateMockHistoricalData(): Promise<void> {
     const mockSignals = [
-      { signal_type: 'price_movement', confidence_level: 'high', value: 5.2, status: SignalStatus.SUCCESSFUL, is_verified: true },
-      { signal_type: 'price_movement', confidence_level: 'high', value: -2.1, status: SignalStatus.FAILED, is_verified: true },
-      { signal_type: 'volume_spike', confidence_level: 'medium', value: 3.7, status: SignalStatus.SUCCESSFUL, is_verified: true },
-      { signal_type: 'social_sentiment', confidence_level: 'high', value: 8.1, status: SignalStatus.SUCCESSFUL, is_verified: true },
-      { signal_type: 'technical_indicator', confidence_level: 'low', value: 1.5, status: SignalStatus.FAILED, is_verified: true },
+      {
+        signal_type: 'price_movement',
+        confidence_level: 'high',
+        value: 5.2,
+        status: SignalStatus.SUCCESSFUL,
+        is_verified: true,
+      },
+      {
+        signal_type: 'price_movement',
+        confidence_level: 'high',
+        value: -2.1,
+        status: SignalStatus.FAILED,
+        is_verified: true,
+      },
+      {
+        signal_type: 'volume_spike',
+        confidence_level: 'medium',
+        value: 3.7,
+        status: SignalStatus.SUCCESSFUL,
+        is_verified: true,
+      },
+      {
+        signal_type: 'social_sentiment',
+        confidence_level: 'high',
+        value: 8.1,
+        status: SignalStatus.SUCCESSFUL,
+        is_verified: true,
+      },
+      {
+        signal_type: 'technical_indicator',
+        confidence_level: 'low',
+        value: 1.5,
+        status: SignalStatus.FAILED,
+        is_verified: true,
+      },
     ];
 
     for (const mockSignal of mockSignals) {

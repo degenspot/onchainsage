@@ -46,10 +46,13 @@ export class WebhookService {
         },
         timeout: 10000, // 10 seconds timeout
       });
-      
+
       this.logger.log(`Webhook notification sent to ${url}`);
     } catch (error) {
-      this.logger.error(`Failed to send webhook notification to ${url}: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to send webhook notification to ${url}: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }

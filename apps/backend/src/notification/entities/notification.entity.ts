@@ -1,5 +1,14 @@
 // src/notification/entities/notification.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, CreateDateColumn, UpdateDateColumn, OneToMany, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  Index,
+} from 'typeorm';
 import { NotificationTemplate } from './notification-template.entity';
 import { DeliveryRecord } from './delivery-record.entity';
 

@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity('voting_history')
 export class VotingHistory {
@@ -16,4 +21,4 @@ export class VotingHistory {
 
   @CreateDateColumn()
   createdAt: Date;
-} 
+}

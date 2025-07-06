@@ -7,12 +7,9 @@ import { RedisService } from '../redis/redis.service';
 import { GatewayModule } from '../gateways/gateway.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([User]),
-    GatewayModule
-  ],
+  imports: [TypeOrmModule.forFeature([User]), GatewayModule],
   controllers: [UserController],
   providers: [UserService, RedisService],
-  exports: [UserService]
+  exports: [UserService],
 })
 export class UserModule {}

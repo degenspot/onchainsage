@@ -1,4 +1,11 @@
-import { Controller, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { VoteService } from './vote.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -16,4 +23,4 @@ export class VotingController {
     const userId = req.user.id;
     return this.voteService.castVote(userId, signalId, voteType);
   }
-} 
+}

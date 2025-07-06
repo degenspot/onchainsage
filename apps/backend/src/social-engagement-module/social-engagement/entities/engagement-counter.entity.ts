@@ -1,5 +1,11 @@
 // src/social-engagement/entities/engagement-counter.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, Index, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Index,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ContentType } from '../../shared/enums/content-type.enum';
 
 @Entity('engagement_counters')

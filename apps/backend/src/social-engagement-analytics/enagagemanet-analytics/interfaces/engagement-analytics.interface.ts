@@ -9,17 +9,9 @@ export interface EngagementCount {
 
 export interface EngagementTimeSeries {
   timestamp: Date;
-  value: number;
-  type: string;
   engagements: EngagementCount[];
   total: number;
   weightedTotal: number;
-}
-
-export interface EngagementCount {
-  type: EngagementType;
-  count: number;
-  weight: number;
 }
 
 export interface EngagementSummary {

@@ -1,5 +1,11 @@
 // src/signals/entities/signal-audit.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+} from 'typeorm';
 import { User } from 'src/users/entities/user.entity'; // adjust path as needed
 
 @Entity('signal_audits')

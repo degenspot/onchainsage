@@ -6,7 +6,6 @@ import {
   Req,
   Res,
   HttpStatus,
-  HttpException,
   Post,
   Body,
 } from '@nestjs/common';
@@ -174,6 +173,7 @@ export class ExportController {
   @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiOperation({ summary: 'Export signals data (Admin only)' })
   @ApiResponse({ status: 201, description: 'Export job started successfully' })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async exportSignals(@Body() exportDto: ExportDataDto) {
     // Implementation of exportSignals method
   }
@@ -182,6 +182,7 @@ export class ExportController {
   @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiOperation({ summary: 'Export votes data (Admin only)' })
   @ApiResponse({ status: 201, description: 'Export job started successfully' })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async exportVotes(@Body() exportDto: ExportDataDto) {
     // Implementation of exportVotes method
   }
@@ -190,6 +191,7 @@ export class ExportController {
   @UseGuards(JwtAuthGuard, AdminGuard)
   @ApiOperation({ summary: 'Export users data (Admin only)' })
   @ApiResponse({ status: 201, description: 'Export job started successfully' })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async exportUsers(@Body() exportDto: ExportDataDto) {
     // Implementation of exportUsers method
   }

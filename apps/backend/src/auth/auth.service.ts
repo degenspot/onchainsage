@@ -74,12 +74,14 @@ export class AuthService {
       if (metadata.email) {
         user.email = metadata.email;
       }
-      
+
       if (metadata.discordUsername || metadata.telegramUsername) {
         user.metadata = {
           ...user.metadata,
-          discordUsername: metadata.discordUsername || user.metadata?.discordUsername,
-          telegramUsername: metadata.telegramUsername || user.metadata?.telegramUsername,
+          discordUsername:
+            metadata.discordUsername || user.metadata?.discordUsername,
+          telegramUsername:
+            metadata.telegramUsername || user.metadata?.telegramUsername,
         };
       }
     }

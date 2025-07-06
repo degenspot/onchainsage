@@ -1,4 +1,4 @@
-import { hash, ec, num } from 'starknet';
+import { hash, ec } from 'starknet';
 
 /**
  * Verifies a Starknet signature

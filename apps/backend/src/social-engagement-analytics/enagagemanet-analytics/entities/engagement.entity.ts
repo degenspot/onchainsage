@@ -1,17 +1,25 @@
-// src/engagement-analytics/entities/engagement.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Index, ManyToOne } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
-import { Content } from '../../content/entities/content.entity';
+// src/social-engagement-analytics/entities/engagement.entity.ts
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  Index,
+  ManyToOne,
+} from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { Content } from 'src/content/entities/content.entity';
 
 export enum EngagementType {
   LIKE = 'like',
   DISLIKE = 'dislike',
   COMMENT = 'comment',
   SHARE = 'share',
-  VIEW = 'view'
+  VIEW = 'view',
 }
 
 @Entity('engagements')
+@Index(['type', 'timestamp'])
 export class Engagement {
   @PrimaryGeneratedColumn('uuid')
   id: string;

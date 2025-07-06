@@ -3,9 +3,7 @@ import { StarknetService } from './providers/starknet-provider.service';
 
 @Controller('starknet')
 export class StarknetController {
-    constructor(
-        private readonly starknetService: StarknetService,
-    ) {}
+  constructor(private readonly starknetService: StarknetService) {}
 
   @Get('balance')
   public async getBalance() {

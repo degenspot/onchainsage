@@ -1,7 +1,10 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
-import { RATE_LIMIT_KEY, RateLimitOptions } from '../common/decorators/rate-limit.decorator';
+import {
+  RATE_LIMIT_KEY,
+  RateLimitOptions,
+} from '../common/decorators/rate-limit.decorator';
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
@@ -13,7 +16,7 @@ export class RateLimitMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const options = this.reflector.get<RateLimitOptions>(
       RATE_LIMIT_KEY,
-      req.route?.handler || req.route?.path
+      req.route?.handler || req.route?.path,
     );
 
     if (!options) {
@@ -45,8 +48,6 @@ export class RateLimitMiddleware implements NestMiddleware {
       });
   }
 }
-
-
 
 // import { Injectable, type NestMiddleware } from '@nestjs/common';
 // import { Request, Response, NextFunction } from 'express';

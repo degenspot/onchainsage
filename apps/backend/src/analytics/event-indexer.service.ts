@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import type { Repository } from 'typeorm';
 import { ethers } from 'ethers';
 import { BigNumber } from '@ethersproject/bignumber';
-import type { Provider } from '@ethersproject/providers';
 import {
   SmartContractEvent,
   EventType,
@@ -123,7 +122,7 @@ export class EventIndexerService {
               ...event.args,
               ...Object.fromEntries(
                 Object.entries(event.args || {})
-                  .filter(([_, value]) => BigNumber.isBigNumber(value))
+                  .filter(([, value]) => BigNumber.isBigNumber(value))
                   .map(([key, value]) => [
                     key,
                     BigNumber.from(value).toString(),

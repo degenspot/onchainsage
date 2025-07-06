@@ -1,6 +1,15 @@
 // src/social-engagement/entities/social-engagement.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  Index,
+} from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 import { EngagementType } from '../../shared/enums/engagement-type.enum';
 import { ContentType } from '../../shared/enums/content-type.enum';
 

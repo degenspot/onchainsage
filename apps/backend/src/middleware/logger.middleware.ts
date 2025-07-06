@@ -8,16 +8,17 @@ const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
-    winston.format.json()
+    winston.format.json(),
   ),
   transports: [
     new winston.transports.Console(),
-    new DailyRotateFile({ // Use DailyRotateFile directly
+    new DailyRotateFile({
+      // Use DailyRotateFile directly
       filename: 'logs/api-%DATE%.log',
       datePattern: 'YYYY-MM-DD',
       maxSize: '10m',
-      maxFiles: '14d'
-    })
+      maxFiles: '14d',
+    }),
   ],
 });
 
@@ -25,14 +26,14 @@ const logger = winston.createLogger({
 export class LoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const { method, url, body } = req;
-    
+
     res.on('finish', () => {
       logger.info({
         level: 'info',
         message: `${method} ${url}`,
         timestamp: new Date().toISOString(),
         statusCode: res.statusCode,
-        body
+        body,
       });
     });
 

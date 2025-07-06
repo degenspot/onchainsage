@@ -1,5 +1,11 @@
 // src/notification/entities/notification-template.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { NotificationChannel } from './notification.entity';
 
 @Entity()

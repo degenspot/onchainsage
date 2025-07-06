@@ -7,8 +7,14 @@ export class FeatureFlagsService {
 
   constructor(private configService: ConfigService) {
     // Load feature flags from environment or configuration
-    this.flags['signals_enabled'] = this.configService.get<boolean>('FEATURE_SIGNALS_ENABLED', true);
-    this.flags['user_preferences_enabled'] = this.configService.get<boolean>('FEATURE_USER_PREFERENCES_ENABLED', true);
+    this.flags['signals_enabled'] = this.configService.get<boolean>(
+      'FEATURE_SIGNALS_ENABLED',
+      true,
+    );
+    this.flags['user_preferences_enabled'] = this.configService.get<boolean>(
+      'FEATURE_USER_PREFERENCES_ENABLED',
+      true,
+    );
     // Add more feature flags as needed
   }
 
@@ -23,4 +29,4 @@ export class FeatureFlagsService {
   setFlag(flag: string, enabled: boolean): void {
     this.flags[flag] = enabled;
   }
-} 
+}

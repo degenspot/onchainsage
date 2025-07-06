@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity('signal_history')
 export class SignalHistory {
@@ -16,4 +21,4 @@ export class SignalHistory {
 
   @CreateDateColumn()
   createdAt: Date;
-} 
+}

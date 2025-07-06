@@ -1,32 +1,38 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm"
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class WebhookConfig {
   @PrimaryGeneratedColumn()
-  id: number
+  id: number;
 
   @Column()
-  transactionHash: string
+  transactionHash: string;
 
   @Column()
-  callbackUrl: string
+  callbackUrl: string;
 
   @Column({ nullable: true })
-  secretKey: string
+  secretKey: string;
 
   @Column({
-    type: "enum",
-    enum: ["PENDING", "DELIVERED", "FAILED", "TIMEOUT"],
-    default: "PENDING",
+    type: 'enum',
+    enum: ['PENDING', 'DELIVERED', 'FAILED', 'TIMEOUT'],
+    default: 'PENDING',
   })
-  status: "PENDING" | "DELIVERED" | "FAILED" | "TIMEOUT"
+  status: 'PENDING' | 'DELIVERED' | 'FAILED' | 'TIMEOUT';
 
   @Column({ nullable: true })
-  deliveredAt: Date
+  deliveredAt: Date;
 
   @CreateDateColumn()
-  createdAt: Date
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date
+  updatedAt: Date;
 }

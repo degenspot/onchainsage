@@ -5,6 +5,6 @@ import { StarknetService } from '../starknet/starknet.service';
 @Module({
   controllers: [ForumController],
   providers: [StarknetService],
-  exports: [StarknetService]
+  exports: [StarknetService],
 })
 export class ForumModule {}

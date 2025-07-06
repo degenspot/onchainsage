@@ -1,7 +1,17 @@
 // src/notification/dto/update-notification.dto.ts
-import { IsString, IsOptional, IsEnum, IsArray, IsObject, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsArray,
+  IsObject,
+  IsBoolean,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { NotificationPriority, NotificationChannel } from '../entities/notification.entity';
+import {
+  NotificationPriority,
+  NotificationChannel,
+} from '../entities/notification.entity';
 
 export class UpdateNotificationDto {
   @ApiProperty({ description: 'Notification title', required: false })
@@ -14,30 +24,30 @@ export class UpdateNotificationDto {
   @IsOptional()
   content?: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Notification priority',
     enum: NotificationPriority,
-    required: false
+    required: false,
   })
   @IsEnum(NotificationPriority)
   @IsOptional()
   priority?: NotificationPriority;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Notification channels',
     type: [String],
     enum: NotificationChannel,
-    required: false
+    required: false,
   })
   @IsArray()
   @IsEnum(NotificationChannel, { each: true })
   @IsOptional()
   channels?: NotificationChannel[];
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Additional metadata',
     required: false,
-    type: 'object'
+    type: 'object',
   })
   @IsObject()
   @IsOptional()
@@ -45,7 +55,7 @@ export class UpdateNotificationDto {
 
   @ApiProperty({
     description: 'Read status',
-    required: false
+    required: false,
   })
   @IsBoolean()
   @IsOptional()

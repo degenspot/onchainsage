@@ -1,61 +1,67 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm"
-import { PaymentPeriod } from "../dto/payment.dto"
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { PaymentPeriod } from '../dto/payment.dto';
 
 @Entity()
 export class ScheduledPayment {
-  @PrimaryGeneratedColumn("uuid")
-  id: string
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
-  senderAddress: string
+  senderAddress: string;
 
   @Column()
-  recipientAddress: string
+  recipientAddress: string;
 
-  @Column("decimal", { precision: 20, scale: 8 })
-  amount: number
+  @Column('decimal', { precision: 20, scale: 8 })
+  amount: number;
 
   @Column()
-  scheduledDate: Date
+  scheduledDate: Date;
 
   @Column({ default: false })
-  recurring: boolean
+  recurring: boolean;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: PaymentPeriod,
     nullable: true,
   })
-  recurrencePeriod: PaymentPeriod | null
+  recurrencePeriod: PaymentPeriod | null;
 
   @Column({ nullable: true })
-  recurrenceCount: number | null
+  recurrenceCount: number | null;
 
   @Column({ nullable: true })
-  reference: string | null
+  reference: string | null;
 
   @Column({
-    type: "enum",
-    enum: ["PENDING", "EXECUTED", "CANCELLED", "FAILED"],
-    default: "PENDING",
+    type: 'enum',
+    enum: ['PENDING', 'EXECUTED', 'CANCELLED', 'FAILED'],
+    default: 'PENDING',
   })
-  status: "PENDING" | "EXECUTED" | "CANCELLED" | "FAILED"
+  status: 'PENDING' | 'EXECUTED' | 'CANCELLED' | 'FAILED';
 
   @Column({ nullable: true })
-  transactionHash: string | null
+  transactionHash: string | null;
 
   @Column({ nullable: true })
-  lastExecutionDate: Date | null
+  lastExecutionDate: Date | null;
 
   @Column({ default: 0 })
-  executionCount: number
+  executionCount: number;
 
   @Column({ nullable: true })
-  nextExecutionDate: Date | null
+  nextExecutionDate: Date | null;
 
   @CreateDateColumn()
-  createdAt: Date
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date
+  updatedAt: Date;
 }
