@@ -1,5 +1,3 @@
-
-
 // src/engagement-analytics/interfaces/engagement-analytics.interface.ts
 import { EngagementType } from '../entities/engagement.entity';
 
@@ -11,9 +9,17 @@ export interface EngagementCount {
 
 export interface EngagementTimeSeries {
   timestamp: Date;
+  value: number;
+  type: string;
   engagements: EngagementCount[];
   total: number;
   weightedTotal: number;
+}
+
+export interface EngagementCount {
+  type: EngagementType;
+  count: number;
+  weight: number;
 }
 
 export interface EngagementSummary {
@@ -33,9 +39,8 @@ export interface EngagementSummary {
 
 export interface EngagementAnomaly {
   timestamp: Date;
-  type: EngagementType;
-  expected: number;
-  actual: number;
+  value: number;
+  expectedValue: number;
   deviation: number;
-  significance: number;
+  severity: 'low' | 'medium' | 'high';
 }

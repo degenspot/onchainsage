@@ -6,6 +6,9 @@ import {
   Req,
   Res,
   HttpStatus,
+  HttpException,
+  Post,
+  Body,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -17,8 +20,17 @@ import {
 import { Response } from 'express';
 import { ExportService } from '../services/export.service';
 import { ExportQueryDto } from '../dto/export-query.dto';
-import { WalletAuthGuard } from '../../auth/guards/wallet-auth.guard';
 import { RateLimit } from '../../common/decorators/rate-limit.decorator';
+import * as fs from 'fs';
+import { Injectable } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { AdminGuard } from '../../auth/guards/admin.guard';
+import { ExportDataDto } from '../dto/export-data.dto';
+
+// Placeholder for WalletAuthGuard
+@Injectable()
+export class WalletAuthGuard extends AuthGuard('wallet') {}
 
 @ApiTags('Export')
 @Controller('export')
@@ -28,7 +40,7 @@ export class ExportController {
   @Get('signal-history')
   @UseGuards(WalletAuthGuard)
   @ApiBearerAuth()
-  @RateLimit({ points: 5, duration: 60 }) // 5 requests per minute
+  @RateLimit(5, 60) // 5 requests per minute
   @ApiOperation({ summary: 'Export user signal history' })
   @ApiQuery({ name: 'format', enum: ['csv', 'json'], required: false })
   @ApiQuery({ name: 'startDate', type: String, required: false })
@@ -73,7 +85,7 @@ export class ExportController {
   @Get('voting-history')
   @UseGuards(WalletAuthGuard)
   @ApiBearerAuth()
-  @RateLimit({ points: 5, duration: 60 }) // 5 requests per minute
+  @RateLimit(5, 60) // 5 requests per minute
   @ApiOperation({ summary: 'Export user voting history' })
   @ApiQuery({ name: 'format', enum: ['csv', 'json'], required: false })
   @ApiQuery({ name: 'startDate', type: String, required: false })
@@ -118,7 +130,7 @@ export class ExportController {
   @Get('staking-history')
   @UseGuards(WalletAuthGuard)
   @ApiBearerAuth()
-  @RateLimit({ points: 5, duration: 60 }) // 5 requests per minute
+  @RateLimit(5, 60) // 5 requests per minute
   @ApiOperation({ summary: 'Export user staking history' })
   @ApiQuery({ name: 'format', enum: ['csv', 'json'], required: false })
   @ApiQuery({ name: 'startDate', type: String, required: false })
@@ -156,5 +168,29 @@ export class ExportController {
     fileStream.on('end', () => {
       fs.unlinkSync(filePath);
     });
+  }
+
+  @Post('signals')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @ApiOperation({ summary: 'Export signals data (Admin only)' })
+  @ApiResponse({ status: 201, description: 'Export job started successfully' })
+  async exportSignals(@Body() exportDto: ExportDataDto) {
+    // Implementation of exportSignals method
+  }
+
+  @Post('votes')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @ApiOperation({ summary: 'Export votes data (Admin only)' })
+  @ApiResponse({ status: 201, description: 'Export job started successfully' })
+  async exportVotes(@Body() exportDto: ExportDataDto) {
+    // Implementation of exportVotes method
+  }
+
+  @Post('users')
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @ApiOperation({ summary: 'Export users data (Admin only)' })
+  @ApiResponse({ status: 201, description: 'Export job started successfully' })
+  async exportUsers(@Body() exportDto: ExportDataDto) {
+    // Implementation of exportUsers method
   }
 }

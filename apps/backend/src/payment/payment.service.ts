@@ -14,6 +14,7 @@ import type {
 } from "./dto/payment.dto"
 import { InjectRepository } from "@nestjs/typeorm"
 import type { Repository } from "typeorm"
+import { Between, LessThanOrEqual } from "typeorm"
 import { WebhookConfig } from "./entities/webhook-config.entity"
 import { ScheduledPayment } from "./entities/scheduled-payment.entity"
 import { PaymentLimit } from "./entities/payment-limit.entity"
@@ -235,19 +236,21 @@ export class PaymentService {
 
       // Get transaction history summary
       const [deposits, withdrawals] = await Promise.all([
-        this.paymentTransactionRepository.sum("amount", {
-          where: {
-            recipientAddress: walletAddress,
-            status: "CONFIRMED",
-          },
-        }),
-        this.paymentTransactionRepository.sum("amount", {
-          where: {
-            senderAddress: walletAddress,
-            status: "CONFIRMED",
-            type: "TRANSFER", // Only count transfers out, not deposits
-          },
-        }),
+        this.paymentTransactionRepository
+          .createQueryBuilder("transaction")
+          .select("SUM(transaction.amount)", "sum")
+          .where("transaction.recipientAddress = :walletAddress", { walletAddress })
+          .andWhere("transaction.status = :status", { status: "CONFIRMED" })
+          .getRawOne()
+          .then(result => result.sum || 0),
+        this.paymentTransactionRepository
+          .createQueryBuilder("transaction")
+          .select("SUM(transaction.amount)", "sum")
+          .where("transaction.senderAddress = :walletAddress", { walletAddress })
+          .andWhere("transaction.status = :status", { status: "CONFIRMED" })
+          .andWhere("transaction.type = :type", { type: "TRANSFER" })
+          .getRawOne()
+          .then(result => result.sum || 0),
       ])
 
       return {
@@ -348,12 +351,12 @@ export class PaymentService {
         throw new NotFoundException(`Transaction with hash ${refundDto.transactionHash} not found`)
       }
 
-      if (originalTransaction.status !== "CONFIRMED") {
-        throw new BadRequestException(`Cannot refund a transaction that is not confirmed`)
-      }
-
       if (originalTransaction.status === "REFUNDED") {
         throw new BadRequestException(`Transaction has already been refunded`)
+      }
+
+      if (originalTransaction.status !== "CONFIRMED") {
+        throw new BadRequestException(`Cannot refund a transaction that is not confirmed`)
       }
 
       // Determine refund amount
@@ -881,13 +884,14 @@ export class PaymentService {
       const tomorrow = new Date(today)
       tomorrow.setDate(tomorrow.getDate() + 1)
 
-      const dailyTotal = await this.paymentTransactionRepository.sum("amount", {
-        where: {
-          senderAddress: walletAddress,
-          timestamp: Between(today, tomorrow),
-          status: "CONFIRMED",
-        },
-      })
+      const dailyTotal = await this.paymentTransactionRepository
+        .createQueryBuilder("transaction")
+        .select("SUM(transaction.amount)", "sum")
+        .where("transaction.senderAddress = :walletAddress", { walletAddress })
+        .andWhere("transaction.timestamp BETWEEN :today AND :tomorrow", { today, tomorrow })
+        .andWhere("transaction.status = :status", { status: "CONFIRMED" })
+        .getRawOne()
+        .then(result => result.sum || 0)
 
       if (dailyTotal + amount > paymentLimit.dailyLimit) {
         throw new BadRequestException(

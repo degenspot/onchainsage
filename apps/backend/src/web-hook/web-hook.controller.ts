@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { WebHookService } from './web-hook.service';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards, Request } from '@nestjs/common';
+import { WebhookService } from './web-hook.service';
 import { CreateWebHookDto } from './dto/create-web-hook.dto';
 import { UpdateWebHookDto } from './dto/update-web-hook.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('web-hook')
 export class WebHookController {
-  constructor(private readonly webHookService: WebHookService) {}
+  constructor(private readonly webHookService: WebhookService) {}
 
   @Post()
   create(@Body() createWebHookDto: CreateWebHookDto) {

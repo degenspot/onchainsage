@@ -17,6 +17,13 @@ export enum EventType {
   REWARD_CLAIMED = 'reward_claimed',
   SIGNAL_EXPIRED = 'signal_expired',
   SIGNAL_FLAGGED = 'signal_flagged',
+  DEPOSIT = 'deposit',
+  WITHDRAWAL = 'withdrawal',
+  TRANSFER = 'transfer',
+  APPROVAL = 'approval',
+  TRADE = 'trade',
+  MINT = 'mint',
+  BURN = 'burn',
 }
 
 @Entity('smart_contract_events')

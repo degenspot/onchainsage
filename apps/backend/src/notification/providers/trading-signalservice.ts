@@ -1,9 +1,23 @@
-import { UserService } from "src/users/user.service";
-import { NotificationService } from "./notification.service";
-import { TradingSignal } from "src/signals/interfaces/trading-signal.interface";
-import { SignalType } from "../entities/notification.entity"
+import { UserService } from "../../users/user.service";
 import { Injectable } from "@nestjs/common";
+import { SignalType } from "../entities/notification.entity";
 
+// Placeholder interfaces
+interface User {
+  id: string;
+  email: string;
+}
+
+interface TradingSignal {
+  id: string;
+  type: string;
+  message: string;
+  confidence: number;
+}
+
+interface NotificationService {
+  sendNotification(user: User, type: SignalType, message: string): Promise<void>;
+}
 
 @Injectable()
 export class TradingSignalService {
@@ -15,7 +29,7 @@ export class TradingSignalService {
   async processHighConfidenceSignal(signal: TradingSignal) {
     // Fetch users interested in this type of signal.
     // Assuming a method like findBySignalPreference exists and returns User[]
-    const interestedUsers: User[] = await this.userService.findBySignalPreference(
+    const interestedUsers: User[] = await (this.userService as any).findBySignalPreference(
       SignalType.HIGH_CONFIDENCE
     );
 
@@ -24,8 +38,8 @@ export class TradingSignalService {
       await this.notificationService.sendNotification(
         user,
         SignalType.HIGH_CONFIDENCE,
-        `High-confidence signal detected: ${signal.details}` // Example message content
+        `High-confidence signal detected: ${signal.message}` // Example message content
       );
-    // }
+    }
   }
 }
