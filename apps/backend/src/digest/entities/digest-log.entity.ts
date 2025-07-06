@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from '../../user/entities/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 
 export enum DigestType {
   DAILY = 'daily',
@@ -35,4 +35,7 @@ export class DigestLog {
 
   @Column({ type: 'text', nullable: true })
   errorMessage: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

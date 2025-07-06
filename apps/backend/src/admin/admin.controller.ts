@@ -1,10 +1,11 @@
-import { Controller, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Patch, Post, Req, UseGuards, Query } from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { RolesGuard } from "src/auth/guards/roles.guard";
 import { Roles } from "src/auth/decorators/roles.decorator";
 import { UserRole } from "src/users/entities/user.entity";
 import { ForumReportService } from "src/forum-report/forum-report.service";
 import { ModerationService } from "./providers/moderation.service";
+import { StatsService } from '../stats/stats.service';
 
 
 @Controller('admin')
@@ -13,8 +14,8 @@ import { ModerationService } from "./providers/moderation.service";
 export class AdminController {
   constructor(
     private readonly reportService: ForumReportService,
-
-    private readonly moderationService: ModerationService
+    private readonly moderationService: ModerationService,
+    private readonly statsService: StatsService
   ) {}
 
   @Get('reports')

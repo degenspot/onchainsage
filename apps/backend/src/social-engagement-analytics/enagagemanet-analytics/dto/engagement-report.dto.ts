@@ -1,5 +1,5 @@
 // src/engagement-analytics/dto/engagement-report.dto.ts
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString, IsDateString } from 'class-validator';
 
 export enum ReportFormat {
   JSON = 'json',

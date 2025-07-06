@@ -29,7 +29,7 @@ import { AdminModule } from './admin/admin.module';
 import { SignalAuditModule } from './signal-audit/signal-audit.module';
 import { ExportModule } from './export/export.module';
 import { DigestModule } from './digest/digest.module';
-import { WebHookModule } from './web-hook/web-hook.module';
+import { WebhookModule } from './web-hook/web-hook.module';
 import { TemplatesModule } from './templates/templates.module';
 import { FeatureFlagsService } from './config/feature-flag';
 import { FeatureFlagMiddleware } from './middleware/feature-flag.middleware';
@@ -84,7 +84,7 @@ console.log('Current environment:', ENV);
     SignalAuditModule,
     ExportModule,
     DigestModule,
-    WebHookModule,
+    WebhookModule,
     TemplatesModule,
   ],
   controllers: [AppController, RedisController],

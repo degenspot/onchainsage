@@ -13,23 +13,43 @@ export enum UserRole {
   Viewer = 'viewer',
 }
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ unique: true })
-  walletAddress: string;
+  username: string;
+
+  @Column({ unique: true })
+  email: string;
 
   @Column({ nullable: true })
-  username: string;
+  firstName: string;
+
+  @Column({ nullable: true })
+  lastName: string;
+
+  @Column({ default: true })
+  isActive: boolean;
+
+  @Column({ type: 'simple-array', nullable: true })
+  roles: string[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @Column({ unique: true })
+  walletAddress: string;
 
   @Column({ default: false })
   isVerified: boolean;
 
   @Column({ default: false })
   isShadowbanned: boolean;
-
 
   @Column({ type: 'jsonb', nullable: true })
   preferences: Record<string, any>;
@@ -43,20 +63,11 @@ export class User {
   @Column({ nullable: true })
   lastChallenge: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
   @Column({ nullable: true })
   nonce: string;
 
   @Column({ nullable: true })
   signature: string;
-
-  @Column({ nullable: true })
-  email?: string;
 
   @Column({ nullable: true })
   discordId?: string;
@@ -76,3 +87,5 @@ export class User {
   @Column({ type: 'varchar', length: 10, default: UserRole.USER })
   role: UserRole;
 }
+
+export { User as UserEntity };

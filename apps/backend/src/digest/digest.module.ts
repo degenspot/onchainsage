@@ -5,20 +5,20 @@ import { DigestService } from './digest.service';
 import { DigestController } from './digest.controller';
 import { UserDigestPreference } from './entities/user-digest-preference.entity';
 import { DigestLog } from './entities/digest-log.entity';
-import { UserModule } from '../user/user.module';
-import { SignalModule } from '../signal/signal.module';
-import { VoteModule } from '../vote/vote.module';
+import { UserModule } from '../users/user.module';
+import { SignalsModule } from '../signals/signals.module';
+import { VoteModule } from '../voting/voting.module';
 import { ReputationModule } from '../reputation/reputation.module';
 import { TokenModule } from '../token/token.module';
 import { MailModule } from '../mail/mail.module';
-import { WebhookModule } from '../webhook/webhook.module';
+import { WebhookModule } from '../web-hook/web-hook.module';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     TypeOrmModule.forFeature([UserDigestPreference, DigestLog]),
     UserModule,
-    SignalModule,
+    SignalsModule,
     VoteModule,
     ReputationModule,
     TokenModule,

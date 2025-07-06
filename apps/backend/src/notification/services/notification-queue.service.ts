@@ -10,6 +10,7 @@ import { EmailNotificationProvider } from '../providers/email-notification.provi
 import { PushNotificationProvider } from '../providers/push-notification.provider';
 import { InAppNotificationProvider } from '../providers/in-app-notification.provider';
 import { DeliveryTrackingService } from './delivery-tracking.service';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class NotificationQueueService implements OnModuleInit {
@@ -25,6 +26,8 @@ export class NotificationQueueService implements OnModuleInit {
   
   private processing = false;
   
+  private readonly logger = new Logger(NotificationQueueService.name);
+  
   constructor(
     @InjectRepository(Notification)
     private notificationRepository: Repository<Notification>,
@@ -35,7 +38,9 @@ export class NotificationQueueService implements OnModuleInit {
     private pushProvider: PushNotificationProvider,
     private inAppProvider: InAppNotificationProvider,
     private deliveryTrackingService: DeliveryTrackingService,
-  ) {}
+  ) {
+    this.startQueueProcessing();
+  }
 
   onModuleInit() {
     // Load pending notifications from database on startup
@@ -143,5 +148,47 @@ export class NotificationQueueService implements OnModuleInit {
     } finally {
       this.processing = false;
     }
+  }
+
+  private async processNotification(notification: Notification): Promise<void> {
+    try {
+      const channel = notification.channels && notification.channels.length > 0 ? notification.channels[0] : 'in-app';
+      const provider = this.getProviderForChannel(channel);
+      if (provider) {
+        await provider.send(notification);
+        notification.status = NotificationStatus.DELIVERED;
+        (notification as any).sentAt = new Date();
+      } else {
+        notification.status = NotificationStatus.FAILED;
+        (notification as any).errorMessage = 'No provider found for channel';
+      }
+    } catch (error) {
+      this.logger.error(`Error processing notification: ${error.message}`, error.stack);
+      notification.status = NotificationStatus.FAILED;
+      (notification as any).errorMessage = error.message;
+    } finally {
+      await this.notificationRepository.save(notification);
+    }
+  }
+
+  private getProviderForChannel(channel: string): EmailNotificationProvider | PushNotificationProvider | InAppNotificationProvider | undefined {
+    switch (channel) {
+      case 'email':
+        return this.emailProvider;
+      case 'push':
+        return this.pushProvider;
+      case 'in-app':
+        return this.inAppProvider;
+      default:
+        return undefined;
+    }
+  }
+
+  private startQueueProcessing(): void {
+    setInterval(async () => {
+      if (!this.processing) {
+        await this.processQueue();
+      }
+    }, 10000); // Check every 10 seconds
   }
 }

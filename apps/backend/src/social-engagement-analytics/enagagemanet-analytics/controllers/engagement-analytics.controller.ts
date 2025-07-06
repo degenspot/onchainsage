@@ -1,5 +1,6 @@
 // src/engagement-analytics/controllers/engagement-analytics.controller.ts
-import { Controller, Get, Post, Body, Query, Param, UseGuards, HttpException, HttpStatus, Logger, CacheTTL } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param, UseGuards, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import { CacheTTL } from '@nestjs/cache-manager';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { EngagementAnalyticsService } from '../services/engagement-analytics.service';
 import { CreateEngagementDto } from '../dto/create-engagement.dto';

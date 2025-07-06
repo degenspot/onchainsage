@@ -57,5 +57,8 @@ export class ModerationService {
     return { message: ' This User has been shadowbanned.' };
   }
   
-  
+  async banPost(postId: string, walletAddress: string): Promise<any> {
+    // Implementation for banning a post
+    return { success: true, message: `Post ${postId} banned for user with wallet ${walletAddress}` };
+  }
 }

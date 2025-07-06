@@ -1,6 +1,17 @@
 // src/notification/dto/update-webhook.dto.ts
 import { IsString, IsOptional, IsUrl, IsArray, IsObject, ValidateNested, IsBoolean } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+
+export class WebhookConfigurationDto {
+  @ApiProperty({ description: 'Timeout in seconds', required: false })
+  @IsOptional()
+  timeout?: number;
+
+  @ApiProperty({ description: 'Retry attempts', required: false })
+  @IsOptional()
+  retryAttempts?: number;
+}
 
 export class UpdateWebhookDto {
   @ApiProperty({ description: 'Webhook name', required: false })
