@@ -6,8 +6,9 @@ mod tests {
         ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
         spawn_test_world,
     };
-    use dojo_starter::models::{Direction, Moves, Position, EmergencyState, m_Moves, m_Position, m_EmergencyState};
+    use dojo_starter::models::{Direction, Moves, Position, EmergencyState, PlatformMetrics, UserMetrics, MetricsSnapshot, LeaderboardEntry, m_Moves, m_Position, m_EmergencyState, m_PlatformMetrics, m_UserMetrics, m_MetricsSnapshot, m_LeaderboardEntry};
     use dojo_starter::systems::actions::{IActionsDispatcher, IActionsDispatcherTrait, actions};
+    use dojo_starter::analytics_system::{IAnalyticsSystemDispatcher, IAnalyticsSystemDispatcherTrait, analytics_system};
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
@@ -16,8 +17,13 @@ mod tests {
                 TestResource::Model(m_Position::TEST_CLASS_HASH),
                 TestResource::Model(m_Moves::TEST_CLASS_HASH),
                 TestResource::Model(m_EmergencyState::TEST_CLASS_HASH),
+                TestResource::Model(m_PlatformMetrics::TEST_CLASS_HASH),
+                TestResource::Model(m_UserMetrics::TEST_CLASS_HASH),
+                TestResource::Model(m_MetricsSnapshot::TEST_CLASS_HASH),
+                TestResource::Model(m_LeaderboardEntry::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_Moved::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
+                TestResource::Contract(analytics_system::TEST_CLASS_HASH),
             ]
                 .span(),
         };
@@ -28,6 +34,8 @@ mod tests {
     fn contract_defs() -> Span<ContractDef> {
         [
             ContractDefTrait::new(@"dojo_starter", @"actions")
+                .with_writer_of([dojo::utils::bytearray_hash(@"dojo_starter")].span()),
+            ContractDefTrait::new(@"dojo_starter", @"analytics_system")
                 .with_writer_of([dojo::utils::bytearray_hash(@"dojo_starter")].span())
         ]
             .span()
@@ -128,5 +136,44 @@ mod tests {
         // Check if system is now unpaused
         let unpaused_state = actions_system.check_emergency_state();
         assert(unpaused_state == false, 'system should be unpaused');
+    }
+
+    #[test]
+    #[available_gas(50000000)]
+    fn test_analytics_system() {
+        let user1 = starknet::contract_address_const::[0;0m0x111[0;0m[0;0m();
+        let user2 = starknet::contract_address_const::[0;0m0x222[0;0m[0;0m();
+
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"analytics_system").unwrap();
+        let analytics_system = IAnalyticsSystemDispatcher { contract_address };
+
+        // Update user metrics for user1
+        analytics_system.update_user_metrics(user1, true, 150_u256.into());
+        let user1_metrics = analytics_system.get_user_metrics(user1);
+        assert(user1_metrics.total_calls == 1, 'user1 calls should be 1');
+        assert(user1_metrics.successful_calls == 1, 'user1 successful calls should be 1');
+
+        // Update user metrics for user2
+        analytics_system.update_user_metrics(user2, false, 100_u256.into());
+        let user2_metrics = analytics_system.get_user_metrics(user2);
+        assert(user2_metrics.total_calls == 1, 'user2 calls should be 1');
+        assert(user2_metrics.successful_calls == 0, 'user2 successful calls should be 0');
+
+        // Update platform metrics
+        analytics_system.update_platform_metrics(true, true, 250_u256.into());
+        let platform_metrics = analytics_system.get_platform_metrics();
+        assert(platform_metrics.total_users == 2, 'total users should be 2');
+        assert(platform_metrics.total_trading_calls == 1, 'total trading calls should be 1');
+
+        // Test creating a snapshot
+        analytics_system.create_metrics_snapshot();
+
+        // Check active users count
+        let active_users = analytics_system.get_active_users_count();
+        assert(active_users [0;0m>=[0;0m 1, 'active users should be at least 1');
     }
 }
