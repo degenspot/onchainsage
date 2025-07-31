@@ -69,6 +69,56 @@ pub struct EmergencyState {
     pub affected_functions: u256, // Bitmask
 }
 
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct PlatformMetrics {
+    #[key]
+    pub id: u32, // Using ID as key for singleton pattern
+    pub total_users: u32,
+    pub active_users_24h: u32,
+    pub total_trading_calls: u64,
+    pub successful_calls_percentage: u8,
+    pub total_strk_processed: u256,
+    pub last_updated: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct UserMetrics {
+    #[key]
+    pub user_address: ContractAddress,
+    pub total_calls: u32,
+    pub successful_calls: u32,
+    pub accuracy_percentage: u8,
+    pub total_strk_paid: u256,
+    pub rank: u32,
+    pub last_active: u64,
+    pub join_date: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct MetricsSnapshot {
+    #[key]
+    pub timestamp: u64,
+    pub total_users: u32,
+    pub active_users_24h: u32,
+    pub total_trading_calls: u64,
+    pub successful_calls_percentage: u8,
+    pub total_strk_processed: u256,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct LeaderboardEntry {
+    #[key]
+    pub rank: u32,
+    pub user_address: ContractAddress,
+    pub score: u256, // Calculated score for ranking
+    pub accuracy_percentage: u8,
+    pub total_calls: u32,
+}
+
 impl DirectionIntoFelt252 of Into<Direction, felt252> {
     fn into(self: Direction) -> felt252 {
         match self {
