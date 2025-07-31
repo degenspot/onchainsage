@@ -6,7 +6,7 @@ mod tests {
         ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
         spawn_test_world,
     };
-    use dojo_starter::models::{Direction, Moves, Position, m_Moves, m_Position};
+    use dojo_starter::models::{Direction, Moves, Position, EmergencyState, m_Moves, m_Position, m_EmergencyState};
     use dojo_starter::systems::actions::{IActionsDispatcher, IActionsDispatcherTrait, actions};
 
     fn namespace_def() -> NamespaceDef {
@@ -15,6 +15,7 @@ mod tests {
             resources: [
                 TestResource::Model(m_Position::TEST_CLASS_HASH),
                 TestResource::Model(m_Moves::TEST_CLASS_HASH),
+                TestResource::Model(m_EmergencyState::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_Moved::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
             ]
@@ -94,5 +95,38 @@ mod tests {
         let new_position: Position = world.read_model(caller);
         assert(new_position.vec.x == initial_position.vec.x + 1, 'position x is wrong');
         assert(new_position.vec.y == initial_position.vec.y, 'position y is wrong');
+    }
+
+    #[test]
+    #[available_gas(50000000)]
+    fn test_emergency_controls() {
+        let caller = starknet::contract_address_const::<0x123>();
+        let admin = starknet::contract_address_const::<0x456>();
+
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"actions").unwrap();
+        let actions_system = IActionsDispatcher { contract_address };
+
+        // Test initial emergency state (should not be paused)
+        let initial_emergency_state = actions_system.check_emergency_state();
+        assert(initial_emergency_state == false, 'initial state should not be paused');
+
+        // Test global pause
+        let pause_reason = 'SECURITY_BREACH';
+        actions_system.global_pause(pause_reason, admin.into());
+        
+        // Check if system is now paused
+        let paused_state = actions_system.check_emergency_state();
+        assert(paused_state == true, 'system should be paused');
+
+        // Test global unpause
+        actions_system.global_unpause(admin.into());
+        
+        // Check if system is now unpaused
+        let unpaused_state = actions_system.check_emergency_state();
+        assert(unpaused_state == false, 'system should be unpaused');
     }
 }
