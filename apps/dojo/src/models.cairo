@@ -58,6 +58,17 @@ pub struct ReputationHistory {
     pub accuracy_percentage_snapshot: u8,
 }
 
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct EmergencyState {
+    #[key]
+    pub is_paused: bool,
+    pub pause_reason: felt252,
+    pub paused_by: felt252,
+    pub pause_timestamp: u64,
+    pub affected_functions: u256, // Bitmask
+}
+
 impl DirectionIntoFelt252 of Into<Direction, felt252> {
     fn into(self: Direction) -> felt252 {
         match self {
